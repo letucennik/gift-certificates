@@ -56,7 +56,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         validateGiftCertificate(giftCertificate);
         validateTags(tags);
         if (new HashSet<>(tags).size() < tags.size()) {
-            throw new DuplicateEntityException("Trying to add 2 identical tags to certificate");
+            throw new DuplicateEntityException("Trying to add identical tags to certificate");
         }
         long certificateId = giftCertificateRepository.create(giftCertificate);
         for (Tag tag : giftCertificateDto.getTags()) {
