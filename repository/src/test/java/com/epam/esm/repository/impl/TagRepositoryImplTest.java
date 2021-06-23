@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -16,7 +14,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@Component
 @ContextConfiguration(classes = {TestJdbcConfig.class})
 class TagRepositoryImplTest {
 
@@ -43,7 +40,8 @@ class TagRepositoryImplTest {
     @Test
     void testShouldFindById() {
         Optional<Tag> tag = tagRepository.read(firstTag.getId());
-        assertTrue(tag.isPresent() && tag.get().equals(firstTag));
+        assertTrue(tag.isPresent());
+        assertEquals(tag.get(), firstTag);
     }
 
     @Test
