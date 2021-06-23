@@ -189,22 +189,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void validateSortContext(SortContext context) {
         if (!sortContextValidator.isValid(context)) {
-            throw new InvalidSortParameterException("Ssort.context.invalid");
+            throw new InvalidSortParameterException("sort.context.invalid");
         }
     }
 
     private GiftCertificate getGiftCertificateFromDto(GiftCertificateDto dto) {
         GiftCertificate certificate = new GiftCertificate(dto.getId(), dto.getName(), dto.getDescription(), dto.getPrice(), dto.getDuration());
-        if (dto.getCreateDate() == null) {
-            certificate.setCreateDate(LocalDateTime.now());
-        } else {
-            certificate.setCreateDate(LocalDateTime.parse(dto.getCreateDate()));
-        }
-        if (dto.getLastUpdateDate() == null) {
-            certificate.setLastUpdateDate(LocalDateTime.now());
-        } else {
-            certificate.setLastUpdateDate(LocalDateTime.parse(dto.getLastUpdateDate()));
-        }
+        certificate.setCreateDate(dto.getCreateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getCreateDate()));
+        certificate.setLastUpdateDate(dto.getLastUpdateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getLastUpdateDate()));
         return certificate;
     }
 }
