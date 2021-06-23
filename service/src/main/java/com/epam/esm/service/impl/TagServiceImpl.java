@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class TagServiceImpl implements TagService {
 
-    public static final String TAG_NOT_FOUND = "Tag not found";
+    public static final String TAG_NOT_FOUND = "tag.not.found";
 
     private final TagRepository tagRepository;
     private final Validator<Tag> tagValidator;
@@ -31,11 +31,11 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public Tag create(Tag tag) {
         if (!tagValidator.isValid(tag)) {
-            throw new InvalidEntityParameterException("Tag is invalid");
+            throw new InvalidEntityParameterException("tag.invalid");
         }
         String name = tag.getName();
         if (tagRepository.findByName(name).isPresent()) {
-            throw new DuplicateEntityException("Tag already exists");
+            throw new DuplicateEntityException("tag.duplicate");
         }
         long id = tagRepository.create(tag);
         return tagRepository.read(id).get();

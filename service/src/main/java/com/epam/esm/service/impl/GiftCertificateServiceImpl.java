@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    public static final String CERTIFICATE_NOT_FOUND = "Certificate not found";
+    public static final String CERTIFICATE_NOT_FOUND = "certificate.not.found";
 
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagRepository tagRepository;
@@ -56,7 +56,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         validateGiftCertificate(giftCertificate);
         validateTags(tags);
         if (new HashSet<>(tags).size() < tags.size()) {
-            throw new DuplicateEntityException("Trying to add identical tags to certificate");
+            throw new DuplicateEntityException("tags.identical");
         }
         long certificateId = giftCertificateRepository.create(giftCertificate);
         for (Tag tag : giftCertificateDto.getTags()) {
@@ -96,28 +96,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         String name = certificate.getName();
         if (name != null) {
             if (!giftCertificateValidator.isNameValid(name)) {
-                throw new InvalidEntityParameterException("Certificate name is invalid");
+                throw new InvalidEntityParameterException("certificate.name.invalid");
             }
             updateInfo.put("name", name);
         }
         String description = certificate.getDescription();
         if (description != null) {
             if (!giftCertificateValidator.isDescriptionValid(description)) {
-                throw new InvalidEntityParameterException("Certificate description is invalid");
+                throw new InvalidEntityParameterException("certificate.description.invalid");
             }
             updateInfo.put("description", description);
         }
         BigDecimal price = certificate.getPrice();
         if (price != null) {
             if (!giftCertificateValidator.isPriceValid(price)) {
-                throw new InvalidEntityParameterException("Certificate price is invalid");
+                throw new InvalidEntityParameterException("certificate.price.invalid");
             }
             updateInfo.put("price", price);
         }
         int duration = certificate.getDuration();
         if (duration != 0) {
             if (!giftCertificateValidator.isDurationValid(duration)) {
-                throw new InvalidEntityParameterException("Certificate duration is invalid");
+                throw new InvalidEntityParameterException("certificate.duration.invalid");
             }
             updateInfo.put("duration", duration);
         }
@@ -177,19 +177,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void validateGiftCertificate(GiftCertificate certificate) {
         if (!giftCertificateValidator.isValid(certificate)) {
-            throw new InvalidEntityParameterException("Certificate is invalid");
+            throw new InvalidEntityParameterException("certificate.invalid");
         }
     }
 
     private void validateTags(List<Tag> tags) {
         if (!tags.stream().allMatch(tagValidator::isValid)) {
-            throw new InvalidEntityParameterException("Tag is invalid");
+            throw new InvalidEntityParameterException("tag.invalid");
         }
     }
 
     private void validateSortContext(SortContext context) {
         if (!sortContextValidator.isValid(context)) {
-            throw new InvalidSortParameterException("Sort context is invalid");
+            throw new InvalidSortParameterException("Ssort.context.invalid");
         }
     }
 
