@@ -54,7 +54,6 @@ public class DataSourceConfig {
     }
 
     @Bean
-    @Autowired
     public JdbcTemplate jdbcTemplate(DataSource source) {
         return new JdbcTemplate(source);
     }
