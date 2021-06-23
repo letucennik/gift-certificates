@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @Component
 @ContextConfiguration(classes = {TestJdbcConfig.class})
-@ComponentScan("com.epam.esm.entity.mapper")
 class TagRepositoryImplTest {
 
     private Tag tagToCreate;
