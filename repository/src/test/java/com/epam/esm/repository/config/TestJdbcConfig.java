@@ -10,6 +10,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @Configuration
 @ComponentScan("com.epam.esm.repository")
+@ComponentScan("com.epam.esm.entity.mapper")
 public class TestJdbcConfig {
 
     private static final String SQL_SETUP = "classpath:db_setup.sql";

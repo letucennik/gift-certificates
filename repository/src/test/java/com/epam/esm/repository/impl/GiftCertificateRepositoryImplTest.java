@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -20,9 +18,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@Component
 @ContextConfiguration(classes = {TestJdbcConfig.class})
-@ComponentScan("com.epam.esm.entity.mapper")
 class GiftCertificateRepositoryImplTest {
 
     private static final String TAG_NAME = "tag 1";
@@ -78,7 +74,8 @@ class GiftCertificateRepositoryImplTest {
     @Test
     void testShouldFindById() {
         Optional<GiftCertificate> giftCertificate = giftCertificateRepository.read(1);
-        assertTrue(giftCertificate.isPresent() && giftCertificate.get().getId() == firstCertificate.getId());
+        assertTrue(giftCertificate.isPresent());
+        assertEquals(giftCertificate.get().getId(), firstCertificate.getId());
     }
 
     @Test
@@ -93,7 +90,8 @@ class GiftCertificateRepositoryImplTest {
         updateInfo.put("name", "certificate new name");
         giftCertificateRepository.update(firstCertificate.getId(), updateInfo);
         Optional<GiftCertificate> certificate = giftCertificateRepository.read(firstCertificate.getId());
-        assertTrue(certificate.isPresent() && certificate.get().getName().equals("certificate new name"));
+        assertTrue(certificate.isPresent());
+        assertEquals(certificate.get().getName(), "certificate new name");
     }
 
     @Test
