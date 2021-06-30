@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,19 +36,15 @@ class GiftCertificateRepositoryImplTest {
     void init() {
         certificateToCreate = new GiftCertificate(
                 4L, "certificate new", "description new", new BigDecimal("1.10"),
-                LocalDateTime.parse("2020-01-01T01:11:11"),
-                LocalDateTime.parse("2021-01-01T01:22:11"), 1);
+                1);
         firstCertificate = new GiftCertificate(
                 1L, "certificate 1", "description 1", new BigDecimal("1.10"),
-                LocalDateTime.parse("2020-01-01T01:11:11"),
-                LocalDateTime.parse("2021-01-01T01:22:11"), 1);
+                1);
         secondCertificate = new GiftCertificate(
                 2L, "certificate 2", "description 2", new BigDecimal("2.20"),
-                LocalDateTime.parse("2020-02-02T02:22:22"),
-                LocalDateTime.parse("2021-02-02T02:33:22"), 2);
+                2);
         thirdCertificate = new GiftCertificate(3L, "certificate 3", "description 3", new BigDecimal("3.30"),
-                LocalDateTime.parse("2020-03-03T03:33:33"),
-                LocalDateTime.parse("2021-03-03T03:44:33"), 3);
+                3);
         sortedAsc = Arrays.asList(firstCertificate, thirdCertificate, certificateToCreate);
     }
 

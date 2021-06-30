@@ -27,7 +27,7 @@ public interface TagRepository {
      *
      * @param id Tag id to delete
      */
-    int delete(long id);
+    void delete(long id);
 
     /**
      * Finds Tag by name.

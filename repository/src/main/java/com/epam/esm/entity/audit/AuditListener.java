@@ -1,4 +1,4 @@
-package com.epam.esm.entity;
+package com.epam.esm.entity.audit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

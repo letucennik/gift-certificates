@@ -1,5 +1,6 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.entity.audit.AuditListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -49,4 +51,7 @@ public class GiftCertificate implements Serializable {
         this.price = price;
         this.duration = duration;
     }
+
+    @OneToMany(mappedBy = "certificate")
+    private Set<CertificateTag> certificateTags;
 }
