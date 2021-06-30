@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,13 @@ public class RestExceptionHandler {
     public ExceptionResponse handleInvalidParametersException(InvalidSortParameterException e, Locale locale) {
         return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40003);
     }
+
+    @ExceptionHandler(TypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleTypeMismatchException(TypeMismatchException e, Locale locale) {
+        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40000);
+    }
+
 
     private ExceptionResponse buildResponse(String message, int code) {
         return new ExceptionResponse(message, code);

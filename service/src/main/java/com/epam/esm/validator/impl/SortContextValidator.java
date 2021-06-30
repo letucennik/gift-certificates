@@ -15,7 +15,7 @@ public class SortContextValidator implements Validator<SortContext> {
     @Override
     public boolean isValid(SortContext item) {
         return CERTIFICATE_FIELD_NAMES.containsAll(item.getSortColumns())
-                && (item.getOrderTypes().contains(SortContext.OrderType.ASC)
-                || item.getOrderTypes().contains(SortContext.OrderType.DESC));
+                && (item.getOrderTypes().contains(SortContext.OrderType.ASC.toString())
+                || item.getOrderTypes().contains(SortContext.OrderType.DESC.toString()));
     }
 }

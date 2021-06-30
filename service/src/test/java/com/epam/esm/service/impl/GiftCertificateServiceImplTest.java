@@ -68,7 +68,7 @@ class GiftCertificateServiceImplTest {
         secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, LocalDateTime.now(), LocalDateTime.now(), 5);
         firstTag = new Tag(1, "1");
         secondTag = new Tag(2, "2");
-        sortContext = new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.DESC));
+        sortContext = new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.DESC.toString()));
         certificateDto = new GiftCertificateDto(certificateToCreate, Arrays.asList(firstTag, secondTag));
         secondCertificateDto = new GiftCertificateDto(secondCertificate, new ArrayList<>());
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);

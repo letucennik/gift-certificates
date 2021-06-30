@@ -32,7 +32,7 @@ public final class QueryBuilder {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("ORDER BY ");
         List<String> sortColumns = convertToDBFields(sortParameters.getSortColumns());
-        List<SortContext.OrderType> orderTypes = sortParameters.getOrderTypes();
+        List<String> orderTypes = sortParameters.getOrderTypes();
         for (int i = 0; i < sortColumns.size(); i++) {
             if (i != 0) {
                 queryBuilder.append(", ");
