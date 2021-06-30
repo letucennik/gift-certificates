@@ -41,7 +41,7 @@ public class DataSourceConfig {
 
 
     @Bean
-   // @Profile("prod")
+    @Profile("prod")
     public HikariConfig hikariConfig() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
@@ -52,33 +52,25 @@ public class DataSourceConfig {
     }
 
     @Bean
-    //@Profile("prod")
+    @Profile("prod")
     public DataSource prodDataSource() {
         return new HikariDataSource(hikariConfig());
     }
 
-//    @Bean
-//    @Profile("dev")
-//    public DataSource testDataSource() {
-//        return new EmbeddedDatabaseBuilder()
-//                .generateUniqueName(true)
-//                .setType(EmbeddedDatabaseType.H2)
-//                .setScriptEncoding("UTF-8")
-//                .ignoreFailedDrops(true)
-//                .addScript("classpath:db_init.sql")
-//                .addScript("classpath:db_setup.sql")
-//                .build();
-//    }
+    @Bean
+    @Profile("dev")
+    public DataSource testDataSource() {
+        return new EmbeddedDatabaseBuilder()
+                .generateUniqueName(true)
+                .setType(EmbeddedDatabaseType.H2)
+                .setScriptEncoding("UTF-8")
+                .ignoreFailedDrops(true)
+                .addScript("classpath:db_init.sql")
+                .addScript("classpath:db_setup.sql")
+                .build();
+    }
 
-//    @Bean
-//    public KeyHolder keyHolder() {
-//        return new GeneratedKeyHolder();
-//    }
-//
-//    @Bean
-//    public JdbcTemplate jdbcTemplate(DataSource source) {
-//        return new JdbcTemplate(source);
-//    }
+
 
     @Bean
     public JpaTransactionManager jpaTransactionManager() {

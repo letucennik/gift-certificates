@@ -45,7 +45,7 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public Optional<Tag> read(long id) {
-        return Optional.of(entityManager.find(Tag.class, id));
+        return Optional.ofNullable(entityManager.find(Tag.class, id));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TagRepositoryImpl implements TagRepository {
         Tag tag = entityManager.find(Tag.class, id);
         try {
             entityManager.remove(tag);
-        } catch (JDBCException e) {
+        } catch (IllegalArgumentException e) {
             throw new DAOException(e);
         }
     }
