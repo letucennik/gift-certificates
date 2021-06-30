@@ -1,13 +1,11 @@
 package com.epam.esm.entity;
 
 import com.epam.esm.entity.audit.AuditListener;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -28,6 +26,11 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "tag")
-    private Set<CertificateTag> certificateTags;
+    public Tag(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+//    @OneToMany(mappedBy = "tag")
+//    private Set<CertificateTag> certificateTags;
 }
