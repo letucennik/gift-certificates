@@ -77,16 +77,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto dto) {
-        GiftCertificate giftCertificate = getGiftCertificateFromDto(dto);
-        if (!giftCertificateRepository.read(id).isPresent()) {
-            throw new NoSuchEntityException(CERTIFICATE_NOT_FOUND);
-        }
-        giftCertificateRepository.update(id, findUpdateInfo(giftCertificate));
-        List<Tag> tags = dto.getTags();
-        if (tags != null) {
-            updateTags(id, tags);
-        }
-        return createGiftCertificateDto(giftCertificateRepository.read(id).get());
+//        GiftCertificate giftCertificate = getGiftCertificateFromDto(dto);
+//        if (!giftCertificateRepository.read(id).isPresent()) {
+//            throw new NoSuchEntityException(CERTIFICATE_NOT_FOUND);
+//        }
+//        giftCertificateRepository.update(id, findUpdateInfo(giftCertificate));
+//        List<Tag> tags = dto.getTags();
+//        if (tags != null) {
+//            updateTags(id, tags);
+//        }
+//        return createGiftCertificateDto(giftCertificateRepository.read(id).get());
+        return null;
     }
 
     private Map<String, Object> findUpdateInfo(GiftCertificate certificate) {

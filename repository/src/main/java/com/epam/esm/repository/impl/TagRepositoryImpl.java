@@ -17,19 +17,6 @@ import java.util.Optional;
 @Repository
 public class TagRepositoryImpl implements TagRepository {
 
-    //    private static final String CREATE_TAG = "INSERT INTO tag (name) VALUES (?)";
-//    private static final String SELECT_TAG_BY_ID = "SELECT id, name FROM tag WHERE id=?";
-//    private static final String SELECT_TAG_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
-//    private static final String DELETE_TAG = "DELETE FROM tag WHERE id=?";
-//
-//    private final JdbcTemplate jdbcTemplate;
-//    private final RowMapper<Tag> tagMapper;
-//
-//    @Autowired
-//    public TagRepositoryImpl(JdbcTemplate jdbcTemplate, RowMapper<Tag> tagMapper) {
-//        this.jdbcTemplate = jdbcTemplate;
-//        this.tagMapper = tagMapper;
-//    }
     @PersistenceContext
     private EntityManager entityManager;
 

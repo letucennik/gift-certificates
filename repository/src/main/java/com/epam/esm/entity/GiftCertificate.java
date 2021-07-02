@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Data
@@ -35,14 +34,21 @@ public class GiftCertificate implements Serializable {
     @Column
     private BigDecimal price;
 
-    @Column(name="create_date")
+    @Column(name = "create_date")
     private LocalDateTime createDate;
 
-    @Column(name="last_update_date")
+    @Column(name = "last_update_date")
     private LocalDateTime lastUpdateDate;
 
     @Column
     private int duration;
+
+    public GiftCertificate(String name, String description, BigDecimal price, int duration) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+    }
 
     public GiftCertificate(long id, String name, String description, BigDecimal price, int duration) {
         this.id = id;
@@ -52,6 +58,4 @@ public class GiftCertificate implements Serializable {
         this.duration = duration;
     }
 
-    @OneToMany(mappedBy = "certificate")
-    private Set<CertificateTag> certificateTags;
 }
