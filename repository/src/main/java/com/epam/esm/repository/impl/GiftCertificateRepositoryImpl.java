@@ -1,6 +1,8 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.entity.CertificateTag;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.query.QueryBuilder;
@@ -78,7 +80,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     private Predicate buildPredicateByTagName(Root<GiftCertificate> root, String tagName, CriteriaBuilder builder) {
-        return builder.like(builder.lower(root.join("tag").get("name")), "%" + tagName.toLowerCase() + "%");
+        Join<GiftCertificate, Tag> certificateTagJoin=root.join("certificateTags").join("tag");
+        return builder.like(builder.lower(certificateTagJoin.get("name")), "%" + tagName.toLowerCase() + "%");
     }
 
     private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, String partValue, CriteriaBuilder builder) {
