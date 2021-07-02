@@ -30,7 +30,4 @@ public class Tag implements Serializable {
         this.id = id;
         this.name = name;
     }
-
-//    @OneToMany(mappedBy = "tag")
-//    private Set<CertificateTag> certificateTags;
 }

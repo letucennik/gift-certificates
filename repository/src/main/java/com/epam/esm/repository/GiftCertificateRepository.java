@@ -4,7 +4,6 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.repository.query.SortContext;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface GiftCertificateRepository {
@@ -26,19 +25,18 @@ public interface GiftCertificateRepository {
     Optional<GiftCertificate> read(long id);
 
     /**
-     * Updates certificate by id with help of map of update info
+     * Updates certificate
      *
-     * @param id                        certificate id to find
-     * @param giftCertificateUpdateInfo Update information with certificate fields and values
+     * @param certificate certificate to update
      */
-    void update(long id, Map<String, Object> giftCertificateUpdateInfo);
+    GiftCertificate update(GiftCertificate certificate);
 
     /**
      * Deletes certificate by id.
      *
      * @param id certificate id to search
      */
-    int delete(long id);
+    void delete(long id);
 
     /**
      * Gets all certificates with tags and optional sorting/filtering

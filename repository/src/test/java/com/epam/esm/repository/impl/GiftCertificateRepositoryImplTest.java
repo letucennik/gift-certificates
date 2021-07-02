@@ -1,23 +1,29 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import com.epam.esm.repository.query.SortContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestJdbcConfig.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {TestJdbcConfig.class})
+@Transactional
 class GiftCertificateRepositoryImplTest {
 
     private static final String TAG_NAME = "tag 1";
@@ -35,17 +41,22 @@ class GiftCertificateRepositoryImplTest {
     @BeforeEach
     void init() {
         certificateToCreate = new GiftCertificate(
-                4L, "certificate new", "description new", new BigDecimal("1.10"),
+                "certificate new", "description new", new BigDecimal("1.10"),
                 1);
         firstCertificate = new GiftCertificate(
-                1L, "certificate 1", "description 1", new BigDecimal("1.10"),
+                "certificate 1", "description 1", new BigDecimal("1.10"),
                 1);
-        secondCertificate = new GiftCertificate(
-                2L, "certificate 2", "description 2", new BigDecimal("2.20"),
+        secondCertificate = new GiftCertificate("certificate 2", "description 2", new BigDecimal("2.20"),
                 2);
-        thirdCertificate = new GiftCertificate(3L, "certificate 3", "description 3", new BigDecimal("3.30"),
+        thirdCertificate = new GiftCertificate("certificate 3", "description 3", new BigDecimal("3.30"),
                 3);
         sortedAsc = Arrays.asList(firstCertificate, thirdCertificate, certificateToCreate);
+    }
+
+    @Test
+    void testShouldFindByParametersNameValue() {
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters("tag 1", "1", null);
+        assertEquals(Collections.singletonList(firstCertificate), giftCertificates);
     }
 
     @Test
@@ -70,7 +81,7 @@ class GiftCertificateRepositoryImplTest {
     void testShouldFindById() {
         Optional<GiftCertificate> giftCertificate = giftCertificateRepository.read(1);
         assertTrue(giftCertificate.isPresent());
-        assertEquals(giftCertificate.get().getId(), firstCertificate.getId());
+        assertEquals(1, giftCertificate.get().getId());
     }
 
     @Test
@@ -81,31 +92,22 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldUpdateById() {
-        Map<String, Object> updateInfo = new HashMap<>();
-        updateInfo.put("name", "certificate new name");
-        giftCertificateRepository.update(firstCertificate.getId(), updateInfo);
-        Optional<GiftCertificate> certificate = giftCertificateRepository.read(firstCertificate.getId());
-        assertTrue(certificate.isPresent());
-        assertEquals(certificate.get().getName(), "certificate new name");
+        firstCertificate.setName("new name");
+        GiftCertificate updated = giftCertificateRepository.update(firstCertificate);
+        assertEquals(updated.getName(), "new name");
     }
 
     @Test
     void testShouldDeleteById() {
-        giftCertificateRepository.delete(secondCertificate.getId());
+        giftCertificateRepository.delete(2);
         assertFalse(giftCertificateRepository.read(secondCertificate.getId()).isPresent());
     }
 
     @Test
     void testShouldTryDeleteByIdNonExistingCertificate() {
-        assertEquals(0, giftCertificateRepository.delete(345));
+        assertThrows(DAOException.class, () -> {
+            giftCertificateRepository.delete(566);
+        });
     }
-
-
-    @Test
-    void testShouldFindByParametersNameValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters("tag 1", "1", null);
-        assertEquals(Collections.singletonList(firstCertificate), giftCertificates);
-    }
-
 
 }
