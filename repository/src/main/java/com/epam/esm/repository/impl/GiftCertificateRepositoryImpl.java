@@ -1,7 +1,6 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.query.QueryBuilder;
@@ -62,7 +61,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         query.select(root);
         List<Predicate> predicates = new ArrayList<>();
         if (tagName != null) {
-            predicates.add(buildPredicateByTagName(root, Collections.singletonList(tagName), builder));
+            predicates.add(buildPredicateByTagName(root, tagName, builder));
         }
         if (partValue != null) {
             predicates.add(buildPredicateByPartInfo(root, partValue, builder));
@@ -78,10 +77,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         return entityManager.createQuery(query).getResultList();
     }
 
-    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, List<String> tagNames, CriteriaBuilder builder) {
-        Join<GiftCertificate, Tag> tagsJoin = root.join("tag");
-        QueryBuilder buildHelper = new QueryBuilder(builder);
-        return buildHelper.buildOrEqualPredicates(tagsJoin, "name", tagNames);
+    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, String tagName, CriteriaBuilder builder) {
+        return builder.like(builder.lower(root.join("tag").get("name")), "%" + tagName.toLowerCase() + "%");
     }
 
     private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, String partValue, CriteriaBuilder builder) {

@@ -1,18 +1,17 @@
 package com.epam.esm.entity;
 
 import com.epam.esm.entity.audit.AuditListener;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,11 +42,34 @@ public class GiftCertificate implements Serializable {
     @Column
     private int duration;
 
-    public GiftCertificate(String name, String description, BigDecimal price, int duration) {
+    @OneToMany(mappedBy = "certificate")
+    private Set<CertificateTag> certificateTags;
+
+    public GiftCertificate(String name, String description, BigDecimal price, int duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.duration = duration;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public GiftCertificate(String name, String description, BigDecimal price, LocalDateTime createDate, LocalDateTime lastUpdateDate, int duration, Set<CertificateTag> certificateTags) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.duration = duration;
+        this.certificateTags = certificateTags;
+    }
+
+    public GiftCertificate(String name, String description, BigDecimal price, int duration, Set<CertificateTag> certificateTags) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.certificateTags = certificateTags;
     }
 
     public GiftCertificate(long id, String name, String description, BigDecimal price, int duration) {
@@ -56,6 +78,10 @@ public class GiftCertificate implements Serializable {
         this.description = description;
         this.price = price;
         this.duration = duration;
+    }
+
+    public Set<CertificateTag> getCertificateTags() {
+        return certificateTags;
     }
 
 }
