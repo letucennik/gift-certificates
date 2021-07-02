@@ -20,11 +20,11 @@ public class CertificateTag {
 
     @ManyToOne
     @MapsId("giftCertificateId")
-    @JoinColumn(name="gift_certificate_id")
+    @JoinColumn(name = "gift_certificate_id")
     private GiftCertificate certificate;
 
     @ManyToOne
     @MapsId("tagId")
-    @JoinColumn(name="tag_id")
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 }
