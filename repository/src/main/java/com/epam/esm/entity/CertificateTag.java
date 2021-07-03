@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class CertificateTag {
 
     @EmbeddedId
-    private CertificateTagKey id;
+    private CertificateTagKey id = new CertificateTagKey();
 
     @ManyToOne
     @MapsId("giftCertificateId")
@@ -27,4 +27,5 @@ public class CertificateTag {
     @MapsId("tagId")
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
 }

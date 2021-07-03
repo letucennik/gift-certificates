@@ -1,6 +1,5 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.CertificateTag;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DAOException;
@@ -14,7 +13,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +78,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     private Predicate buildPredicateByTagName(Root<GiftCertificate> root, String tagName, CriteriaBuilder builder) {
-        Join<GiftCertificate, Tag> certificateTagJoin=root.join("certificateTags").join("tag");
+        Join<GiftCertificate, Tag> certificateTagJoin = root.join("certificateTags").join("tag");
         return builder.like(builder.lower(certificateTagJoin.get("name")), "%" + tagName.toLowerCase() + "%");
     }
 

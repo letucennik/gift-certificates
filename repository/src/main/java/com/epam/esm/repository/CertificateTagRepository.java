@@ -1,5 +1,9 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.entity.CertificateTag;
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
+
 import java.util.List;
 
 public interface CertificateTagRepository {
@@ -7,10 +11,10 @@ public interface CertificateTagRepository {
     /**
      * Creates new certificate-tag reference.
      *
-     * @param giftCertificateId certificate id
-     * @param tagId             tag id
+     * @param certificateId certificate id
+     * @param tagId        tag id
      */
-    void create(long giftCertificateId, long tagId);
+    CertificateTag create(long certificateId, long tagId);
 
     /**
      * Finds tags' ids by certificate id
