@@ -1,8 +1,7 @@
 package com.epam.esm.entity;
 
 import com.epam.esm.entity.audit.AuditListener;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,7 +9,9 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "certificateTags")
 @EntityListeners(AuditListener.class)
 @Table(name = "tag")
 public class Tag implements Serializable {
