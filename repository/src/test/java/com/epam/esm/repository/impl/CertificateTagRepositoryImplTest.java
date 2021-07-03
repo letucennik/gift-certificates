@@ -11,7 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,6 +42,6 @@ class CertificateTagRepositoryImplTest {
 
     @Test
     void testShouldFindTagsByCertificateId() {
-        assertEquals(Arrays.asList(TAG_EXIST,TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
+        assertEquals(Arrays.asList(TAG_EXIST, TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
     }
 }
