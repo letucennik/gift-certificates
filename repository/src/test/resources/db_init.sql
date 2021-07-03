@@ -9,3 +9,5 @@ INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (1,1
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (1,2);
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (2,1);
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (2,2);
+INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (3,2);
+INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (3,3);

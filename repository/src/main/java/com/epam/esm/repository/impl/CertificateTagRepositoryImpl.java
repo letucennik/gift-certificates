@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,7 +45,14 @@ public class CertificateTagRepositoryImpl implements CertificateTagRepository {
 
     @Override
     public List<Long> findTagsIdByCertificateId(long certificateId) {
-        return null;
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CertificateTag> query = builder.createQuery(CertificateTag.class);
+        Root<CertificateTag> root = query.from(CertificateTag.class);
+        query.select(root).where(builder.equal(root.get("certificate").get("id"), certificateId));
+        List<Long> result = new ArrayList<>();
+        List<CertificateTag> certificateTags = entityManager.createQuery(query).getResultList();
+        certificateTags.forEach(x -> result.add(x.getTag().getId()));
+        return result;
     }
 
 

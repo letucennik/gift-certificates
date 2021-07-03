@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,8 @@ class CertificateTagRepositoryImplTest {
     private static final long TAG_ID_NON_EXIST = 23;
 
     private static final long CERTIFICATE_EXIST = 3;
-    private static final long TAG_EXIST = 1;
+    private static final long TAG_EXIST = 2;
+    private static final long TAG_EXIST_1 = 3;
 
     @Autowired
     private CertificateTagRepositoryImpl certificateTagRepository;
@@ -41,6 +43,6 @@ class CertificateTagRepositoryImplTest {
 
     @Test
     void testShouldFindTagsByCertificateId() {
-        assertEquals(Collections.singletonList(TAG_EXIST), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
+        assertEquals(Arrays.asList(TAG_EXIST,TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
     }
 }
