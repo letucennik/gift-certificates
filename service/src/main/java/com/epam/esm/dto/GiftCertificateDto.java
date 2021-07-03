@@ -1,48 +1,44 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GiftCertificateDto {
+public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> {
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
 
     private long id;
     private String name;
     private String description;
     private BigDecimal price;
-    private String createDate;
-    private String lastUpdateDate;
+    @JsonFormat(pattern = DATE_FORMAT)
+    private LocalDateTime createDate;
+    @JsonFormat(pattern = DATE_FORMAT)
+    private LocalDateTime lastUpdateDate;
     private int duration;
-    private List<Tag> tags;
+    private Set<TagDto> tags = new HashSet<>();
 
     public GiftCertificateDto(GiftCertificate certificate) {
         this.id = certificate.getId();
         this.name = certificate.getName();
         this.description = certificate.getDescription();
         this.price = certificate.getPrice();
-        this.createDate = certificate.getCreateDate().toString();
-        this.lastUpdateDate = certificate.getLastUpdateDate().toString();
+        this.createDate = certificate.getCreateDate();
+        this.lastUpdateDate = certificate.getLastUpdateDate();
         this.duration = certificate.getDuration();
-        this.tags = new ArrayList<>();
     }
 
-    public GiftCertificateDto(GiftCertificate certificate, List<Tag> tags) {
-        this(certificate);
-        this.tags = tags;
-    }
-
-    public void addTag(Tag tag) {
-        this.tags.add(tag);
-    }
 }

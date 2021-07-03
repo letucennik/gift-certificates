@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
@@ -32,40 +34,35 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagRepository tagRepository;
     private final CertificateTagRepository certificateTagRepository;
     private final Validator<GiftCertificate> giftCertificateValidator;
-    private final Validator<Tag> tagValidator;
+    private final Validator<TagDto> tagValidator;
     private final Validator<SortContext> sortContextValidator;
+    private final GiftCertificateMapper certificateMapper;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateRepository, CertificateTagRepository certificateTagRepository,
                                       TagRepository tagRepository,
                                       Validator<GiftCertificate> giftCertificateValidator,
-                                      Validator<Tag> tagValidator, Validator<SortContext> sortContextValidator) {
+                                      Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator,GiftCertificateMapper mapper) {
         this.giftCertificateRepository = giftCertificateRepository;
         this.certificateTagRepository = certificateTagRepository;
         this.tagRepository = tagRepository;
         this.giftCertificateValidator = giftCertificateValidator;
         this.tagValidator = tagValidator;
         this.sortContextValidator = sortContextValidator;
+        this.certificateMapper=mapper;
     }
 
     @Override
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = getGiftCertificateFromDto(giftCertificateDto);
-        List<Tag> tags = giftCertificateDto.getTags();
+        Set<TagDto> tags = giftCertificateDto.getTags();
         validateGiftCertificate(giftCertificate);
         validateTags(tags);
-        if (new HashSet<>(tags).size() < tags.size()) {
-            throw new DuplicateEntityException("tags.identical");
-        }
-        long certificateId = giftCertificateRepository.create(giftCertificate);
-        for (Tag tag : giftCertificateDto.getTags()) {
-            Optional<Tag> tagOptional = tagRepository.findByName(tag.getName());
-            long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.create(tag));
-            certificateTagRepository.create(certificateId, tagId);
-        }
-        giftCertificate.setId(certificateId);
-        return createGiftCertificateDto(giftCertificate);
+        giftCertificateDto.setCreateDate(LocalDateTime.now());
+        giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
+        GiftCertificate certificate=read(giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto)));
+        return certificateMapper.toDTO(certificate);
     }
 
     @Override
@@ -161,7 +158,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Set<Optional<Tag>> optionalTags = new HashSet<>();
         List<Long> tagsId = certificateTagRepository.findTagsIdByCertificateId(giftCertificate.getId());
         tagsId.forEach(id -> optionalTags.add(tagRepository.read(id)));
-        optionalTags.forEach(tag -> giftCertificateDto.addTag(tag.get()));
+       // optionalTags.forEach(tag -> giftCertificateDto.addTag(tag.get()));
         return giftCertificateDto;
     }
 
@@ -182,7 +179,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
-    private void validateTags(List<Tag> tags) {
+    private void validateTags(Set<TagDto> tags) {
         if (!tags.stream().allMatch(tagValidator::isValid)) {
             throw new InvalidEntityParameterException("tag.invalid");
         }
@@ -196,8 +193,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificate getGiftCertificateFromDto(GiftCertificateDto dto) {
         GiftCertificate certificate = new GiftCertificate(dto.getId(), dto.getName(), dto.getDescription(), dto.getPrice(), dto.getDuration());
-        certificate.setCreateDate(dto.getCreateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getCreateDate()));
-        certificate.setLastUpdateDate(dto.getLastUpdateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getLastUpdateDate()));
+//        certificate.setCreateDate(dto.getCreateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getCreateDate()));
+//        certificate.setLastUpdateDate(dto.getLastUpdateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getLastUpdateDate()));
         return certificate;
     }
 }

@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.InvalidEntityParameterException;
@@ -13,9 +15,7 @@ import com.epam.esm.validator.Validator;
 import com.epam.esm.validator.impl.GiftCertificateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,8 +27,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
+import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
 
 class GiftCertificateServiceImplTest {
 
@@ -49,9 +51,12 @@ class GiftCertificateServiceImplTest {
 
     private Validator<GiftCertificate> certificateValidator;
     @Mock
-    private Validator<Tag> tagValidator;
+    private Validator<TagDto> tagValidator;
     @Mock
     private Validator<SortContext> sortContextValidator;
+
+    @Spy
+    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper());
 
     private Tag firstTag;
     private Tag secondTag;
@@ -63,25 +68,24 @@ class GiftCertificateServiceImplTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        certificateToCreate = new GiftCertificate(ID, "name",
-                "description", BigDecimal.TEN, LocalDateTime.now(), LocalDateTime.now(), 5);
-        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, LocalDateTime.now(), LocalDateTime.now(), 5);
+        certificateToCreate = new GiftCertificate(1, "name",
+                "description", BigDecimal.TEN, 5);
+        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, 5);
         firstTag = new Tag(1, "1");
         secondTag = new Tag(2, "2");
         sortContext = new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.DESC));
-        certificateDto = new GiftCertificateDto(certificateToCreate, Arrays.asList(firstTag, secondTag));
-        secondCertificateDto = new GiftCertificateDto(secondCertificate, new ArrayList<>());
+        certificateDto = new GiftCertificateDto(certificateToCreate);
+        secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator,certificateMapper);
     }
 
     @Test
     void testShouldCreate() {
         when(certificateValidator.isValid(any())).thenReturn(true);
-        when(tagValidator.isValid(any())).thenReturn(true);
-        when(tagRepository.findByName(anyString())).thenReturn(Optional.empty());
         when(giftCertificateRepository.create(any())).thenReturn(ID);
-        assertEquals(ID, giftCertificateService.create(certificateDto).getId());
+        when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.ofNullable(certificateToCreate));
+        assertEquals(1L,giftCertificateService.create(certificateDto).getId());
     }
 
     @Test

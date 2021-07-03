@@ -24,15 +24,15 @@ class TagRepositoryImplTest {
     private Tag firstTag;
     private Tag secondTag;
 
+    @Autowired
+    private TagRepositoryImpl tagRepository;
+
     @BeforeEach
     void init() {
         tagToCreate = new Tag("name");
         firstTag = new Tag(1, "tag 1");
         secondTag = new Tag(2, "tag 2");
     }
-
-    @Autowired
-    private TagRepositoryImpl tagRepository;
 
     @Test
     void testShouldCreate() {

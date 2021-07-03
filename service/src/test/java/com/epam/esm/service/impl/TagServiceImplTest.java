@@ -34,7 +34,7 @@ class TagServiceImplTest {
     void init() {
         tag = new Tag(ID, "tag");
         tagRepository = Mockito.mock(TagRepositoryImpl.class);
-        tagValidator = Mockito.mock(TagValidator.class);
+        //tagValidator = Mockito.mock(TagValidator.class);
         tagService = new TagServiceImpl(tagRepository, tagValidator);
     }
 
