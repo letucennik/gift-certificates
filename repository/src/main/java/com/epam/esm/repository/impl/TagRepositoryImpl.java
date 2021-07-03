@@ -3,7 +3,6 @@ package com.epam.esm.repository.impl;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.TagRepository;
-import org.hibernate.JDBCException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
