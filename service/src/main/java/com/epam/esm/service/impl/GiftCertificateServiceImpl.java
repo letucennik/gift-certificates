@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.mapper.GiftCertificateMapper;
+import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.InvalidEntityParameterException;
@@ -31,16 +32,20 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagRepository tagRepository;
     private final CertificateTagRepository certificateTagRepository;
+
     private final Validator<GiftCertificate> giftCertificateValidator;
     private final Validator<TagDto> tagValidator;
     private final Validator<SortContext> sortContextValidator;
+
     private final GiftCertificateMapper certificateMapper;
+    private final TagMapper tagMapper;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateRepository, CertificateTagRepository certificateTagRepository,
                                       TagRepository tagRepository,
                                       Validator<GiftCertificate> giftCertificateValidator,
-                                      Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator, GiftCertificateMapper mapper) {
+                                      Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator, GiftCertificateMapper mapper,
+                                      TagMapper tagMapper) {
         this.giftCertificateRepository = giftCertificateRepository;
         this.certificateTagRepository = certificateTagRepository;
         this.tagRepository = tagRepository;
@@ -48,6 +53,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         this.tagValidator = tagValidator;
         this.sortContextValidator = sortContextValidator;
         this.certificateMapper = mapper;
+        this.tagMapper = tagMapper;
     }
 
     @Override
@@ -59,8 +65,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         validateTags(tags);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        GiftCertificate certificate = read(giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto)));
-        return certificateMapper.toDTO(certificate);
+        long certificateId = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
+        for (TagDto tagDto : tags) {
+            Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
+            long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.create(tagMapper.toModel(tagDto)));
+            tagDto.setId(tagId);
+            certificateTagRepository.create(certificateId, tagId);
+        }
+        GiftCertificateDto dto = certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
+        dto.setTags(tags);
+        return dto;
     }
 
     @Override

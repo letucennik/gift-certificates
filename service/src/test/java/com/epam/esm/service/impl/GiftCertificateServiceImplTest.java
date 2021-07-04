@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.mapper.GiftCertificateMapper;
+import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.InvalidEntityParameterException;
@@ -56,6 +57,8 @@ class GiftCertificateServiceImplTest {
 
     @Spy
     private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper());
+    @Spy
+    private TagMapper tagMapper=new TagMapper(new ModelMapper());
 
     private Tag firstTag;
     private Tag secondTag;
@@ -76,7 +79,7 @@ class GiftCertificateServiceImplTest {
         certificateDto = new GiftCertificateDto(certificateToCreate);
         secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper,tagMapper);
     }
 
     @Test

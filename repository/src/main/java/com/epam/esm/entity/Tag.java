@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,7 @@ public class Tag implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "tag")
-    private Set<CertificateTag> certificateTags;
+    private Set<CertificateTag> certificateTags = new HashSet<>();
 
     public Tag(String name) {
         this.name = name;
