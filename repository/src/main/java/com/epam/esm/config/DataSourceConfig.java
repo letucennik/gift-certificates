@@ -41,7 +41,7 @@ public class DataSourceConfig {
 
 
     @Bean
-    @Profile("prod")
+//    @Profile("prod")
     public HikariConfig hikariConfig() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
@@ -52,7 +52,7 @@ public class DataSourceConfig {
     }
 
     @Bean
-    @Profile("prod")
+//    @Profile("prod")
     public DataSource prodDataSource() {
         return new HikariDataSource(hikariConfig());
     }
