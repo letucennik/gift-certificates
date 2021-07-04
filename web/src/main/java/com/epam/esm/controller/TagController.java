@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ public class TagController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Tag create(@RequestBody Tag tag) {
+    public TagDto create(@RequestBody TagDto tag) {
         return tagService.create(tag);
     }
 
     @GetMapping("{id}")
-    public Tag read(@PathVariable long id) {
+    public TagDto read(@PathVariable long id) {
         return tagService.read(id);
     }
 
