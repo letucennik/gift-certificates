@@ -15,22 +15,21 @@ import com.epam.esm.validator.Validator;
 import com.epam.esm.validator.impl.GiftCertificateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import org.mockito.MockitoAnnotations;
-import org.modelmapper.ModelMapper;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class GiftCertificateServiceImplTest {
 
@@ -77,7 +76,7 @@ class GiftCertificateServiceImplTest {
         certificateDto = new GiftCertificateDto(certificateToCreate);
         secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator,certificateMapper);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper);
     }
 
     @Test
@@ -85,7 +84,7 @@ class GiftCertificateServiceImplTest {
         when(certificateValidator.isValid(any())).thenReturn(true);
         when(giftCertificateRepository.create(any())).thenReturn(ID);
         when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.ofNullable(certificateToCreate));
-        assertEquals(ID,giftCertificateService.create(certificateDto).getId());
+        assertEquals(ID, giftCertificateService.create(certificateDto).getId());
     }
 
     @Test
