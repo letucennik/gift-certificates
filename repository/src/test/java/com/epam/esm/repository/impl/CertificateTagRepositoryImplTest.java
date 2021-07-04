@@ -42,6 +42,6 @@ class CertificateTagRepositoryImplTest {
 
     @Test
     void testShouldFindTagsByCertificateId() {
-        assertEquals(Arrays.asList(TAG_EXIST, TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
+        assertEquals(Arrays.asList(1L, TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
     }
 }
