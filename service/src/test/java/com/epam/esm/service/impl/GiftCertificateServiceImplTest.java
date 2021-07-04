@@ -85,7 +85,7 @@ class GiftCertificateServiceImplTest {
         when(certificateValidator.isValid(any())).thenReturn(true);
         when(giftCertificateRepository.create(any())).thenReturn(ID);
         when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.ofNullable(certificateToCreate));
-        assertEquals(1L,giftCertificateService.create(certificateDto).getId());
+        assertEquals(ID,giftCertificateService.create(certificateDto).getId());
     }
 
     @Test
@@ -116,7 +116,7 @@ class GiftCertificateServiceImplTest {
         when(((GiftCertificateValidator) certificateValidator).isDurationValid(anyInt())).thenReturn(true);
         when(((GiftCertificateValidator) certificateValidator).isPriceValid(any())).thenReturn(true);
         assertEquals(certificateDto.getId(), giftCertificateService.update(ID, certificateDto).getId());
-        //verify(giftCertificateRepository).update(anyLong(), any());
+        verify(giftCertificateRepository).update(any());
     }
 
     @Test
