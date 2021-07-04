@@ -5,7 +5,6 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.mapper.GiftCertificateMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidEntityParameterException;
 import com.epam.esm.exception.InvalidSortParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -42,26 +40,26 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateRepository, CertificateTagRepository certificateTagRepository,
                                       TagRepository tagRepository,
                                       Validator<GiftCertificate> giftCertificateValidator,
-                                      Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator,GiftCertificateMapper mapper) {
+                                      Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator, GiftCertificateMapper mapper) {
         this.giftCertificateRepository = giftCertificateRepository;
         this.certificateTagRepository = certificateTagRepository;
         this.tagRepository = tagRepository;
         this.giftCertificateValidator = giftCertificateValidator;
         this.tagValidator = tagValidator;
         this.sortContextValidator = sortContextValidator;
-        this.certificateMapper=mapper;
+        this.certificateMapper = mapper;
     }
 
     @Override
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
-        GiftCertificate giftCertificate = getGiftCertificateFromDto(giftCertificateDto);
+        GiftCertificate giftCertificate = certificateMapper.toModel(giftCertificateDto);
         Set<TagDto> tags = giftCertificateDto.getTags();
         validateGiftCertificate(giftCertificate);
         validateTags(tags);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        GiftCertificate certificate=read(giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto)));
+        GiftCertificate certificate = read(giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto)));
         return certificateMapper.toDTO(certificate);
     }
 
@@ -74,17 +72,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto dto) {
-//        GiftCertificate giftCertificate = getGiftCertificateFromDto(dto);
-//        if (!giftCertificateRepository.read(id).isPresent()) {
-//            throw new NoSuchEntityException(CERTIFICATE_NOT_FOUND);
-//        }
-//        giftCertificateRepository.update(id, findUpdateInfo(giftCertificate));
-//        List<Tag> tags = dto.getTags();
-//        if (tags != null) {
-//            updateTags(id, tags);
-//        }
-//        return createGiftCertificateDto(giftCertificateRepository.read(id).get());
-        return null;
+        GiftCertificate giftCertificate = certificateMapper.toModel(dto);
+        if (!giftCertificateRepository.read(id).isPresent()) {
+            throw new NoSuchEntityException(CERTIFICATE_NOT_FOUND);
+        }
+        giftCertificateRepository.update(giftCertificate);
+        Set<TagDto> tags = dto.getTags();
+        if (tags != null) {
+            updateTags(id, tags);
+        }
+        return certificateMapper.toDTO(giftCertificate);
     }
 
     private Map<String, Object> findUpdateInfo(GiftCertificate certificate) {
@@ -122,11 +119,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return updateInfo;
     }
 
-    private void updateTags(long certificateId, List<Tag> tags) {
-        for (Tag tag : tags) {
-            String tagName = tag.getName();
+    private void updateTags(long certificateId, Set<TagDto> tags) {
+        for (TagDto tagDto : tags) {
+            String tagName = tagDto.getName();
             Optional<Tag> tagOptional = tagRepository.findByName(tagName);
-            Tag current = tagOptional.orElseGet(() -> createTag(tag));
+            Tag current = tagOptional.orElseGet(() -> createTag(new Tag(tagDto.getId(), tagDto.getName())));
             if (!certificateTagRepository.findTagsIdByCertificateId(certificateId).contains(current.getId())) {
                 certificateTagRepository.create(certificateId, current.getId());
             }
@@ -143,23 +140,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (isSortContextPassed(sortContext)) {
             validateSortContext(sortContext);
         }
-        return giftCertificateRepository.findByParameters(tagName, partValue, sortContext)
-                .stream()
-                .map(this::createGiftCertificateDto)
-                .collect(Collectors.toList());
+        List<GiftCertificateDto> certificates = new ArrayList<>();
+        giftCertificateRepository.findByParameters(tagName, partValue, sortContext).forEach(giftCertificate ->
+                certificates.add(certificateMapper.toDTO(giftCertificate)));
+        return certificates;
     }
 
     private boolean isSortContextPassed(SortContext sortContext) {
         return sortContext != null && sortContext.getSortColumns() != null;
-    }
-
-    private GiftCertificateDto createGiftCertificateDto(GiftCertificate giftCertificate) {
-        GiftCertificateDto giftCertificateDto = new GiftCertificateDto(giftCertificate);
-        Set<Optional<Tag>> optionalTags = new HashSet<>();
-        List<Long> tagsId = certificateTagRepository.findTagsIdByCertificateId(giftCertificate.getId());
-        tagsId.forEach(id -> optionalTags.add(tagRepository.read(id)));
-       // optionalTags.forEach(tag -> giftCertificateDto.addTag(tag.get()));
-        return giftCertificateDto;
     }
 
 
@@ -189,12 +177,5 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (!sortContextValidator.isValid(context)) {
             throw new InvalidSortParameterException("sort.context.invalid");
         }
-    }
-
-    private GiftCertificate getGiftCertificateFromDto(GiftCertificateDto dto) {
-        GiftCertificate certificate = new GiftCertificate(dto.getId(), dto.getName(), dto.getDescription(), dto.getPrice(), dto.getDuration());
-//        certificate.setCreateDate(dto.getCreateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getCreateDate()));
-//        certificate.setLastUpdateDate(dto.getLastUpdateDate() == null ? LocalDateTime.now() : LocalDateTime.parse(dto.getLastUpdateDate()));
-        return certificate;
     }
 }
