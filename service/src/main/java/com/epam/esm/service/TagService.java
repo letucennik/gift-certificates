@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidEntityParameterException;
@@ -15,7 +16,7 @@ public interface TagService {
      * @throws InvalidEntityParameterException when tag parameters are invalid
      * @throws DuplicateEntityException        when tag with such name already exists
      */
-    Tag create(Tag tag);
+    TagDto create(TagDto tag);
 
     /**
      * Gets tag by id.
@@ -24,7 +25,7 @@ public interface TagService {
      * @return found Tag
      * @throws NoSuchEntityException when such tag doesn't exists
      */
-    Tag read(long id);
+    TagDto read(long id);
 
     /**
      * Deletes tag by id.

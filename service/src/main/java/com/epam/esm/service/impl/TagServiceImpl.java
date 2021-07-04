@@ -1,5 +1,7 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidEntityParameterException;
@@ -19,17 +21,19 @@ public class TagServiceImpl implements TagService {
     public static final String TAG_NOT_FOUND = "tag.not.found";
 
     private final TagRepository tagRepository;
-    private final Validator<Tag> tagValidator;
+    private final Validator<TagDto> tagValidator;
+    private TagMapper tagMapper;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagRepository, Validator<Tag> tagValidator) {
+    public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator,TagMapper tagMapper) {
         this.tagRepository = tagRepository;
         this.tagValidator = tagValidator;
+        this.tagMapper=tagMapper;
     }
 
     @Override
     @Transactional
-    public Tag create(Tag tag) {
+    public TagDto create(TagDto tag) {
         if (!tagValidator.isValid(tag)) {
             throw new InvalidEntityParameterException("tag.invalid");
         }
@@ -37,14 +41,14 @@ public class TagServiceImpl implements TagService {
         if (tagRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("tag.duplicate");
         }
-        long id = tagRepository.create(tag);
-        return tagRepository.read(id).get();
+        long id = tagRepository.create(tagMapper.toModel(tag));
+        return tagMapper.toDTO(tagRepository.read(id).get());
     }
 
     @Override
-    public Tag read(long id) {
+    public TagDto read(long id) {
         Optional<Tag> tag = tagRepository.read(id);
-        return tag.orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND));
+        return tagMapper.toDTO(tag.orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND)));
     }
 
     @Override
