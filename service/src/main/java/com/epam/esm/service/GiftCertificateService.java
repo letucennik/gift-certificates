@@ -29,7 +29,7 @@ public interface GiftCertificateService {
      * @return found gift certificate
      * @throws NoSuchEntityException when such certificate doesn't exist
      */
-    GiftCertificate read(long id);
+    GiftCertificateDto read(long id);
 
     /**
      * Updates Certificate by id

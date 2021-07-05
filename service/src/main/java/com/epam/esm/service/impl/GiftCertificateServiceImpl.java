@@ -28,6 +28,10 @@ import java.util.*;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     public static final String CERTIFICATE_NOT_FOUND = "certificate.not.found";
+    public static final String NAME_FIELD = "name";
+    public static final String DESCRIPTION_FIELD = "description";
+    public static final String PRICE_FIELD = "price";
+    public static final String DURATION_FIELD = "duration";
 
     private final GiftCertificateRepository giftCertificateRepository;
     private final TagRepository tagRepository;
@@ -60,7 +64,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = certificateMapper.toModel(giftCertificateDto);
-        Set<TagDto> tags = giftCertificateDto.getTags();
+        Set<TagDto> tags = giftCertificateDto.getCertificateTags();
         validateGiftCertificate(giftCertificate);
         validateTags(tags);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
@@ -73,29 +77,48 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             certificateTagRepository.create(certificateId, tagId);
         }
         GiftCertificateDto dto = certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
-        dto.setTags(tags);
+        dto.setCertificateTags(tags);
         return dto;
     }
 
     @Override
-    public GiftCertificate read(long id) {
+    public GiftCertificateDto read(long id) {
         Optional<GiftCertificate> giftCertificate = giftCertificateRepository.read(id);
-        return giftCertificate.orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
+        return certificateMapper.toDTO(giftCertificate.orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND)));
     }
 
     @Override
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto dto) {
         GiftCertificate giftCertificate = certificateMapper.toModel(dto);
-        if (!giftCertificateRepository.read(id).isPresent()) {
-            throw new NoSuchEntityException(CERTIFICATE_NOT_FOUND);
-        }
-        giftCertificateRepository.update(giftCertificate);
-        Set<TagDto> tags = dto.getTags();
+        GiftCertificate sourceCertificate = giftCertificateRepository.read(id).orElseThrow(NoSuchEntityException::new);
+        setUpdatedFields(sourceCertificate, findUpdateInfo(giftCertificate));
+        sourceCertificate.setLastUpdateDate(LocalDateTime.now());
+        giftCertificateRepository.update(sourceCertificate);
+        Set<TagDto> tags = dto.getCertificateTags();
         if (tags != null) {
             updateTags(id, tags);
         }
-        return certificateMapper.toDTO(giftCertificate);
+        return certificateMapper.toDTO(sourceCertificate);
+    }
+
+    private void setUpdatedFields(GiftCertificate certificate, Map<String, Object> updateInfo) {
+        updateInfo.forEach((key, value) -> {
+            switch (key) {
+                case NAME_FIELD:
+                    certificate.setName((String) value);
+                    break;
+                case DESCRIPTION_FIELD:
+                    certificate.setDescription((String) value);
+                    break;
+                case PRICE_FIELD:
+                    certificate.setPrice((BigDecimal) value);
+                    break;
+                case DURATION_FIELD:
+                    certificate.setDuration((Integer) value);
+                    break;
+            }
+        });
     }
 
     private Map<String, Object> findUpdateInfo(GiftCertificate certificate) {
@@ -107,28 +130,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             if (!giftCertificateValidator.isNameValid(name)) {
                 throw new InvalidEntityParameterException("certificate.name.invalid");
             }
-            updateInfo.put("name", name);
+            updateInfo.put(NAME_FIELD, name);
         }
         String description = certificate.getDescription();
         if (description != null) {
             if (!giftCertificateValidator.isDescriptionValid(description)) {
                 throw new InvalidEntityParameterException("certificate.description.invalid");
             }
-            updateInfo.put("description", description);
+            updateInfo.put(DESCRIPTION_FIELD, description);
         }
         BigDecimal price = certificate.getPrice();
         if (price != null) {
             if (!giftCertificateValidator.isPriceValid(price)) {
                 throw new InvalidEntityParameterException("certificate.price.invalid");
             }
-            updateInfo.put("price", price);
+            updateInfo.put(PRICE_FIELD, price);
         }
         int duration = certificate.getDuration();
         if (duration != 0) {
             if (!giftCertificateValidator.isDurationValid(duration)) {
                 throw new InvalidEntityParameterException("certificate.duration.invalid");
             }
-            updateInfo.put("duration", duration);
+            updateInfo.put(DURATION_FIELD, duration);
         }
         return updateInfo;
     }
