@@ -28,7 +28,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("{id}")
-    public GiftCertificate read(@PathVariable long id) {
+    public GiftCertificateDto read(@PathVariable long id) {
         return giftCertificateService.read(id);
     }
 
