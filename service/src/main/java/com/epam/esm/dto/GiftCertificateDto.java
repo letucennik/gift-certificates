@@ -29,7 +29,7 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime lastUpdateDate;
     private int duration;
-    private Set<TagDto> certificateTags = new HashSet<>();
+    private Set<TagDto> tags = new HashSet<>();
 
     public GiftCertificateDto(GiftCertificate certificate) {
         this.id = certificate.getId();

@@ -64,7 +64,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = certificateMapper.toModel(giftCertificateDto);
-        Set<TagDto> tags = giftCertificateDto.getCertificateTags();
+        Set<TagDto> tags = giftCertificateDto.getTags();
         validateGiftCertificate(giftCertificate);
         validateTags(tags);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
@@ -77,7 +77,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             certificateTagRepository.create(certificateId, tagId);
         }
         GiftCertificateDto dto = certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
-        dto.setCertificateTags(tags);
+        dto.setTags(tags);
         return dto;
     }
 
@@ -95,7 +95,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         setUpdatedFields(sourceCertificate, findUpdateInfo(giftCertificate));
         sourceCertificate.setLastUpdateDate(LocalDateTime.now());
         giftCertificateRepository.update(sourceCertificate);
-        Set<TagDto> tags = dto.getCertificateTags();
+        Set<TagDto> tags = dto.getTags();
         if (tags != null) {
             updateTags(id, tags);
         }
