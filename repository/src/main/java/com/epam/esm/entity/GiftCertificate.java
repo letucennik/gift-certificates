@@ -44,7 +44,7 @@ public class GiftCertificate implements Serializable {
     @Column
     private int duration;
 
-    @OneToMany(mappedBy = "certificate")
+    @OneToMany(mappedBy = "certificate",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<CertificateTag> certificateTags=new HashSet<>();
 
     public GiftCertificate(String name, String description, BigDecimal price, int duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {

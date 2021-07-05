@@ -1,6 +1,9 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.*;
+import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificate_;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.Tag_;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.query.QueryBuilder;
@@ -65,14 +68,14 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         if (partValue != null) {
             predicates.add(buildPredicateByPartInfo(root, partValue, builder));
         }
-        if (context != null) {
+        if (context != null && context.getSortColumns() != null) {
             QueryBuilder buildHelper = new QueryBuilder(builder);
             List<Order> orderList = buildHelper.buildOrderList(root, context);
             if (!orderList.isEmpty()) {
                 query.orderBy(orderList);
             }
         }
-        query.where(predicates.toArray(new Predicate[0]));
+        query.where(predicates.toArray(new Predicate[0])).distinct(true);
         return entityManager.createQuery(query).getResultList();
     }
 
