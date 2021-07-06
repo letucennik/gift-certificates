@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,8 @@ class GiftCertificateRepositoryImplTest {
     private GiftCertificate thirdCertificate;
 
     private List<GiftCertificate> sortedAsc;
+
+    private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 25);
 
     @Autowired
     private GiftCertificateRepository giftCertificateRepository;
@@ -63,19 +67,19 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldFindByParametersNameValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters("tag 1", "1", null);
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters("tag 1", "1", null, DEFAULT_PAGEABLE);
         assertEquals(Collections.singletonList(firstCertificate), giftCertificates);
     }
 
     @Test
     void testShouldFindByParametersValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "description", null);
-        assertEquals(sortedAsc, giftCertificates);
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "description", null, DEFAULT_PAGEABLE);
+        assertTrue(sortedAsc.containsAll(giftCertificates));
     }
 
     @Test
     void testShouldByParametersSort() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)));
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)),DEFAULT_PAGEABLE);
         assertEquals(sortedAsc, giftCertificates);
     }
 

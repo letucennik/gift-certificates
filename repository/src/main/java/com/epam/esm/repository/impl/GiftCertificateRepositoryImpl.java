@@ -8,6 +8,7 @@ import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.query.QueryBuilder;
 import com.epam.esm.repository.query.SortContext;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -56,7 +57,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     @Override
-    public List<GiftCertificate> findByParameters(String tagName, String partValue, SortContext context) {
+    public List<GiftCertificate> findByParameters(String tagName, String partValue, SortContext context, Pageable pageable) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> root = query.from(GiftCertificate.class);
@@ -76,7 +77,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             }
         }
         query.where(predicates.toArray(new Predicate[0])).distinct(true);
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize()).getResultList();
     }
 
     private Predicate buildPredicateByTagName(Root<GiftCertificate> root, String tagName, CriteriaBuilder builder) {

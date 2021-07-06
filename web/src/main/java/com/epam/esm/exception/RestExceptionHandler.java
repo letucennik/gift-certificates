@@ -24,10 +24,10 @@ public class RestExceptionHandler {
         this.bundleMessageSource = bundleMessageSource;
     }
 
-    @ExceptionHandler(InvalidEntityParameterException.class)
+    @ExceptionHandler(InvalidParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleInvalidEntityExceptionException(
-            InvalidEntityParameterException e, Locale locale) {
+            InvalidParameterException e, Locale locale) {
         return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40001);
     }
 
