@@ -1,8 +1,6 @@
 package com.epam.esm.repository.query;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,21 @@ public final class QueryBuilder {
 
     public QueryBuilder(CriteriaBuilder criteriaBuilder) {
         this.builder = criteriaBuilder;
+    }
+
+    public <T> Predicate buildOrEqualPredicates(Path<T> root, String columnName, List<?> values) {
+        int counter = 0;
+        Predicate predicate = null;
+        for (Object value : values) {
+            Predicate currentPredicate = builder.equal(root.get(columnName), value);
+            if (counter++ == 0) {
+                predicate = currentPredicate;
+            } else {
+                predicate = builder.or(predicate, currentPredicate);
+            }
+        }
+
+        return predicate;
     }
 
     public <T> List<Order> buildOrderList(Root<T> root, SortContext sortParameters) {

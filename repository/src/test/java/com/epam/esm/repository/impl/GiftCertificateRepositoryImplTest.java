@@ -66,12 +66,6 @@ class GiftCertificateRepositoryImplTest {
     }
 
     @Test
-    void testShouldFindByParametersNameValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters("tag 1", "1", null, DEFAULT_PAGEABLE);
-        assertEquals(Collections.singletonList(firstCertificate), giftCertificates);
-    }
-
-    @Test
     void testShouldFindByParametersValue() {
         List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "description", null, DEFAULT_PAGEABLE);
         assertTrue(sortedAsc.containsAll(giftCertificates));

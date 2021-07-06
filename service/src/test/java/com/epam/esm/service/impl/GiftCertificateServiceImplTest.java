@@ -56,9 +56,9 @@ class GiftCertificateServiceImplTest {
     private Validator<SortContext> sortContextValidator;
 
     @Spy
-    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper());
+    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(), certificateTagRepository);
     @Spy
-    private TagMapper tagMapper=new TagMapper(new ModelMapper());
+    private TagMapper tagMapper = new TagMapper(new ModelMapper());
 
     private Tag firstTag;
     private Tag secondTag;
@@ -79,7 +79,7 @@ class GiftCertificateServiceImplTest {
         certificateDto = new GiftCertificateDto(certificateToCreate);
         secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper,tagMapper);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper, tagMapper);
     }
 
     @Test
@@ -131,8 +131,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldFindByParametersAll() {
         when(sortContextValidator.isValid(any())).thenReturn(true);
-        when(giftCertificateRepository.findByParameters(anyString(), anyString(), any(),any())).thenReturn(Collections.singletonList(secondCertificate));
-        assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters("tag 1", "certificate", sortContext,0,25));
+        when(giftCertificateRepository.findByParameters(any(), anyString(), any(), any())).thenReturn(Collections.singletonList(secondCertificate));
+        assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters(Collections.singletonList("tag1"), "certificate", sortContext, 0, 25));
     }
 
 

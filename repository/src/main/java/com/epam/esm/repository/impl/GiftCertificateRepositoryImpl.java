@@ -57,14 +57,14 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     @Override
-    public List<GiftCertificate> findByParameters(String tagName, String partValue, SortContext context, Pageable pageable) {
+    public List<GiftCertificate> findByParameters(List<String> tagNames, String partValue, SortContext context, Pageable pageable) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
         Root<GiftCertificate> root = query.from(GiftCertificate.class);
         query.select(root);
         List<Predicate> predicates = new ArrayList<>();
-        if (tagName != null) {
-            predicates.add(buildPredicateByTagName(root, tagName, builder));
+        if (tagNames != null && !tagNames.isEmpty()) {
+            predicates.add(buildPredicateByTagName(root, tagNames, builder));
         }
         if (partValue != null) {
             predicates.add(buildPredicateByPartInfo(root, partValue, builder));
@@ -81,9 +81,10 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
                 .setMaxResults(pageable.getPageSize()).getResultList();
     }
 
-    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, String tagName, CriteriaBuilder builder) {
+    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, List<String> tagNames, CriteriaBuilder builder) {
         Join<GiftCertificate, Tag> certificateTagJoin = root.join(GiftCertificate_.certificateTags).join("tag");
-        return builder.like(builder.lower(certificateTagJoin.get(Tag_.name)), "%" + tagName.toLowerCase() + "%");
+        QueryBuilder buildHelper = new QueryBuilder(builder);
+        return buildHelper.buildOrEqualPredicates(certificateTagJoin,"name", tagNames);
     }
 
     private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, String partValue, CriteriaBuilder builder) {
