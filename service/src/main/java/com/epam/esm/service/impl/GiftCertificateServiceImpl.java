@@ -72,16 +72,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         validateTags(tags);
         giftCertificateDto.setCreateDate(LocalDateTime.now());
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
-        long certificateId = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
         for (TagDto tagDto : tags) {
             Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
             long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.create(tagMapper.toModel(tagDto)));
             tagDto.setId(tagId);
-            certificateTagRepository.create(certificateId, tagId);
         }
-        GiftCertificateDto dto = certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
-        dto.setTags(tags);
-        return dto;
+        long certificateId = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
+        return certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
     }
 
     @Override
@@ -176,7 +173,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findByParameters(String tagName, String partValue, SortContext sortContext, int page, int size) {
+    public List<GiftCertificateDto> findByParameters(List<String> tagNames, String partValue, SortContext sortContext, int page, int size) {
         Pageable pageRequest;
         try {
             pageRequest = PageRequest.of(page, size);
@@ -187,7 +184,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             validateSortContext(sortContext);
         }
         List<GiftCertificateDto> certificates = new ArrayList<>();
-        giftCertificateRepository.findByParameters(tagName, partValue, sortContext, pageRequest).forEach(giftCertificate ->
+        giftCertificateRepository.findByParameters(tagNames, partValue, sortContext, pageRequest).forEach(giftCertificate ->
                 certificates.add(certificateMapper.toDTO(giftCertificate)));
         return certificates;
     }

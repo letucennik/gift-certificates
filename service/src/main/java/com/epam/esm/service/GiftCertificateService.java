@@ -17,7 +17,7 @@ public interface GiftCertificateService {
      * @param giftCertificateDto certificateDto to create Certificate/Tags
      * @return GiftCertificateDto created dto
      * @throws InvalidParameterException when certificate or tags parameters are invalid
-     * @throws DuplicateEntityException        when several identical tags are passed
+     * @throws DuplicateEntityException  when several identical tags are passed
      */
     GiftCertificateDto create(GiftCertificateDto giftCertificateDto);
 
@@ -37,7 +37,7 @@ public interface GiftCertificateService {
      * @param id  certificate id to search
      * @param dto update information
      * @return updated GiftCertificateDto
-     * @throws NoSuchEntityException           when such certificate doesn't exist
+     * @throws NoSuchEntityException     when such certificate doesn't exist
      * @throws InvalidParameterException when update info is invalid
      */
     GiftCertificateDto update(long id, GiftCertificateDto dto);
@@ -45,7 +45,7 @@ public interface GiftCertificateService {
     /**
      * Gets all certificates with tags and optional sorting/filtering
      *
-     * @param tagName     tag name to filter certificates
+     * @param tagNames    Tag names to filter Certificates
      * @param partValue   part info of name/desc to filter certificates
      * @param sortContext columns to sort certificates and order types
      * @param page        page number of Certificates
@@ -53,7 +53,7 @@ public interface GiftCertificateService {
      * @return List of sorted/filtered certificates with tags
      * @throws InvalidSortParameterException when sort parameters are invalid
      */
-    List<GiftCertificateDto> findByParameters(String tagName, String partValue, SortContext sortContext, int page, int size);
+    List<GiftCertificateDto> findByParameters(List<String> tagNames, String partValue, SortContext sortContext, int page, int size);
 
     /**
      * Deletes certificate by id.

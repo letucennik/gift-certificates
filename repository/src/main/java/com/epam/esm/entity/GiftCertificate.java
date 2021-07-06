@@ -41,7 +41,7 @@ public class GiftCertificate {
     @Column
     private int duration;
 
-    @OneToMany(mappedBy = "certificate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "certificate", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<CertificateTag> certificateTags = new HashSet<>();

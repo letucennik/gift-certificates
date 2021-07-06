@@ -4,6 +4,7 @@ import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.CertificateTag;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.repository.CertificateTagRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,10 +15,12 @@ import java.util.Objects;
 public class GiftCertificateMapper {
 
     private final ModelMapper mapper;
+    private final CertificateTagRepository certificateTagRepository;
 
     @Autowired
-    public GiftCertificateMapper(ModelMapper mapper) {
+    public GiftCertificateMapper(ModelMapper mapper,CertificateTagRepository certificateTagRepository) {
         this.mapper = mapper;
+        this.certificateTagRepository=certificateTagRepository;
     }
 
     public GiftCertificate toModel(GiftCertificateDto dto) {

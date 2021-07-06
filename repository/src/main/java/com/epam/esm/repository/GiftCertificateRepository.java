@@ -42,12 +42,12 @@ public interface GiftCertificateRepository {
     /**
      * Gets all certificates with tags and optional sorting/filtering
      *
-     * @param tagName   tag name to filter certificates
+     * @param tagNames  Tag names to filter
      * @param partValue part info of name/desc to filter certificates
      * @param context   columns to sort certificates and order types
-     * @param pageable object with pagination info(page number, page size)
+     * @param pageable  object with pagination info(page number, page size)
      * @return List of sorted/filtered certificates with tags
      */
-    List<GiftCertificate> findByParameters(String tagName, String partValue, SortContext context, Pageable pageable);
+    List<GiftCertificate> findByParameters(List<String> tagNames, String partValue, SortContext context, Pageable pageable);
 
 }
