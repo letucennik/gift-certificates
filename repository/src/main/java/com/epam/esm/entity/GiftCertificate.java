@@ -4,22 +4,19 @@ import com.epam.esm.entity.audit.AuditListener;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = "certificateTags")
 @EntityListeners(AuditListener.class)
 @Table(name = "gift_certificate")
-public class GiftCertificate implements Serializable {
+public class GiftCertificate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,8 +41,10 @@ public class GiftCertificate implements Serializable {
     @Column
     private int duration;
 
-    @OneToMany(mappedBy = "certificate",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<CertificateTag> certificateTags=new HashSet<>();
+    @OneToMany(mappedBy = "certificate", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<CertificateTag> certificateTags = new HashSet<>();
 
     public GiftCertificate(String name, String description, BigDecimal price, int duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
         this.name = name;

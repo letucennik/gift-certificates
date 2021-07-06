@@ -56,7 +56,7 @@ class GiftCertificateServiceImplTest {
     private Validator<SortContext> sortContextValidator;
 
     @Spy
-    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(),certificateTagRepository);
+    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper());
     @Spy
     private TagMapper tagMapper=new TagMapper(new ModelMapper());
 
