@@ -58,8 +58,10 @@ public class GiftCertificateController {
             @RequestParam(name = "tag_name", required = false) String tagName,
             @RequestParam(name = "part_info", required = false) String partInfo,
             @RequestParam(name = "sort", required = false) List<String> sortColumns,
-            @RequestParam(name = "order", required = false) List<SortContext.OrderType> orderTypes) {
-        List<GiftCertificateDto> certificates = giftCertificateService.findByParameters(tagName, partInfo, new SortContext(sortColumns, orderTypes));
+            @RequestParam(name = "order", required = false) List<SortContext.OrderType> orderTypes,
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "25", required = false) int size) {
+        List<GiftCertificateDto> certificates = giftCertificateService.findByParameters(tagName, partInfo, new SortContext(sortColumns, orderTypes), page, size);
         return certificates.stream().peek(certificateDtoLinkAdder::addLinks).collect(Collectors.toList());
     }
 }

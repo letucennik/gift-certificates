@@ -6,7 +6,7 @@ import com.epam.esm.dto.mapper.GiftCertificateMapper;
 import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.InvalidEntityParameterException;
+import com.epam.esm.exception.InvalidParameterException;
 import com.epam.esm.exception.InvalidSortParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.CertificateTagRepository;
@@ -17,8 +17,11 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.validator.Validator;
 import com.epam.esm.validator.impl.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -128,28 +131,28 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         String name = certificate.getName();
         if (name != null) {
             if (!giftCertificateValidator.isNameValid(name)) {
-                throw new InvalidEntityParameterException("certificate.name.invalid");
+                throw new InvalidParameterException("certificate.name.invalid");
             }
             updateInfo.put(NAME_FIELD, name);
         }
         String description = certificate.getDescription();
         if (description != null) {
             if (!giftCertificateValidator.isDescriptionValid(description)) {
-                throw new InvalidEntityParameterException("certificate.description.invalid");
+                throw new InvalidParameterException("certificate.description.invalid");
             }
             updateInfo.put(DESCRIPTION_FIELD, description);
         }
         BigDecimal price = certificate.getPrice();
         if (price != null) {
             if (!giftCertificateValidator.isPriceValid(price)) {
-                throw new InvalidEntityParameterException("certificate.price.invalid");
+                throw new InvalidParameterException("certificate.price.invalid");
             }
             updateInfo.put(PRICE_FIELD, price);
         }
         int duration = certificate.getDuration();
         if (duration != 0) {
             if (!giftCertificateValidator.isDurationValid(duration)) {
-                throw new InvalidEntityParameterException("certificate.duration.invalid");
+                throw new InvalidParameterException("certificate.duration.invalid");
             }
             updateInfo.put(DURATION_FIELD, duration);
         }
@@ -173,12 +176,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificateDto> findByParameters(String tagName, String partValue, SortContext sortContext) {
+    public List<GiftCertificateDto> findByParameters(String tagName, String partValue, SortContext sortContext, int page, int size) {
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException | MethodArgumentTypeMismatchException e) {
+            throw new InvalidParameterException("pagination.invalid");
+        }
         if (isSortContextPassed(sortContext)) {
             validateSortContext(sortContext);
         }
         List<GiftCertificateDto> certificates = new ArrayList<>();
-        giftCertificateRepository.findByParameters(tagName, partValue, sortContext).forEach(giftCertificate ->
+        giftCertificateRepository.findByParameters(tagName, partValue, sortContext, pageRequest).forEach(giftCertificate ->
                 certificates.add(certificateMapper.toDTO(giftCertificate)));
         return certificates;
     }
@@ -200,13 +209,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private void validateGiftCertificate(GiftCertificate certificate) {
         if (!giftCertificateValidator.isValid(certificate)) {
-            throw new InvalidEntityParameterException("certificate.invalid");
+            throw new InvalidParameterException("certificate.invalid");
         }
     }
 
     private void validateTags(Set<TagDto> tags) {
         if (!tags.stream().allMatch(tagValidator::isValid)) {
-            throw new InvalidEntityParameterException("tag.invalid");
+            throw new InvalidParameterException("tag.invalid");
         }
     }
 

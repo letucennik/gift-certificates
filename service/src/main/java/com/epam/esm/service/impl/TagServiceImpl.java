@@ -4,7 +4,7 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidEntityParameterException;
+import com.epam.esm.exception.InvalidParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.TagService;
@@ -35,7 +35,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public TagDto create(TagDto tag) {
         if (!tagValidator.isValid(tag)) {
-            throw new InvalidEntityParameterException("tag.invalid");
+            throw new InvalidParameterException("tag.invalid");
         }
         String name = tag.getName();
         if (tagRepository.findByName(name).isPresent()) {

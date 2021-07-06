@@ -1,9 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidEntityParameterException;
+import com.epam.esm.exception.InvalidParameterException;
 import com.epam.esm.exception.InvalidSortParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.query.SortContext;
@@ -17,7 +16,7 @@ public interface GiftCertificateService {
      *
      * @param giftCertificateDto certificateDto to create Certificate/Tags
      * @return GiftCertificateDto created dto
-     * @throws InvalidEntityParameterException when certificate or tags parameters are invalid
+     * @throws InvalidParameterException when certificate or tags parameters are invalid
      * @throws DuplicateEntityException        when several identical tags are passed
      */
     GiftCertificateDto create(GiftCertificateDto giftCertificateDto);
@@ -39,7 +38,7 @@ public interface GiftCertificateService {
      * @param dto update information
      * @return updated GiftCertificateDto
      * @throws NoSuchEntityException           when such certificate doesn't exist
-     * @throws InvalidEntityParameterException when update info is invalid
+     * @throws InvalidParameterException when update info is invalid
      */
     GiftCertificateDto update(long id, GiftCertificateDto dto);
 
@@ -49,10 +48,12 @@ public interface GiftCertificateService {
      * @param tagName     tag name to filter certificates
      * @param partValue   part info of name/desc to filter certificates
      * @param sortContext columns to sort certificates and order types
+     * @param page        page number of Certificates
+     * @param size        page size
      * @return List of sorted/filtered certificates with tags
      * @throws InvalidSortParameterException when sort parameters are invalid
      */
-    List<GiftCertificateDto> findByParameters(String tagName, String partValue, SortContext sortContext);
+    List<GiftCertificateDto> findByParameters(String tagName, String partValue, SortContext sortContext, int page, int size);
 
     /**
      * Deletes certificate by id.

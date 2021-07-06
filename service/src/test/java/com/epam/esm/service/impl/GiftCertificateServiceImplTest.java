@@ -6,7 +6,7 @@ import com.epam.esm.dto.mapper.GiftCertificateMapper;
 import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.InvalidEntityParameterException;
+import com.epam.esm.exception.InvalidParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.CertificateTagRepository;
 import com.epam.esm.repository.GiftCertificateRepository;
@@ -93,7 +93,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void testCreateShouldThrowInvalidEntityParameterException() {
         when(certificateValidator.isValid(any())).thenReturn(false);
-        assertThrows(InvalidEntityParameterException.class, () -> giftCertificateService.create(certificateDto));
+        assertThrows(InvalidParameterException.class, () -> giftCertificateService.create(certificateDto));
     }
 
     @Test
@@ -131,8 +131,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldFindByParametersAll() {
         when(sortContextValidator.isValid(any())).thenReturn(true);
-        when(giftCertificateRepository.findByParameters(anyString(), anyString(), any())).thenReturn(Collections.singletonList(secondCertificate));
-        assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters("tag 1", "certificate", sortContext));
+        when(giftCertificateRepository.findByParameters(anyString(), anyString(), any(),any())).thenReturn(Collections.singletonList(secondCertificate));
+        assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters("tag 1", "certificate", sortContext,0,25));
     }
 
 
