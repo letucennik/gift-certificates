@@ -18,6 +18,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
@@ -64,7 +65,7 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         query.select(root);
         List<Predicate> predicates = new ArrayList<>();
         if (tagNames != null && !tagNames.isEmpty()) {
-            predicates.add(buildPredicateByTagName(root, tagNames, builder));
+            predicates.add(searchByTagNames(builder, root, tagNames));
         }
         if (partValue != null) {
             predicates.add(buildPredicateByPartInfo(root, partValue, builder));
@@ -81,10 +82,28 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
                 .setMaxResults(pageable.getPageSize()).getResultList();
     }
 
-    private Predicate buildPredicateByTagName(Root<GiftCertificate> root, List<String> tagNames, CriteriaBuilder builder) {
+    private Predicate searchByTagNames(CriteriaBuilder cb, Root<GiftCertificate> root, List<String> tagNames) {
+        Predicate result;
+        if (tagNames.size() > 1) {
+            result = getPredicateLotsOfTags(cb, root, tagNames);
+        } else {
+            Join<GiftCertificate, Tag> certificateTagJoin = root.join(GiftCertificate_.certificateTags).join("tag");
+            result = cb.equal(certificateTagJoin.get(Tag_.name), tagNames.get(0));
+        }
+        return result;
+    }
+
+    private Predicate getPredicateLotsOfTags(CriteriaBuilder cb, Root<GiftCertificate> root, List<String> tagsName) {
+        List<Predicate> predicateList = tagsName.stream()
+                .map(name -> joinTags(cb, root, name))
+                .collect(Collectors.toList());
+        Predicate[] predicates = new Predicate[predicateList.size()];
+        return cb.and(predicateList.toArray(predicates));
+    }
+
+    private Predicate joinTags(CriteriaBuilder cb, Root<GiftCertificate> root, String name) {
         Join<GiftCertificate, Tag> certificateTagJoin = root.join(GiftCertificate_.certificateTags).join("tag");
-        QueryBuilder buildHelper = new QueryBuilder(builder);
-        return buildHelper.buildOrEqualPredicates(certificateTagJoin,"name", tagNames);
+        return cb.equal(certificateTagJoin.get(Tag_.name), name);
     }
 
     private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, String partValue, CriteriaBuilder builder) {

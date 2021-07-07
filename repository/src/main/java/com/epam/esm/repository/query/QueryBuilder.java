@@ -14,20 +14,6 @@ public final class QueryBuilder {
         this.builder = criteriaBuilder;
     }
 
-    public <T> Predicate buildOrEqualPredicates(Path<T> root, String columnName, List<?> values) {
-        int counter = 0;
-        Predicate predicate = null;
-        for (Object value : values) {
-            Predicate currentPredicate = builder.equal(root.get(columnName), value);
-            if (counter++ == 0) {
-                predicate = currentPredicate;
-            } else {
-                predicate = builder.or(predicate, currentPredicate);
-            }
-        }
-
-        return predicate;
-    }
 
     public <T> List<Order> buildOrderList(Root<T> root, SortContext sortParameters) {
         List<Order> orderList = new ArrayList<>();

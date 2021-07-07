@@ -71,7 +71,6 @@ public class DataSourceConfig {
     }
 
 
-
     @Bean
     public JpaTransactionManager jpaTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
@@ -92,6 +91,8 @@ public class DataSourceConfig {
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", dialect);
+        properties.put("show_sql", true);
+        properties.put("format_sql", true);
         return properties;
     }
 
