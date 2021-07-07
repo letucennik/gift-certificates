@@ -78,6 +78,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             tagDto.setId(tagId);
         }
         long certificateId = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
+        tags.forEach(x -> certificateTagRepository.create(certificateId, x.getId()));
         return certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
     }
 
