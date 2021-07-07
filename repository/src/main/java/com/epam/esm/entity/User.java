@@ -3,6 +3,7 @@ package com.epam.esm.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,4 +16,7 @@ public class User {
 
     @Column
     private String name;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE})
+    private List<Order> orders;
 }
