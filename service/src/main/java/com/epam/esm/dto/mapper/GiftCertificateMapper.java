@@ -17,9 +17,8 @@ public class GiftCertificateMapper {
     private final ModelMapper mapper;
 
     @Autowired
-    public GiftCertificateMapper(ModelMapper mapper,CertificateTagRepository certificateTagRepository) {
+    public GiftCertificateMapper(ModelMapper mapper) {
         this.mapper = mapper;
-        //this.certificateTagRepository=certificateTagRepository;
     }
 
     public GiftCertificate toModel(GiftCertificateDto dto) {

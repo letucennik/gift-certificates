@@ -74,12 +74,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         for (TagDto tagDto : tags) {
             Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
-            long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.create(tagMapper.toModel(tagDto)));
+            long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.create(tagMapper.toModel(tagDto)).getId());
             tagDto.setId(tagId);
         }
-        long certificateId = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
-        tags.forEach(x -> certificateTagRepository.create(certificateId, x.getId()));
-        return certificateMapper.toDTO(giftCertificateRepository.read(certificateId).get());
+        GiftCertificate certificate = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
+        tags.forEach(x -> certificateTagRepository.create(certificate.getId(), x.getId()));
+        return certificateMapper.toDTO(certificate);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto dto) {
         GiftCertificate giftCertificate = certificateMapper.toModel(dto);
-        GiftCertificate sourceCertificate = giftCertificateRepository.read(id).orElseThrow(NoSuchEntityException::new);
+        GiftCertificate sourceCertificate = giftCertificateRepository.read(id).orElseThrow(()->new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
         setUpdatedFields(sourceCertificate, findUpdateInfo(giftCertificate));
         sourceCertificate.setLastUpdateDate(LocalDateTime.now());
         giftCertificateRepository.update(sourceCertificate);

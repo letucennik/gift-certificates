@@ -13,9 +13,9 @@ public interface GiftCertificateRepository {
      * Creates new certificate.
      *
      * @param giftCertificate certificate to create
-     * @return id of created certificate
+     * @return GiftCertificate
      */
-    long create(GiftCertificate giftCertificate);
+   GiftCertificate create(GiftCertificate giftCertificate);
 
     /**
      * Finds certificate by id.

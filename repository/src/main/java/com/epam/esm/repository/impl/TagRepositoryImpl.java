@@ -20,13 +20,13 @@ public class TagRepositoryImpl implements TagRepository {
     private EntityManager entityManager;
 
     @Override
-    public long create(Tag tag) {
+    public Tag create(Tag tag) {
         try {
             entityManager.persist(tag);
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }
-        return tag.getId();
+        return tag;
     }
 
     @Override
