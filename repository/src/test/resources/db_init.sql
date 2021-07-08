@@ -5,6 +5,8 @@ VALUES ('certificate 1', 'description 1', 1.1, 1, '2020-01-01 01:11:11', '2021-0
 
 INSERT INTO tag (name) VALUES ('tag 1'), ('tag 2'), ('tag 3'), ('tag 4');
 
+INSERT INTO user (name) VALUES ('user 1'), ('user 2'), ('user 3');
+
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (1,1);
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (1,2);
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`,`tag_id`) VALUES (2,1);
