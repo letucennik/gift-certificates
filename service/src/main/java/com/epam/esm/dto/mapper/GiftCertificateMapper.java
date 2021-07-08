@@ -15,12 +15,11 @@ import java.util.Objects;
 public class GiftCertificateMapper {
 
     private final ModelMapper mapper;
-    private final CertificateTagRepository certificateTagRepository;
 
     @Autowired
     public GiftCertificateMapper(ModelMapper mapper,CertificateTagRepository certificateTagRepository) {
         this.mapper = mapper;
-        this.certificateTagRepository=certificateTagRepository;
+        //this.certificateTagRepository=certificateTagRepository;
     }
 
     public GiftCertificate toModel(GiftCertificateDto dto) {

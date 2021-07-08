@@ -84,8 +84,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificateDto read(long id) {
-        Optional<GiftCertificate> giftCertificate = giftCertificateRepository.read(id);
-        return certificateMapper.toDTO(giftCertificate.orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND)));
+        return giftCertificateRepository.read(id)
+                .map(certificateMapper::toDTO)
+                .orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
     }
 
     @Override
