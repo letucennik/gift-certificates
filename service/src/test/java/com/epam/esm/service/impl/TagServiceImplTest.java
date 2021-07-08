@@ -43,7 +43,7 @@ class TagServiceImplTest {
     @BeforeEach
     void init() {
         tag = new Tag(ID, "tag");
-        tagDto = mapper.toDTO(tag);
+        tagDto = mapper.toDto(tag);
         MockitoAnnotations.initMocks(this);
     }
 
