@@ -1,9 +1,7 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.GiftCertificate_;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.Tag_;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.query.QueryBuilder;
@@ -23,6 +21,8 @@ import java.util.stream.Collectors;
 @Repository
 public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
 
+    public static final String NAME = "name";
+    public static final String TAG = "tag";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -87,8 +87,8 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
         if (tagNames.size() > 1) {
             result = getPredicateLotsOfTags(cb, root, tagNames);
         } else {
-            Join<GiftCertificate, Tag> certificateTagJoin = root.join(GiftCertificate_.certificateTags).join("tag");
-            result = cb.equal(certificateTagJoin.get(Tag_.name), tagNames.get(0));
+            Join<GiftCertificate, Tag> certificateTagJoin = root.join("certificateTags").join(TAG);
+            result = cb.equal(certificateTagJoin.get(NAME), tagNames.get(0));
         }
         return result;
     }
@@ -102,15 +102,15 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
     }
 
     private Predicate joinTags(CriteriaBuilder cb, Root<GiftCertificate> root, String name) {
-        Join<GiftCertificate, Tag> certificateTagJoin = root.join(GiftCertificate_.certificateTags).join("tag");
-        return cb.equal(certificateTagJoin.get(Tag_.name), name);
+        Join<GiftCertificate, Tag> certificateTagJoin = root.join("certificateTags").join(TAG);
+        return cb.equal(certificateTagJoin.get(NAME), name);
     }
 
     private Predicate buildPredicateByPartInfo(Root<GiftCertificate> root, String partValue, CriteriaBuilder builder) {
         QueryBuilder buildHelper = new QueryBuilder(builder);
         String regexValue = buildHelper.convertToRegex(partValue);
-        Predicate predicateByNameInfo = builder.like(root.get(GiftCertificate_.name), regexValue);
-        Predicate predicateByDescriptionInfo = builder.like(root.get(GiftCertificate_.description), regexValue);
+        Predicate predicateByNameInfo = builder.like(root.get(NAME), regexValue);
+        Predicate predicateByDescriptionInfo = builder.like(root.get("description"), regexValue);
         return builder.or(predicateByNameInfo, predicateByDescriptionInfo);
     }
 
