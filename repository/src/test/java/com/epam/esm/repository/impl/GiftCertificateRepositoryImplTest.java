@@ -79,8 +79,8 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldCreate() {
-        Long id = giftCertificateRepository.create(certificateToCreate);
-        assertNotNull(id);
+        GiftCertificate certificate = giftCertificateRepository.create(certificateToCreate);
+        assertNotNull(certificate);
     }
 
     @Test

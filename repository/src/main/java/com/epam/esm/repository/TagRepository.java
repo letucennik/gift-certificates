@@ -12,7 +12,7 @@ public interface TagRepository {
      * @param tag Tag to create
      * @return id of created tag
      */
-    long create(Tag tag);
+    Tag create(Tag tag);
 
     /**
      * Finds tag by id.

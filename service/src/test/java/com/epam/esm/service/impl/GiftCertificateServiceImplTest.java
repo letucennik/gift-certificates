@@ -56,7 +56,7 @@ class GiftCertificateServiceImplTest {
     private Validator<SortContext> sortContextValidator;
 
     @Spy
-    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(), certificateTagRepository);
+    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper());
     @Spy
     private TagMapper tagMapper = new TagMapper(new ModelMapper());
 
@@ -85,7 +85,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldCreate() {
         when(certificateValidator.isValid(any())).thenReturn(true);
-        when(giftCertificateRepository.create(any())).thenReturn(ID);
+        when(giftCertificateRepository.create(any())).thenReturn(certificateToCreate);
         when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.ofNullable(certificateToCreate));
         assertEquals(ID, giftCertificateService.create(certificateDto).getId());
     }

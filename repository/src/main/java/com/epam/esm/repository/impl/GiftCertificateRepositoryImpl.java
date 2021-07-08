@@ -28,13 +28,13 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
 
 
     @Override
-    public long create(GiftCertificate giftCertificate) {
+    public GiftCertificate create(GiftCertificate giftCertificate) {
         try {
             entityManager.persist(giftCertificate);
         } catch (PersistenceException e) {
             throw new DAOException(e);
         }
-        return giftCertificate.getId();
+        return giftCertificate;
     }
 
     @Override

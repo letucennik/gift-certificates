@@ -38,7 +38,6 @@ public class CertificateTagRepositoryImpl implements CertificateTagRepository {
         }
         certificateTag.setTag(tag);
         certificate.getCertificateTags().add(certificateTag);
-        tag.getCertificateTags().add(certificateTag);
         entityManager.persist(certificateTag);
         return certificateTag;
     }

@@ -51,7 +51,7 @@ class TagServiceImplTest {
     void testShouldCreate() {
         when(tagValidator.isValid(any())).thenReturn(true);
         when(tagRepository.findByName(anyString())).thenReturn(Optional.empty());
-        when(tagRepository.read(anyLong())).thenReturn(Optional.of(tag));
+        when(tagRepository.create(any())).thenReturn(tag);
         Long id = tagService.create(tagDto).getId();
         assertNotNull(id);
         verify(tagRepository).create(tag);

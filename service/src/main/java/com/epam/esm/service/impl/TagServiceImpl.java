@@ -41,8 +41,7 @@ public class TagServiceImpl implements TagService {
         if (tagRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("tag.duplicate");
         }
-        long id = tagRepository.create(tagMapper.toModel(tag));
-        return tagMapper.toDTO(tagRepository.read(id).get());
+       return tagMapper.toDTO(tagRepository.create(tagMapper.toModel(tag)));
     }
 
     @Override

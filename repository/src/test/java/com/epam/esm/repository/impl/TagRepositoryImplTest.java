@@ -36,8 +36,8 @@ class TagRepositoryImplTest {
 
     @Test
     void testShouldCreate() {
-        Long id = tagRepository.create(tagToCreate);
-        assertNotNull(id);
+        Tag tag = tagRepository.create(tagToCreate);
+        assertNotNull(tag);
     }
 
     @Test
