@@ -78,8 +78,10 @@ public class GiftCertificateRepositoryImpl implements GiftCertificateRepository 
             }
         }
         query.where(predicates.toArray(new Predicate[0])).distinct(true);
-        return entityManager.createQuery(query).setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize()).getResultList();
+        return entityManager.createQuery(query)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
     }
 
     private Predicate searchByTagNames(CriteriaBuilder cb, Root<GiftCertificate> root, List<String> tagNames) {

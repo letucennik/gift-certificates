@@ -28,4 +28,9 @@ create table m2m_certificates_tags
             REFERENCES `tag` (`id`)
             ON DELETE CASCADE
             ON UPDATE CASCADE
+);
+CREATE TABLE user
+(
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+    name    VARCHAR(305) UNIQUE
 )
