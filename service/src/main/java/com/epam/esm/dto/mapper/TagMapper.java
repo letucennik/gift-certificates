@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class TagMapper {
+public class TagMapper implements Mapper<Tag, TagDto> {
 
     private final ModelMapper mapper;
 
@@ -18,11 +18,13 @@ public class TagMapper {
         this.mapper = mapper;
     }
 
+    @Override
     public Tag toModel(TagDto dto) {
         return Objects.isNull(dto) ? null : mapper.map(dto, Tag.class);
     }
 
-    public TagDto toDTO(Tag model) {
+    @Override
+    public TagDto toDto(Tag model) {
         return Objects.isNull(model) ? null : mapper.map(model, TagDto.class);
     }
 }

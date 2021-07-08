@@ -1,6 +1,7 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.entity.CertificateTag;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import org.junit.jupiter.api.Test;
@@ -23,15 +24,15 @@ class CertificateTagRepositoryImplTest {
     private static final long TAG_ID_NON_EXIST = 23;
 
     private static final long CERTIFICATE_EXIST = 3;
-    private static final long TAG_EXIST = 2;
-    private static final long TAG_EXIST_1 = 3;
+    private static final Tag TAG_EXIST = new Tag(1L, "tag 1");
+    private static final Tag TAG_EXIST_1 = new Tag(3L, "tag 3");
 
     @Autowired
     private CertificateTagRepositoryImpl certificateTagRepository;
 
     @Test
     void testShouldCreate() {
-        CertificateTag certificateTag = certificateTagRepository.create(CERTIFICATE_EXIST, TAG_EXIST);
+        CertificateTag certificateTag = certificateTagRepository.create(CERTIFICATE_EXIST, 4L);
         assertNotNull(certificateTag);
     }
 
@@ -42,6 +43,6 @@ class CertificateTagRepositoryImplTest {
 
     @Test
     void testShouldFindTagsByCertificateId() {
-        assertEquals(Arrays.asList(1L, TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
+        assertEquals(Arrays.asList(TAG_EXIST, TAG_EXIST_1), certificateTagRepository.findTagsIdByCertificateId(CERTIFICATE_EXIST));
     }
 }

@@ -79,13 +79,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         GiftCertificate certificate = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
         tags.forEach(x -> certificateTagRepository.create(certificate.getId(), x.getId()));
-        return certificateMapper.toDTO(certificate);
+        return certificateMapper.toDto(certificate);
     }
 
     @Override
     public GiftCertificateDto read(long id) {
         return giftCertificateRepository.read(id)
-                .map(certificateMapper::toDTO)
+                .map(certificateMapper::toDto)
                 .orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
     }
 
@@ -101,7 +101,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (tags != null) {
             updateTags(id, tags);
         }
-        return certificateMapper.toDTO(sourceCertificate);
+        return certificateMapper.toDto(sourceCertificate);
     }
 
     private void setUpdatedFields(GiftCertificate certificate, Map<String, Object> updateInfo) {
@@ -163,7 +163,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             String tagName = tagDto.getName();
             Optional<Tag> tagOptional = tagRepository.findByName(tagName);
             Tag current = tagOptional.orElseGet(() -> createTag(new Tag(tagDto.getId(), tagDto.getName())));
-            if (!certificateTagRepository.findTagsIdByCertificateId(certificateId).contains(current.getId())) {
+            if (!certificateTagRepository.findTagsIdByCertificateId(certificateId).contains(current)) {
                 certificateTagRepository.create(certificateId, current.getId());
             }
         }
@@ -187,7 +187,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
         List<GiftCertificateDto> certificates = new ArrayList<>();
         giftCertificateRepository.findByParameters(tagNames, partValue, sortContext, pageRequest).forEach(giftCertificate ->
-                certificates.add(certificateMapper.toDTO(giftCertificate)));
+                certificates.add(certificateMapper.toDto(giftCertificate)));
         return certificates;
     }
 

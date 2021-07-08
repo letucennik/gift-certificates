@@ -20,7 +20,7 @@ public interface CertificateTagRepository {
      * Finds tags' ids by certificate id
      *
      * @param certificateId certificate id
-     * @return list of tags' ids assigned to corresponding certificate
+     * @return list of tags assigned to corresponding certificate
      */
-    List<Long> findTagsIdByCertificateId(long certificateId);
+    List<Tag> findTagsIdByCertificateId(long certificateId);
 }
