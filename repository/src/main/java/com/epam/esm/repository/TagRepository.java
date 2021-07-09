@@ -10,7 +10,7 @@ public interface TagRepository {
      * Creates new tag.
      *
      * @param tag Tag to create
-     * @return id of created tag
+     * @return created tag
      */
     Tag create(Tag tag);
 
