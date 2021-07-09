@@ -27,12 +27,12 @@ VALUES (3, 3);
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`, `tag_id`)
 VALUES (3, 1);
 
-INSERT INTO 'order'(date, user_id, cost)
+INSERT INTO orders(date, user_id, cost)
 VALUES ('2020-10-28 21:17:24', 1, 100.0),
        ('2020-04-26 21:17:24', 2, 200.0),
        ('2020-05-05 21:17:24', 2, 300.0);
 
-INSERT INTO order_certificates(order_id, certificate_id)
+INSERT INTO `order_certificates`(order_id, certificate_id)
 VALUES (1, 1),
        (2, 2),
        (3, 1),

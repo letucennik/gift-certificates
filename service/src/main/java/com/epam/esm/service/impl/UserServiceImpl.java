@@ -15,9 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -45,7 +45,8 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("user.duplicate");
         }
-        return userMapper.toDto(userRepository.create(userMapper.toModel(user)));
+        User savedUser = userRepository.create(userMapper.toModel(user));
+        return userMapper.toDto(savedUser);
     }
 
     @Override
@@ -62,8 +63,9 @@ public class UserServiceImpl implements UserService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParameterException("pagination.invalid");
         }
-        List<UserDto> result=new ArrayList<>();
-        userRepository.getAll(pageRequest).forEach(x->result.add(userMapper.toDto(x)));
-        return result;
+        return userRepository.getAll(pageRequest)
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

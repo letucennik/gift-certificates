@@ -32,7 +32,6 @@ public class UserController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                 @RequestParam(value = "size", defaultValue = "25", required = false) int size) {
         List<UserDto> users = userService.getAll(page, size);
@@ -42,7 +41,6 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
     public UserDto getById(@PathVariable long id) {
         UserDto userDto = userService.read(id);
         userDtoLinkAdder.addLinks(userDto);

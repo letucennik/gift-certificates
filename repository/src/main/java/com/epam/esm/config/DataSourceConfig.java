@@ -91,6 +91,7 @@ public class DataSourceConfig {
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", dialect);
+        properties.put("hibernate.globally_quoted_identifiers", true);
         properties.put("show_sql", true);
         properties.put("format_sql", true);
         return properties;

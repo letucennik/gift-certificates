@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @ComponentScan("com.epam.esm")
 @EnableTransactionManagement
-@SpringBootApplication(exclude = HibernateJpaAutoConfiguration.class)
 public class ServiceConfig {
 
     @Bean

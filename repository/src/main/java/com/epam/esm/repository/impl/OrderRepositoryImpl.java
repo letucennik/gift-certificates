@@ -45,7 +45,7 @@ public class OrderRepositoryImpl implements OrderRepository {
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = criteriaQuery.from(Order.class);
         List<Predicate> predicateList = new ArrayList<>();
-        predicateList.add(criteriaBuilder.equal(root.get("user_id"), userId));
+        predicateList.add(criteriaBuilder.equal(root.get("userId"), userId));
         criteriaQuery.where(predicateList.toArray(new Predicate[0]));
         return criteriaQuery;
     }
