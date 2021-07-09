@@ -33,9 +33,9 @@ class TagServiceImplTest {
     @Mock
     private TagRepository tagRepository;
     @Mock
-    private Validator<TagDto> tagValidator = new TagValidator();
+    private final Validator<TagDto> tagValidator = new TagValidator();
     @Spy
-    private TagMapper mapper = new TagMapper(new ModelMapper());
+    private final TagMapper mapper = new TagMapper(new ModelMapper());
 
     @InjectMocks
     private TagServiceImpl tagService;

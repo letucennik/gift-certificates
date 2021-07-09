@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.mapper.Mapper;
 import com.epam.esm.dto.mapper.TagMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
@@ -22,7 +23,7 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final Validator<TagDto> tagValidator;
-    private TagMapper tagMapper;
+    private Mapper<Tag,TagDto> tagMapper;
 
     @Autowired
     public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator,TagMapper tagMapper) {
