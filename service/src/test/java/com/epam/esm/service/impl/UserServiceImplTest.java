@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +39,7 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private final Validator<UserDto> userValidator = new UserValidator();
+    private Validator<UserDto> userValidator;
     @Spy
     private final Mapper<User, UserDto> mapper = new UserMapper(new ModelMapper());
 
@@ -48,15 +48,15 @@ class UserServiceImplTest {
 
     @BeforeEach
     void init() {
+        MockitoAnnotations.openMocks(this);
         userToCreate = new User(ID, "user 0");
         userToCreateDto = mapper.toDto(userToCreate);
         allUsers = Collections.singletonList(userToCreate);
         allUsersDto = Collections.singletonList(userToCreateDto);
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void testCreateShouldCreate() {
+    void testCreateShouldCreate() {
         when(userValidator.isValid(any())).thenReturn(true);
         when(userRepository.findByName(anyString())).thenReturn(Optional.empty());
         when(userRepository.create(any())).thenReturn(userToCreate);

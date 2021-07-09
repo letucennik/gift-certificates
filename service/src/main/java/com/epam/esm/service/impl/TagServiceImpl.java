@@ -23,7 +23,7 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final Validator<TagDto> tagValidator;
-    private Mapper<Tag,TagDto> tagMapper;
+    private final Mapper<Tag,TagDto> tagMapper;
 
     @Autowired
     public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator,TagMapper tagMapper) {
@@ -42,7 +42,8 @@ public class TagServiceImpl implements TagService {
         if (tagRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("tag.duplicate");
         }
-       return tagMapper.toDto(tagRepository.create(tagMapper.toModel(tag)));
+        Tag savedTag = tagRepository.create(tagMapper.toModel(tag));
+        return tagMapper.toDto(savedTag);
     }
 
     @Override

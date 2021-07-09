@@ -3,6 +3,8 @@ package com.epam.esm.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "order")
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -24,9 +26,8 @@ public class Order {
     @Column
     private BigDecimal cost;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id")
+    private long userId;
 
     @ManyToMany()
     @JoinTable(
@@ -34,7 +35,6 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "certificate_id")
     )
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+    @Fetch(FetchMode.SUBSELECT)
     private List<GiftCertificate> certificates;
 }
