@@ -44,7 +44,7 @@ class TagServiceImplTest {
     void init() {
         tag = new Tag(ID, "tag");
         tagDto = mapper.toDto(tag);
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
