@@ -2,8 +2,8 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.mapper.GiftCertificateMapper;
-import com.epam.esm.dto.mapper.TagMapper;
+import com.epam.esm.dto.mapper.impl.GiftCertificateMapper;
+import com.epam.esm.dto.mapper.impl.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.InvalidParameterException;
@@ -14,6 +14,12 @@ import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.query.SortContext;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.util.Field;
+import com.epam.esm.util.SetterStrategy;
+import com.epam.esm.util.impl.DescriptionSetterStrategy;
+import com.epam.esm.util.impl.DurationSetterStrategy;
+import com.epam.esm.util.impl.NameSetterStrategy;
+import com.epam.esm.util.impl.PriceSetterStrategy;
 import com.epam.esm.validator.Validator;
 import com.epam.esm.validator.impl.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +32,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -46,6 +54,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateMapper certificateMapper;
     private final TagMapper tagMapper;
+
+    private List<SetterStrategy> setters(GiftCertificate certificate) {
+        return Arrays.asList(new NameSetterStrategy(certificate), new DescriptionSetterStrategy(certificate), new PriceSetterStrategy(certificate), new DurationSetterStrategy(certificate));
+    }
+
+    private Map<Field, SetterStrategy> setterMap(List<SetterStrategy> setters) {
+        return setters.stream()
+                .collect(Collectors.toMap(SetterStrategy::getField, Function.identity()));
+    }
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateRepository, CertificateTagRepository certificateTagRepository,
@@ -93,7 +110,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto dto) {
         GiftCertificate giftCertificate = certificateMapper.toModel(dto);
-        GiftCertificate sourceCertificate = giftCertificateRepository.read(id).orElseThrow(()->new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
+        GiftCertificate sourceCertificate = giftCertificateRepository.read(id).orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
         setUpdatedFields(sourceCertificate, findUpdateInfo(giftCertificate));
         sourceCertificate.setLastUpdateDate(LocalDateTime.now());
         giftCertificateRepository.update(sourceCertificate);
@@ -105,21 +122,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void setUpdatedFields(GiftCertificate certificate, Map<String, Object> updateInfo) {
+        List<SetterStrategy> setterStrategies = setters(certificate);
+        Map<Field, SetterStrategy> setterMap = setterMap(setterStrategies);
         updateInfo.forEach((key, value) -> {
-            switch (key) {
-                case NAME_FIELD:
-                    certificate.setName((String) value);
-                    break;
-                case DESCRIPTION_FIELD:
-                    certificate.setDescription((String) value);
-                    break;
-                case PRICE_FIELD:
-                    certificate.setPrice((BigDecimal) value);
-                    break;
-                case DURATION_FIELD:
-                    certificate.setDuration((Integer) value);
-                    break;
-            }
+            setterMap.get(Field.valueOf(key.toUpperCase())).setField(value);
         });
     }
 

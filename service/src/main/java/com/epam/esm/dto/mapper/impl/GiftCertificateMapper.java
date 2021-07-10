@@ -1,7 +1,8 @@
-package com.epam.esm.dto.mapper;
+package com.epam.esm.dto.mapper.impl;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.mapper.Mapper;
 import com.epam.esm.entity.CertificateTag;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;

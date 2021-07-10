@@ -2,8 +2,8 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.mapper.GiftCertificateMapper;
-import com.epam.esm.dto.mapper.TagMapper;
+import com.epam.esm.dto.mapper.impl.GiftCertificateMapper;
+import com.epam.esm.dto.mapper.impl.TagMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.InvalidParameterException;
