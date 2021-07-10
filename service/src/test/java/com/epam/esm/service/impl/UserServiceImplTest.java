@@ -2,14 +2,13 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.mapper.Mapper;
-import com.epam.esm.dto.mapper.UserMapper;
+import com.epam.esm.dto.mapper.impl.UserMapper;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.validator.Validator;
-import com.epam.esm.validator.impl.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

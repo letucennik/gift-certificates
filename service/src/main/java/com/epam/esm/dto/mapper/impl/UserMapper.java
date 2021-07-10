@@ -1,6 +1,7 @@
-package com.epam.esm.dto.mapper;
+package com.epam.esm.dto.mapper.impl;
 
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.mapper.Mapper;
 import com.epam.esm.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

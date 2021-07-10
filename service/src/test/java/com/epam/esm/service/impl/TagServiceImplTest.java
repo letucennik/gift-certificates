@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.mapper.TagMapper;
+import com.epam.esm.dto.mapper.impl.TagMapper;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidParameterException;
