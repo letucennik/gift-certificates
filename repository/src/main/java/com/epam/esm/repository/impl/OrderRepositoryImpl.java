@@ -15,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
@@ -30,6 +31,11 @@ public class OrderRepositoryImpl implements OrderRepository {
             throw new DAOException(e);
         }
         return order;
+    }
+
+    @Override
+    public Optional<Order> find(long id) {
+        return Optional.ofNullable(entityManager.find(Order.class, id));
     }
 
     @Override

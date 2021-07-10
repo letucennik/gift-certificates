@@ -4,6 +4,7 @@ import com.epam.esm.entity.Order;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository {
 
@@ -14,6 +15,8 @@ public interface OrderRepository {
      * @return created order
      */
     Order create(Order order);
+
+    Optional<Order> find(long id);
 
     /**
      * Gets all Orders by User id
