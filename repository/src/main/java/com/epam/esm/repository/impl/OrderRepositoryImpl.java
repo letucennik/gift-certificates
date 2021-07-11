@@ -34,7 +34,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public Optional<Order> find(long id) {
+    public Optional<Order> read(long id) {
         return Optional.ofNullable(entityManager.find(Order.class, id));
     }
 

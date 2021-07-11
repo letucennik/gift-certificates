@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.exception.NoSuchEntityException;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,20 +16,22 @@ public interface OrderService {
     OrderDto create(OrderDto orderDto);
 
     /**
-     * Gets order by id.
+     * Gets order by user id and its id.
      *
-     * @param id Order id to search
+     * @param userId User id to search
+     * @param orderId Order id to search
      * @return found Order
      * @throws NoSuchEntityException when such order doesn't exists
      */
-    OrderDto find(long id);
+    OrderDto findByUserId(long userId, long orderId);
 
     /**
      * Gets all Orders by User id
      *
      * @param userId User id to search
-     * @param pageable object with pagination info(page number, page size)
+     * @param page   page number of orders
+     * @param size   page size
      * @return found orderDtos
      */
-    List<OrderDto> getUserOrders(long userId, Pageable pageable);
+    List<OrderDto> getUserOrders(long userId, int page, int size);
 }
