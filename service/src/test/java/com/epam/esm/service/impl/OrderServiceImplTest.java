@@ -57,7 +57,7 @@ class OrderServiceImplTest {
 
     private Mapper<Tag, TagDto> tagMapper = new TagMapper(new ModelMapper());
     private Mapper<GiftCertificate, GiftCertificateDto> giftCertificateMapper = new GiftCertificateMapper(new ModelMapper(), tagMapper);
-    private Mapper<Order, OrderDto> orderMapper = new OrderMapper(new ModelMapper());
+    private Mapper<Order, OrderDto> orderMapper = new OrderMapper(new ModelMapper(),giftCertificateMapper);
     private Mapper<User, UserDto> userMapper = new UserMapper(new ModelMapper());
 
     private OrderServiceImpl orderService;
