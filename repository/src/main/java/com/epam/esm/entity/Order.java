@@ -1,5 +1,6 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.entity.audit.AuditListener;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@EntityListeners(AuditListener.class)
 @Table(name = "orders")
 public class Order {
 
@@ -24,8 +26,9 @@ public class Order {
     @Column
     private BigDecimal cost;
 
-    @Column(name = "user_id")
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToMany()
     @JoinTable(

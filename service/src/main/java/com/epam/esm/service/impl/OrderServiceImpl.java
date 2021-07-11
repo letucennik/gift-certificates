@@ -53,10 +53,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto create(OrderDto orderDto) {
-        if (!userRepository.read(orderDto.getUserId()).isPresent()) {
+        if (orderDto.getUser() == null || !userRepository.read(orderDto.getUser().getId()).isPresent()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
-        if (orderDto.getUserId() < 0) {
+        if (orderDto.getUser().getId() < 0) {
             throw new InvalidParameterException("user.invalid");
         }
         List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
@@ -68,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
             changedOrderCertificates.add(giftCertificateMapper.toDto(foundCertificate.orElseThrow(() -> new NoSuchEntityException("certificate.not.found"))));
         }
         orderDto = OrderDto.builder()
+                .user(orderDto.getUser())
                 .date(LocalDateTime.now())
                 .certificates(changedOrderCertificates)
                 .cost(calculateOrderCost(changedOrderCertificates))

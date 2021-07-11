@@ -36,7 +36,7 @@ class OrderRepositoryImplTest {
     void init() {
         orderToCreate = new Order();
         user = userRepository.findByName("user 1").get();
-        orderToCreate.setUserId(user.getId());
+        orderToCreate.setUser(user);
         orderToCreate.setDate(LocalDateTime.now());
         orderToCreate.setCost(new BigDecimal("45.00"));
     }

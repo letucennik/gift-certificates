@@ -1,5 +1,6 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -19,7 +20,7 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
 
     private long id;
-    private long userId;
+    private UserDto user;
     @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime date;
     private BigDecimal cost;

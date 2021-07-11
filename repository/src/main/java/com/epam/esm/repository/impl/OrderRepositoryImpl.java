@@ -1,6 +1,7 @@
 package com.epam.esm.repository.impl;
 
 import com.epam.esm.entity.Order;
+import com.epam.esm.entity.User;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.OrderRepository;
 import org.springframework.data.domain.Pageable;
@@ -9,10 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +48,9 @@ public class OrderRepositoryImpl implements OrderRepository {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = criteriaQuery.from(Order.class);
-        List<Predicate> predicateList = new ArrayList<>();
-        predicateList.add(criteriaBuilder.equal(root.get("userId"), userId));
-        criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+        Join<User, Order> userJoin = root.join("user");
+        Predicate joinIdPredicate = criteriaBuilder.equal(userJoin.get("id"), userId);
+        criteriaQuery.where(joinIdPredicate);
         return criteriaQuery;
     }
 }

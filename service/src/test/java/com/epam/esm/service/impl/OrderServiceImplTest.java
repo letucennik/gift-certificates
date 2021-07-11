@@ -3,10 +3,12 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.mapper.Mapper;
 import com.epam.esm.dto.mapper.impl.GiftCertificateMapper;
 import com.epam.esm.dto.mapper.impl.OrderMapper;
 import com.epam.esm.dto.mapper.impl.TagMapper;
+import com.epam.esm.dto.mapper.impl.UserMapper;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
@@ -54,10 +56,9 @@ class OrderServiceImplTest {
     private UserRepository userRepository;
 
     private Mapper<Tag, TagDto> tagMapper = new TagMapper(new ModelMapper());
-
     private Mapper<GiftCertificate, GiftCertificateDto> giftCertificateMapper = new GiftCertificateMapper(new ModelMapper(), tagMapper);
-
     private Mapper<Order, OrderDto> orderMapper = new OrderMapper(new ModelMapper());
+    private Mapper<User, UserDto> userMapper = new UserMapper(new ModelMapper());
 
     private OrderServiceImpl orderService;
 
@@ -83,8 +84,8 @@ class OrderServiceImplTest {
 
     @Test
     void testShouldCreate() {
-        orderDtoToCreate.setUserId(user.getId());
-        order.setUserId(user.getId());
+        orderDtoToCreate.setUser(userMapper.toDto(user));
+        order.setUser(user);
         when(orderRepository.create(any())).thenReturn(order);
         when(userRepository.read(1L)).thenReturn(Optional.ofNullable(user));
         GiftCertificate certificate = giftCertificateMapper.toModel(firstGiftCertificateDto);
