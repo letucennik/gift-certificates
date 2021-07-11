@@ -16,7 +16,13 @@ public interface OrderRepository {
      */
     Order create(Order order);
 
-    Optional<Order> find(long id);
+    /**
+     * Finds order by id.
+     *
+     * @param id order id to find
+     * @return Optional of found order
+     */
+    Optional<Order> read(long id);
 
     /**
      * Gets all Orders by User id

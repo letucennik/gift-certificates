@@ -11,6 +11,8 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.InvalidParameterException;
+import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;
@@ -23,10 +25,12 @@ import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -34,7 +38,11 @@ import static org.mockito.Mockito.when;
 
 class OrderServiceImplTest {
 
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 50;
+
     private OrderDto orderDtoToCreate;
+    private Order order;
     private List<GiftCertificateDto> giftCertificateDtoList;
     private GiftCertificateDto firstGiftCertificateDto;
     private User user;
@@ -69,13 +77,14 @@ class OrderServiceImplTest {
         giftCertificateDtoList = Arrays.asList(firstGiftCertificateDto);
         orderDtoToCreate = OrderDto.builder()
                 .certificates(giftCertificateDtoList)
-                .userId(user.getId())
                 .build();
+        order = orderMapper.toModel(orderDtoToCreate);
     }
 
     @Test
     void testShouldCreate() {
-        Order order = orderMapper.toModel(orderDtoToCreate);
+        orderDtoToCreate.setUserId(user.getId());
+        order.setUserId(user.getId());
         when(orderRepository.create(any())).thenReturn(order);
         when(userRepository.read(1L)).thenReturn(Optional.ofNullable(user));
         GiftCertificate certificate = giftCertificateMapper.toModel(firstGiftCertificateDto);
@@ -85,5 +94,48 @@ class OrderServiceImplTest {
         verify(orderRepository).create(any());
     }
 
+    @Test
+    void testCreateShouldThrowNoSuchEntityExceptionUserNotFound() {
+        assertThrows(NoSuchEntityException.class, () -> orderService.create(orderDtoToCreate));
+    }
 
+    @Test
+    void testCreateShouldThrowNoSuchEntityExceptionCertificateNotFound() {
+        when(certificateRepository.read(anyLong())).thenReturn(Optional.empty());
+        assertThrows(NoSuchEntityException.class, () -> orderService.create(orderDtoToCreate));
+    }
+
+    @Test
+    void testShouldFindAllByUserId() {
+        when(userRepository.read(1L)).thenReturn(Optional.of(user));
+        when(orderRepository.getUserOrders(anyLong(), any())).thenReturn(Collections.singletonList(order));
+        assertEquals(orderService.getUserOrders(user.getId(), DEFAULT_PAGE, DEFAULT_PAGE_SIZE), Collections.singletonList(orderDtoToCreate));
+    }
+
+    @Test
+    void testFindAllByUserIdShouldThrowInvalidParameterException() {
+        when(userRepository.read(1L)).thenReturn(Optional.of(user));
+        assertThrows(InvalidParameterException.class, () -> orderService.getUserOrders(user.getId(), -3, 4));
+    }
+
+    @Test
+    void testShouldFindOrderByUserId() {
+        when(orderRepository.read(orderDtoToCreate.getId())).thenReturn(Optional.of(order));
+        when(userRepository.read(user.getId())).thenReturn(Optional.of(user));
+        when(orderRepository.getUserOrders(anyLong(), any())).thenReturn(Collections.singletonList(order));
+        assertEquals(orderDtoToCreate, orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
+    }
+
+    @Test
+    void testFindOrderByUserIdShouldThrowNoSuchEntityExceptionUserNotFound() {
+        when(orderRepository.read(orderDtoToCreate.getId())).thenReturn(Optional.of(order));
+        when(userRepository.read(user.getId())).thenReturn(Optional.empty());
+        assertThrows(NoSuchEntityException.class, () -> orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
+    }
+
+    @Test
+    void testFindOrderByUserIdShouldThrowNoSuchEntityExceptionOrderNotFound() {
+        when(orderRepository.read(orderDtoToCreate.getId())).thenReturn(Optional.empty());
+        assertThrows(NoSuchEntityException.class, () -> orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
+    }
 }

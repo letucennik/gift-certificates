@@ -12,6 +12,7 @@ import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +23,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    public static final String USER_NOT_FOUND = "user.not.found";
+    public static final String ORDER_NOT_FOUND = "order.not.found";
     private final OrderRepository orderRepository;
     private final GiftCertificateRepository certificateRepository;
     private final UserRepository userRepository;
@@ -50,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto create(OrderDto orderDto) {
         if (!userRepository.read(orderDto.getUserId()).isPresent()) {
-            throw new NoSuchEntityException("user.not.found");
+            throw new NoSuchEntityException(USER_NOT_FOUND);
         }
         if (orderDto.getUserId() < 0) {
             throw new InvalidParameterException("user.invalid");
@@ -73,13 +77,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto find(long id) {
-        return null;
+    @Transactional
+    public OrderDto findByUserId(long userId, long orderId) {
+        Order foundOrder = orderRepository.read(orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
+        if (!userRepository.read(userId).isPresent()) {
+            throw new NoSuchEntityException(USER_NOT_FOUND);
+        }
+        List<Order> userOrders = orderRepository.getUserOrders(userId, PageRequest.of(0, Integer.MAX_VALUE));
+        if (userOrders == null || userOrders.isEmpty() || !userOrders.contains(foundOrder)) {
+            throw new NoSuchEntityException(ORDER_NOT_FOUND);
+        }
+        return orderMapper.toDto(foundOrder);
     }
 
+
     @Override
-    public List<OrderDto> getUserOrders(long userId, Pageable pageable) {
-        return null;
+    @Transactional
+    public List<OrderDto> getUserOrders(long userId, int page, int size) {
+        if (!userRepository.read(userId).isPresent()) {
+            throw new NoSuchEntityException(USER_NOT_FOUND);
+        }
+        Pageable pageRequest;
+        try {
+            pageRequest = PageRequest.of(page, size);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParameterException("pagination.invalid");
+        }
+        return orderRepository.getUserOrders(userId, pageRequest)
+                .stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     private BigDecimal calculateOrderCost(List<GiftCertificateDto> certificates) {
