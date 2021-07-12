@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.TagService;
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/most-used-tag")
-    public TagDto getMostUsedTagOfUserWithHighestCostOfOrders(@PathVariable long userId){
-        return tagService.getMostUsedTagOfUserWithHighestCostOfOrders(userId);
+    public MostUsedTagDto getMostUsedTagOfUserWithHighestCostOfOrders(@PathVariable long userId){
+        return tagService.getMostWidelyUsedTag(userId);
     }
 }
