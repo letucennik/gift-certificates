@@ -23,13 +23,13 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final Validator<TagDto> tagValidator;
-    private final Mapper<Tag,TagDto> tagMapper;
+    private final Mapper<Tag, TagDto> tagMapper;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator,TagMapper tagMapper) {
+    public TagServiceImpl(TagRepository tagRepository, Validator<TagDto> tagValidator, TagMapper tagMapper) {
         this.tagRepository = tagRepository;
         this.tagValidator = tagValidator;
-        this.tagMapper=tagMapper;
+        this.tagMapper = tagMapper;
     }
 
     @Override
@@ -60,5 +60,10 @@ public class TagServiceImpl implements TagService {
             throw new NoSuchEntityException(TAG_NOT_FOUND);
         }
         tagRepository.delete(id);
+    }
+
+    @Override
+    public TagDto getMostUsedTagOfUserWithHighestCostOfOrders(long userId) {
+        return tagMapper.toDto(tagRepository.getMostWildlyUsedTag(userId));
     }
 }
