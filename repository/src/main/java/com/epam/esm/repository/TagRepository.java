@@ -36,4 +36,12 @@ public interface TagRepository {
      * @return Optional of found tag
      */
     Optional<Tag> findByName(String name);
+
+    /**
+     * Finds the most widely used tag of a user with the highest cost of all orders
+     *
+     * @param userId User id
+     * @return found tag
+     */
+    Tag getMostWildlyUsedTag(long userId);
 }

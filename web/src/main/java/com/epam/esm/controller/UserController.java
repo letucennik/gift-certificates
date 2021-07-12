@@ -1,6 +1,8 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.LinkAdder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,13 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+    private final TagService tagService;
     private final LinkAdder<UserDto> userDtoLinkAdder;
 
     @Autowired
-    public UserController(UserService userService, LinkAdder<UserDto> userDtoLinkAdder) {
+    public UserController(UserService userService,TagService tagService, LinkAdder<UserDto> userDtoLinkAdder) {
         this.userService = userService;
+        this.tagService=tagService;
         this.userDtoLinkAdder = userDtoLinkAdder;
     }
 
@@ -45,5 +49,10 @@ public class UserController {
         UserDto userDto = userService.read(id);
         userDtoLinkAdder.addLinks(userDto);
         return userDto;
+    }
+
+    @GetMapping("/{userId}/most-used-tag")
+    public TagDto getMostUsedTagOfUserWithHighestCostOfOrders(@PathVariable long userId){
+        return tagService.getMostUsedTagOfUserWithHighestCostOfOrders(userId);
     }
 }

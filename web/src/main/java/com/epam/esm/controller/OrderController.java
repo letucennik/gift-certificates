@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/rest/v1/users/{userId}/orders")
 public class OrderController {
@@ -35,5 +38,23 @@ public class OrderController {
         OrderDto createdOrderDto = orderService.create(dto);
         orderDtoLinkAdder.addLinks(createdOrderDto);
         return createdOrderDto;
+    }
+
+    @GetMapping
+    public List<OrderDto> getUserOrders(@PathVariable long userId,
+                                        @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+                                        @RequestParam(value = "size", defaultValue = "4", required = false) int size) {
+        List<OrderDto> orders = orderService.getUserOrders(userId, page, size);
+        return orders.stream()
+                .peek(orderDtoLinkAdder::addLinks)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDto getOrder(@PathVariable long userId, @PathVariable long orderId) {
+        OrderDto orderDto = orderService.findByUserId(userId, orderId);
+        orderDtoLinkAdder.addLinks(orderDto);
+        return orderDto;
     }
 }

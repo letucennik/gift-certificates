@@ -33,4 +33,11 @@ public interface TagService {
      * @throws NoSuchEntityException when such tag doesn't exists
      */
     void delete(long id);
+
+    /**
+     * Finds the most widely used tag of a user with the highest cost of all orders.
+     *
+     * @return Optional of found tagDto
+     */
+    TagDto getMostUsedTagOfUserWithHighestCostOfOrders(long userId);
 }

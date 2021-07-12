@@ -52,4 +52,23 @@ public class TagRepositoryImpl implements TagRepository {
         criteriaQuery.where(criteriaBuilder.equal(root.get("name"), name));
         return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Tag getMostWildlyUsedTag(long userId) {
+        return (Tag) entityManager.createNativeQuery(
+                "SELECT tag.id AS tag_id, tag.name AS tag_name " +
+                        "FROM tag " +
+                        "JOIN m2m_certificates_tags gct ON gct.tag_id = tag.id " +
+                        "JOIN order_certificates oc ON oc.certificate_id = gct.gift_certificate_id " +
+                        "JOIN orders o ON o.id=oc.order_id "+
+                        "WHERE o.user_id = :userId " +
+                        "GROUP BY tag.id " +
+                        "ORDER BY COUNT(tag.id) DESC " +
+                        "LIMIT 1")
+                .setParameter("userId", userId)
+                .getSingleResult();
+    }
+
+
 }

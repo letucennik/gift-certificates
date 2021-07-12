@@ -30,7 +30,7 @@ public class OrderLinkAdder extends AbstractLinkAdder<OrderDto> {
 
     @Override
     public void addLinks(OrderDto entity) {
-        UserDto userDto = userService.read(entity.getUser().getId());
+        UserDto userDto = entity.getUser();
         entity.add(linkTo(CONTROLLER)
                 .slash(userDto.getId())
                 .slash("orders")
