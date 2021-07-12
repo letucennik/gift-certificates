@@ -1,5 +1,6 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DAOException;
 import com.epam.esm.repository.TagRepository;
@@ -54,18 +55,18 @@ public class TagRepositoryImpl implements TagRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Tag getMostWildlyUsedTag(long userId) {
-        return (Tag) entityManager.createNativeQuery(
-                "SELECT tag.id AS tag_id, tag.name AS tag_name " +
+    public MostWidelyUsedTag getMostWildlyUsedTag(long userId) {
+        return (MostWidelyUsedTag) entityManager.createNativeQuery(
+                "SELECT tag.id AS tag_id, tag.name AS tag_name , MAX(o.cost) AS highest_cost " +
                         "FROM tag " +
                         "JOIN m2m_certificates_tags gct ON gct.tag_id = tag.id " +
                         "JOIN order_certificates oc ON oc.certificate_id = gct.gift_certificate_id " +
-                        "JOIN orders o ON o.id=oc.order_id "+
+                        "JOIN orders o ON o.id=oc.order_id " +
                         "WHERE o.user_id = :userId " +
                         "GROUP BY tag.id " +
                         "ORDER BY COUNT(tag.id) DESC " +
-                        "LIMIT 1")
+                        "LIMIT 1",
+                "mostWidelyUsedTagMapper")
                 .setParameter("userId", userId)
                 .getSingleResult();
     }

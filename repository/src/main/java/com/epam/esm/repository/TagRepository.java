@@ -1,5 +1,6 @@
 package com.epam.esm.repository;
 
+import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.entity.Tag;
 
 import java.util.Optional;
@@ -43,5 +44,5 @@ public interface TagRepository {
      * @param userId User id
      * @return found tag
      */
-    Tag getMostWildlyUsedTag(long userId);
+    MostWidelyUsedTag getMostWildlyUsedTag(long userId);
 }
