@@ -1,11 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.mapper.Mapper;
-import com.epam.esm.dto.mapper.impl.MostUsedTagMapper;
-import com.epam.esm.dto.mapper.impl.TagMapper;
-import com.epam.esm.entity.MostWidelyUsedTag;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidParameterException;
@@ -27,17 +23,14 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final Validator<TagDto> tagValidator;
     private final Mapper<Tag, TagDto> tagMapper;
-    private final Mapper<MostWidelyUsedTag,MostUsedTagDto> mostUsedTagDtoMapper;
 
     @Autowired
     public TagServiceImpl(TagRepository tagRepository,
                           Validator<TagDto> tagValidator,
-                          Mapper<Tag, TagDto> tagMapper,
-                          Mapper<MostWidelyUsedTag,MostUsedTagDto> mostUsedTagDtoMapper) {
+                          Mapper<Tag, TagDto> tagMapper) {
         this.tagRepository = tagRepository;
         this.tagValidator = tagValidator;
         this.tagMapper = tagMapper;
-        this.mostUsedTagDtoMapper=mostUsedTagDtoMapper;
     }
 
     @Override
@@ -71,8 +64,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public MostUsedTagDto getMostWidelyUsedTag(Long userId) {
-        MostWidelyUsedTag mostWidelyUsedTag = tagRepository.getMostWildlyUsedTag(userId);
-        return mostUsedTagDtoMapper.toDto(mostWidelyUsedTag);
+    public TagDto getMostWidelyUsedTag() {
+        return tagMapper.toDto(tagRepository.getMostWidelyUsedTag());
     }
 }

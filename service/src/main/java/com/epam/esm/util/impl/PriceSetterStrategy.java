@@ -6,11 +6,7 @@ import com.epam.esm.util.SetterStrategy;
 
 import java.math.BigDecimal;
 
-public class PriceSetterStrategy extends SetterStrategy {
-
-    public PriceSetterStrategy(GiftCertificate certificate) {
-        super(certificate);
-    }
+public class PriceSetterStrategy implements SetterStrategy {
 
     @Override
     public Field getField() {
@@ -18,7 +14,7 @@ public class PriceSetterStrategy extends SetterStrategy {
     }
 
     @Override
-    public void setField(Object value) {
+    public void setField(GiftCertificate certificate, Object value) {
         certificate.setPrice((BigDecimal) value);
     }
 

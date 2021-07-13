@@ -16,10 +16,6 @@ import com.epam.esm.repository.query.SortContext;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.Field;
 import com.epam.esm.util.SetterStrategy;
-import com.epam.esm.util.impl.DescriptionSetterStrategy;
-import com.epam.esm.util.impl.DurationSetterStrategy;
-import com.epam.esm.util.impl.NameSetterStrategy;
-import com.epam.esm.util.impl.PriceSetterStrategy;
 import com.epam.esm.validator.Validator;
 import com.epam.esm.validator.impl.GiftCertificateValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +27,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -54,22 +53,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateMapper certificateMapper;
     private final TagMapper tagMapper;
-
-    private List<SetterStrategy> setters(GiftCertificate certificate) {
-        return Arrays.asList(new NameSetterStrategy(certificate), new DescriptionSetterStrategy(certificate), new PriceSetterStrategy(certificate), new DurationSetterStrategy(certificate));
-    }
-
-    private Map<Field, SetterStrategy> setterMap(List<SetterStrategy> setters) {
-        return setters.stream()
-                .collect(Collectors.toMap(SetterStrategy::getField, Function.identity()));
-    }
+    private final Map<Field, SetterStrategy> setterMap;
 
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateRepository, CertificateTagRepository certificateTagRepository,
                                       TagRepository tagRepository,
                                       Validator<GiftCertificate> giftCertificateValidator,
                                       Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator, GiftCertificateMapper mapper,
-                                      TagMapper tagMapper) {
+                                      TagMapper tagMapper,
+                                      Map<Field, SetterStrategy> setterMap) {
         this.giftCertificateRepository = giftCertificateRepository;
         this.certificateTagRepository = certificateTagRepository;
         this.tagRepository = tagRepository;
@@ -78,6 +70,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         this.sortContextValidator = sortContextValidator;
         this.certificateMapper = mapper;
         this.tagMapper = tagMapper;
+        this.setterMap = setterMap;
     }
 
     @Override
@@ -122,10 +115,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void setUpdatedFields(GiftCertificate certificate, Map<String, Object> updateInfo) {
-        List<SetterStrategy> setterStrategies = setters(certificate);
-        Map<Field, SetterStrategy> setterMap = setterMap(setterStrategies);
         updateInfo.forEach((key, value) -> {
-            setterMap.get(Field.valueOf(key.toUpperCase())).setField(value);
+            setterMap.get(Field.valueOf(key.toUpperCase())).setField(certificate, value);
         });
     }
 

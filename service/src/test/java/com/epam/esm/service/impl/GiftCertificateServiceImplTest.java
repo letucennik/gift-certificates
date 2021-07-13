@@ -12,6 +12,8 @@ import com.epam.esm.repository.CertificateTagRepository;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.query.SortContext;
+import com.epam.esm.util.Field;
+import com.epam.esm.util.SetterStrategy;
 import com.epam.esm.validator.Validator;
 import com.epam.esm.validator.impl.GiftCertificateValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,7 @@ import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,6 +57,8 @@ class GiftCertificateServiceImplTest {
     private Validator<TagDto> tagValidator;
     @Mock
     private Validator<SortContext> sortContextValidator;
+    @Spy
+    private Map<Field, SetterStrategy> setterMap;
 
     @Spy
     private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(), new TagMapper(new ModelMapper()));
@@ -79,7 +84,7 @@ class GiftCertificateServiceImplTest {
         certificateDto = new GiftCertificateDto(certificateToCreate);
         secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper, tagMapper);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper, tagMapper,setterMap);
     }
 
     @Test

@@ -51,7 +51,6 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.OK)
     public OrderDto getOrder(@PathVariable long userId, @PathVariable long orderId) {
         OrderDto orderDto = orderService.findByUserId(userId, orderId);
         orderDtoLinkAdder.addLinks(orderDto);

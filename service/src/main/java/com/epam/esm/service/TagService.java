@@ -1,6 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.DuplicateEntityException;
 import com.epam.esm.exception.InvalidParameterException;
@@ -38,9 +37,7 @@ public interface TagService {
     /**
      * Finds the most widely used tag of a user with the highest cost of all orders
      *
-     * @param userId UserDto id
-     * @return MostWidelyUsedTag entity witch contains the most widely used tag of a user
-     * and the highest cost of all orders
+     * @return found TagDto
      */
-    MostUsedTagDto getMostWidelyUsedTag(Long userId);
+    TagDto getMostWidelyUsedTag();
 }
