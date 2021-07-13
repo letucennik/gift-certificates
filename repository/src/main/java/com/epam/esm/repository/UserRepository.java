@@ -1,6 +1,6 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.entity.User;
+import com.epam.esm.repository.entity.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

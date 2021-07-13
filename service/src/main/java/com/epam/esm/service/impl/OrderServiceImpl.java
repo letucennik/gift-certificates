@@ -1,12 +1,12 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.mapper.Mapper;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Order;
-import com.epam.esm.exception.InvalidParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.GiftCertificateDto;
+import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.dto.mapper.Mapper;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Order;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;

@@ -1,9 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.UserDto;
-import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.UserDto;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 
 import java.util.List;
 

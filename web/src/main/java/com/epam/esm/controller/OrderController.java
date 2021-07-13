@@ -1,9 +1,9 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.OrderDto;
+import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.LinkAdder;
+import com.epam.esm.controller.util.LinkAdder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

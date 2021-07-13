@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.OrderDto;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.exception.NoSuchEntityException;
 
 import java.util.List;
 

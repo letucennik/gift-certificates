@@ -42,7 +42,7 @@ public class TestJdbcConfig {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(embeddedDatabase());
         entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
-        entityManagerFactoryBean.setPackagesToScan("com.epam.esm.entity");
+        entityManagerFactoryBean.setPackagesToScan("com.epam.esm.repository.entity");
         entityManagerFactoryBean.setJpaProperties(hibernateProperties());
         return entityManagerFactoryBean;
     }

@@ -1,9 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 
 public interface TagService {
 

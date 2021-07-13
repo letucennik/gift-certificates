@@ -1,10 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidParameterException;
-import com.epam.esm.exception.InvalidSortParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.GiftCertificateDto;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.InvalidSortParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.query.SortContext;
 
 import java.util.List;

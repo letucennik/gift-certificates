@@ -1,7 +1,7 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
+import com.epam.esm.repository.entity.Order;
+import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

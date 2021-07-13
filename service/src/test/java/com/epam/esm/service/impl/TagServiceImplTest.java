@@ -1,14 +1,14 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.mapper.impl.TagMapper;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.dto.mapper.impl.TagMapper;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.TagRepository;
-import com.epam.esm.validator.Validator;
-import com.epam.esm.validator.impl.TagValidator;
+import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.impl.TagValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
