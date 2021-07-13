@@ -60,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
             throw new InvalidParameterException("user.invalid");
         }
         List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
+        if(orderCertificates==null||orderCertificates.isEmpty()){
+            throw new InvalidParameterException("orders.empty");
+        }
         Iterator<GiftCertificateDto> iterator = orderCertificates.iterator();
         List<GiftCertificateDto> changedOrderCertificates = new ArrayList<>();
         while (iterator.hasNext()) {
