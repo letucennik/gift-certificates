@@ -4,23 +4,20 @@ import com.epam.esm.entity.audit.AuditListener;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor
 @Data
 @EntityListeners(AuditListener.class)
 @Table(name = "tag")
-@SqlResultSetMapping(name = "mostWidelyUsedTagMapper",
-        classes = {
-                @ConstructorResult(targetClass = MostWidelyUsedTag.class,
-                        columns = {
-                                @ColumnResult(name = "tag_id", type = Long.class),
-                                @ColumnResult(name = "tag_name", type = String.class),
-                                @ColumnResult(name = "highest_cost", type = BigDecimal.class)
-                        })})
 public class Tag implements Serializable {
 
     @Id

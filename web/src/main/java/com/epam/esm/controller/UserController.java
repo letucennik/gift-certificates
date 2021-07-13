@@ -1,14 +1,18 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.MostUsedTagDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.LinkAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,13 +22,11 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final TagService tagService;
     private final LinkAdder<UserDto> userDtoLinkAdder;
 
     @Autowired
-    public UserController(UserService userService,TagService tagService, LinkAdder<UserDto> userDtoLinkAdder) {
+    public UserController(UserService userService, LinkAdder<UserDto> userDtoLinkAdder) {
         this.userService = userService;
-        this.tagService=tagService;
         this.userDtoLinkAdder = userDtoLinkAdder;
     }
 
@@ -50,10 +52,5 @@ public class UserController {
         UserDto userDto = userService.read(id);
         userDtoLinkAdder.addLinks(userDto);
         return userDto;
-    }
-
-    @GetMapping("/{userId}/most-used-tag")
-    public MostUsedTagDto getMostUsedTagOfUserWithHighestCostOfOrders(@PathVariable long userId){
-        return tagService.getMostWidelyUsedTag(userId);
     }
 }

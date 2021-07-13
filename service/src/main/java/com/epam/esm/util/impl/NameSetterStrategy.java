@@ -4,11 +4,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.util.Field;
 import com.epam.esm.util.SetterStrategy;
 
-public class NameSetterStrategy extends SetterStrategy {
-
-    public NameSetterStrategy(GiftCertificate certificate) {
-        super(certificate);
-    }
+public class NameSetterStrategy implements SetterStrategy {
 
     @Override
     public Field getField() {
@@ -16,7 +12,7 @@ public class NameSetterStrategy extends SetterStrategy {
     }
 
     @Override
-    public void setField(Object value) {
+    public void setField(GiftCertificate certificate, Object value) {
         certificate.setName((String) value);
     }
 
