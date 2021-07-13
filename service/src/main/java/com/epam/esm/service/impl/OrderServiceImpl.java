@@ -1,16 +1,16 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.service.dto.GiftCertificateDto;
-import com.epam.esm.service.dto.OrderDto;
-import com.epam.esm.service.dto.mapper.Mapper;
-import com.epam.esm.repository.entity.GiftCertificate;
-import com.epam.esm.repository.entity.Order;
-import com.epam.esm.service.exception.InvalidParameterException;
-import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Order;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.service.dto.GiftCertificateDto;
+import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.dto.mapper.Mapper;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
             throw new InvalidParameterException("user.invalid");
         }
         List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
-        if(orderCertificates==null||orderCertificates.isEmpty()){
+        if (orderCertificates == null || orderCertificates.isEmpty()) {
             throw new InvalidParameterException("orders.empty");
         }
         Iterator<GiftCertificateDto> iterator = orderCertificates.iterator();

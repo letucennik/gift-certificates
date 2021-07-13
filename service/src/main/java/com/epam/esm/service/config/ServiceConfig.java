@@ -7,9 +7,9 @@ import com.epam.esm.service.util.impl.DurationSetterStrategy;
 import com.epam.esm.service.util.impl.NameSetterStrategy;
 import com.epam.esm.service.util.impl.PriceSetterStrategy;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Arrays;
@@ -19,12 +19,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @EnableTransactionManagement
-@org.springframework.context.annotation.Configuration
+@Configuration
 public class ServiceConfig {
 
     @Bean
-    public Map<Field, SetterStrategy> setterMap(){
-        List<SetterStrategy> setterStrategies= Arrays.asList(new NameSetterStrategy(), new DescriptionSetterStrategy(), new PriceSetterStrategy(), new DurationSetterStrategy());
+    public Map<Field, SetterStrategy> setterMap() {
+        List<SetterStrategy> setterStrategies = Arrays.asList(new NameSetterStrategy(), new DescriptionSetterStrategy(), new PriceSetterStrategy(), new DurationSetterStrategy());
         return setterStrategies.stream()
                 .collect(Collectors.toMap(SetterStrategy::getField, Function.identity()));
     }
@@ -36,7 +36,7 @@ public class ServiceConfig {
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setFieldMatchingEnabled(true)
                 .setSkipNullEnabled(true)
-                .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
         return mapper;
     }
 }
