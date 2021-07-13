@@ -1,6 +1,6 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.repository.entity.GiftCertificate;
 import com.epam.esm.repository.query.SortContext;
 import org.springframework.data.domain.Pageable;
 

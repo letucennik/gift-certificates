@@ -1,7 +1,7 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.User;
-import com.epam.esm.exception.DAOException;
+import com.epam.esm.repository.entity.User;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.UserRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

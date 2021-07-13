@@ -1,8 +1,8 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.LinkAdder;
+import com.epam.esm.controller.util.LinkAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

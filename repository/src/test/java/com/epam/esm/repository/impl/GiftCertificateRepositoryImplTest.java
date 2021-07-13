@@ -1,7 +1,7 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.exception.DAOException;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import com.epam.esm.repository.query.SortContext;

@@ -1,8 +1,8 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.CertificateTag;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DAOException;
+import com.epam.esm.repository.entity.CertificateTag;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
