@@ -8,6 +8,7 @@ import com.epam.esm.repository.entity.Order;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.OrderDto;
+import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.dto.mapper.Mapper;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
@@ -53,11 +54,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto create(OrderDto orderDto) {
-        if (orderDto.getUser() == null || !userRepository.read(orderDto.getUser().getId()).isPresent()) {
+        UserDto dtoUser = orderDto.getUser();
+        if (dtoUser == null) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
-        if (orderDto.getUser().getId() < 0) {
+        if (dtoUser.getId() < 0) {
             throw new InvalidParameterException("user.invalid");
+        }
+        if (!userRepository.read(dtoUser.getId()).isPresent()) {
+            throw new NoSuchEntityException(USER_NOT_FOUND);
         }
         List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
         if (orderCertificates == null || orderCertificates.isEmpty()) {
