@@ -62,6 +62,7 @@ public class GiftCertificateController {
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "25", required = false) int size) {
         List<GiftCertificateDto> certificates = giftCertificateService.findByParameters(tagNames, partInfo, new SortContext(sortColumns, orderTypes), page, size);
-        return certificates.stream().peek(certificateDtoLinkAdder::addLinks).collect(Collectors.toList());
+        certificates.forEach(certificateDtoLinkAdder::addLinks);
+        return certificates;
     }
 }
