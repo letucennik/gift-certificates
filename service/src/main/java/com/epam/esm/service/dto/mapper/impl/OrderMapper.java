@@ -1,11 +1,13 @@
 package com.epam.esm.service.dto.mapper.impl;
 
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Order;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.mapper.Mapper;
-import com.epam.esm.repository.entity.GiftCertificate;
-import com.epam.esm.repository.entity.Order;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import java.util.Objects;
 @Component
 public class OrderMapper implements Mapper<Order, OrderDto> {
 
+    private final Logger logger = LoggerFactory.getLogger(OrderMapper.class);
     private final ModelMapper mapper;
     private final Mapper<GiftCertificate, GiftCertificateDto> giftCertificateDtoMapper;
 
@@ -26,22 +29,12 @@ public class OrderMapper implements Mapper<Order, OrderDto> {
 
     @Override
     public Order toModel(OrderDto dto) {
-        Order order = Objects.isNull(dto) ? null : mapper.map(dto, Order.class);
-        order.getCertificates().clear();
-        for (GiftCertificateDto certificate : dto.getCertificates()) {
-            order.getCertificates().add(giftCertificateDtoMapper.toModel(certificate));
-        }
-        return order;
+        return Objects.isNull(dto) ? null : mapper.map(dto, Order.class);
     }
 
     @Override
     public OrderDto toDto(Order model) {
-        OrderDto dto = Objects.isNull(model) ? null : mapper.map(model, OrderDto.class);
-        dto.getCertificates().clear();
-        for (GiftCertificate certificate : model.getCertificates()) {
-            dto.getCertificates().add(giftCertificateDtoMapper.toDto(certificate));
-        }
-        return dto;
+        return Objects.isNull(model) ? null : mapper.map(model, OrderDto.class);
     }
 
 }
