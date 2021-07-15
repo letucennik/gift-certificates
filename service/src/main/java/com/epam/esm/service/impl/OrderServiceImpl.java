@@ -88,12 +88,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDto findByUserId(long userId, long orderId) {
-        Order foundOrder = orderRepository.read(orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
-        userRepository.read(userId).orElseThrow(()->new NoSuchEntityException(USER_NOT_FOUND));
-        List<Order> userOrders = orderRepository.getUserOrders(userId, PageRequest.of(0, Integer.MAX_VALUE));
-        if (userOrders == null || userOrders.isEmpty() || !userOrders.contains(foundOrder)) {
-            throw new NoSuchEntityException(ORDER_NOT_FOUND);
-        }
+        userRepository.read(userId).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
+        Order foundOrder = orderRepository.findByUserId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
         return orderMapper.toDto(foundOrder);
     }
 
