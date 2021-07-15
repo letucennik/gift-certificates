@@ -41,10 +41,9 @@ public class GiftCertificateMapper implements Mapper<GiftCertificate, GiftCertif
     @Override
     public GiftCertificateDto toDto(GiftCertificate model) {
         GiftCertificateDto dto = Objects.isNull(model) ? null : mapper.map(model, GiftCertificateDto.class);
-        TagMapper mapper = new TagMapper(new ModelMapper());
         if (model.getCertificateTags() != null) {
             for (CertificateTag certificateTag : model.getCertificateTags()) {
-                dto.getTags().add(mapper.toDto(certificateTag.getTag()));
+                dto.getTags().add(tagMapper.toDto(certificateTag.getTag()));
             }
         }
         return dto;
