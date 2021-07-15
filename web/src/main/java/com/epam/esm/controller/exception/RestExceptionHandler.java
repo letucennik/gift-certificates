@@ -21,6 +21,11 @@ public class RestExceptionHandler {
     private static final List<String> AVAILABLE_LOCALES = Arrays.asList("en", "ru");
     private static final Locale DEFAULT_LOCALE = new Locale("ru");
 
+    public static final int INVALID_ENTITY_PARAMETER_CODE = 40001;
+    public static final int ENTITY_ALREADY_EXISTS_CODE = 40901;
+    public static final int ENTITY_NOT_FOUND_CODE = 40401;
+    public static final int INVALID_REQUEST_PARAMETER_CODE = 40003;
+
     private final ResourceBundleMessageSource bundleMessageSource;
 
     @Autowired
@@ -32,25 +37,25 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleInvalidEntityExceptionException(
             InvalidParameterException e, Locale locale) {
-        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40001);
+        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), INVALID_ENTITY_PARAMETER_CODE);
     }
 
     @ExceptionHandler(DuplicateEntityException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleDuplicateEntityException(DuplicateEntityException e, Locale locale) {
-        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40901);
+        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), ENTITY_ALREADY_EXISTS_CODE);
     }
 
     @ExceptionHandler(NoSuchEntityException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResponse handleNoSuchEntityException(NoSuchEntityException e, Locale locale) {
-        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40401);
+        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), ENTITY_NOT_FOUND_CODE);
     }
 
     @ExceptionHandler(InvalidSortParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleInvalidParametersException(InvalidSortParameterException e, Locale locale) {
-        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), 40003);
+        return buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), INVALID_REQUEST_PARAMETER_CODE);
     }
 
     private ExceptionResponse buildResponse(String message, int code) {
