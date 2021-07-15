@@ -6,6 +6,7 @@ import com.epam.esm.repository.exception.DAOException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -66,9 +67,15 @@ public class TagRepositoryImpl implements TagRepository {
 
     @Override
     public Tag getMostWidelyUsedTag() {
-        return (Tag) entityManager
-                .createNativeQuery(GET_MOST_WIDELY_USED_TAG, Tag.class)
-                .getSingleResult();
+        Tag mostWidelyUsedTag;
+        try {
+            mostWidelyUsedTag = (Tag) entityManager
+                    .createNativeQuery(GET_MOST_WIDELY_USED_TAG, Tag.class)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new DAOException(e);
+        }
+        return mostWidelyUsedTag;
     }
 
 
