@@ -89,9 +89,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto findByUserId(long userId, long orderId) {
         Order foundOrder = orderRepository.read(orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
-        if (!userRepository.read(userId).isPresent()) {
-            throw new NoSuchEntityException(USER_NOT_FOUND);
-        }
+        userRepository.read(userId).orElseThrow(()->new NoSuchEntityException(USER_NOT_FOUND));
         List<Order> userOrders = orderRepository.getUserOrders(userId, PageRequest.of(0, Integer.MAX_VALUE));
         if (userOrders == null || userOrders.isEmpty() || !userOrders.contains(foundOrder)) {
             throw new NoSuchEntityException(ORDER_NOT_FOUND);
