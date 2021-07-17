@@ -6,3 +6,4 @@
 **/log
 **/*.iml
 **/.idea
+repository/src/main/resources/db.properties
