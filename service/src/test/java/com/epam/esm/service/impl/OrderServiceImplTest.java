@@ -1,5 +1,12 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.OrderRepository;
+import com.epam.esm.repository.UserRepository;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Order;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.OrderDto;
 import com.epam.esm.service.dto.TagDto;
@@ -9,15 +16,9 @@ import com.epam.esm.service.dto.mapper.impl.GiftCertificateMapper;
 import com.epam.esm.service.dto.mapper.impl.OrderMapper;
 import com.epam.esm.service.dto.mapper.impl.TagMapper;
 import com.epam.esm.service.dto.mapper.impl.UserMapper;
-import com.epam.esm.repository.entity.GiftCertificate;
-import com.epam.esm.repository.entity.Order;
-import com.epam.esm.repository.entity.Tag;
-import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.repository.GiftCertificateRepository;
-import com.epam.esm.repository.OrderRepository;
-import com.epam.esm.repository.UserRepository;
+import com.epam.esm.service.validator.impl.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -57,15 +58,16 @@ class OrderServiceImplTest {
 
     private Mapper<Tag, TagDto> tagMapper = new TagMapper(new ModelMapper());
     private Mapper<GiftCertificate, GiftCertificateDto> giftCertificateMapper = new GiftCertificateMapper(new ModelMapper(), tagMapper);
-    private Mapper<Order, OrderDto> orderMapper = new OrderMapper(new ModelMapper(),giftCertificateMapper);
+    private Mapper<Order, OrderDto> orderMapper = new OrderMapper(new ModelMapper(), giftCertificateMapper);
     private Mapper<User, UserDto> userMapper = new UserMapper(new ModelMapper());
+    private UserValidator userValidator = new UserValidator();
 
     private OrderServiceImpl orderService;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        orderService = new OrderServiceImpl(orderRepository, certificateRepository, userRepository, giftCertificateMapper, orderMapper);
+        orderService = new OrderServiceImpl(orderRepository, certificateRepository, userRepository, giftCertificateMapper, orderMapper, userValidator);
         firstGiftCertificateDto = GiftCertificateDto.builder()
                 .id(1)
                 .name("cert 1")

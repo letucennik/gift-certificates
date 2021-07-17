@@ -12,6 +12,7 @@ import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.dto.mapper.Mapper;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
+import com.epam.esm.service.validator.impl.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,32 +39,27 @@ public class OrderServiceImpl implements OrderService {
     private final Mapper<GiftCertificate, GiftCertificateDto> giftCertificateMapper;
     private final Mapper<Order, OrderDto> orderMapper;
 
+    private final UserValidator userValidator;
+
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             GiftCertificateRepository certificateRepository,
                             UserRepository userRepository,
                             Mapper<GiftCertificate, GiftCertificateDto> giftCertificateMapper,
-                            Mapper<Order, OrderDto> orderMapper) {
+                            Mapper<Order, OrderDto> orderMapper,
+                            UserValidator userValidator) {
         this.orderRepository = orderRepository;
         this.certificateRepository = certificateRepository;
         this.userRepository = userRepository;
         this.giftCertificateMapper = giftCertificateMapper;
         this.orderMapper = orderMapper;
+        this.userValidator = userValidator;
     }
 
     @Override
     @Transactional
     public OrderDto create(OrderDto orderDto) {
-        UserDto dtoUser = orderDto.getUser();
-        if (dtoUser == null) {
-            throw new NoSuchEntityException(USER_NOT_FOUND);
-        }
-        if (dtoUser.getId() < 0) {
-            throw new InvalidParameterException("user.invalid");
-        }
-        if (!userRepository.read(dtoUser.getId()).isPresent()) {
-            throw new NoSuchEntityException(USER_NOT_FOUND);
-        }
+        validateUser(orderDto.getUser());
         List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
         if (orderCertificates == null || orderCertificates.isEmpty()) {
             throw new InvalidParameterException("orders.empty");
@@ -118,6 +114,18 @@ public class OrderServiceImpl implements OrderService {
             cost = cost.add(certificate.getPrice());
         }
         return cost;
+    }
+
+    private void validateUser(UserDto userDto) {
+        if (!userValidator.isNotNull(userDto)) {
+            throw new NoSuchEntityException(USER_NOT_FOUND);
+        }
+        if (!userValidator.isIdValid(userDto.getId())) {
+            throw new InvalidParameterException("user.invalid");
+        }
+        if (!userRepository.read(userDto.getId()).isPresent()) {
+            throw new NoSuchEntityException(USER_NOT_FOUND);
+        }
     }
 
 
