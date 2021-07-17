@@ -1,6 +1,6 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.entity.Tag;
+import com.epam.esm.repository.entity.Tag;
 
 import java.util.Optional;
 
@@ -10,9 +10,9 @@ public interface TagRepository {
      * Creates new tag.
      *
      * @param tag Tag to create
-     * @return id of created tag
+     * @return created tag
      */
-    long create(Tag tag);
+    Tag create(Tag tag);
 
     /**
      * Finds tag by id.
@@ -27,7 +27,7 @@ public interface TagRepository {
      *
      * @param id Tag id to delete
      */
-    int delete(long id);
+    void delete(long id);
 
     /**
      * Finds Tag by name.
@@ -36,4 +36,11 @@ public interface TagRepository {
      * @return Optional of found tag
      */
     Optional<Tag> findByName(String name);
+
+    /**
+     * Finds the most widely used tag of a user with the highest cost of all orders
+     *
+     * @return found tag
+     */
+    Tag getMostWidelyUsedTag();
 }

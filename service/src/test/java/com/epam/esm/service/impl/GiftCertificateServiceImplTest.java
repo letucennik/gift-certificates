@@ -1,27 +1,32 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.InvalidEntityParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.GiftCertificateDto;
+import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.dto.mapper.impl.GiftCertificateMapper;
+import com.epam.esm.service.dto.mapper.impl.TagMapper;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.CertificateTagRepository;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.query.SortContext;
-import com.epam.esm.validator.Validator;
-import com.epam.esm.validator.impl.GiftCertificateValidator;
+import com.epam.esm.service.util.Field;
+import com.epam.esm.service.util.SetterStrategy;
+import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.impl.GiftCertificateValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,11 +52,18 @@ class GiftCertificateServiceImplTest {
     @Mock
     private TagRepository tagRepository;
 
-    private Validator<GiftCertificate> certificateValidator;
+    private GiftCertificateValidator certificateValidator;
     @Mock
-    private Validator<Tag> tagValidator;
+    private Validator<TagDto> tagValidator;
     @Mock
     private Validator<SortContext> sortContextValidator;
+    @Spy
+    private Map<Field, SetterStrategy> setterMap;
+
+    @Spy
+    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(), new TagMapper(new ModelMapper()));
+    @Spy
+    private TagMapper tagMapper = new TagMapper(new ModelMapper());
 
     private Tag firstTag;
     private Tag secondTag;
@@ -63,31 +75,30 @@ class GiftCertificateServiceImplTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.initMocks(this);
-        certificateToCreate = new GiftCertificate(ID, "name",
-                "description", BigDecimal.TEN, LocalDateTime.now(), LocalDateTime.now(), 5);
-        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, LocalDateTime.now(), LocalDateTime.now(), 5);
+        certificateToCreate = new GiftCertificate(1, "name",
+                "description", BigDecimal.TEN, 5);
+        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, 5);
         firstTag = new Tag(1, "1");
         secondTag = new Tag(2, "2");
         sortContext = new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.DESC));
-        certificateDto = new GiftCertificateDto(certificateToCreate, Arrays.asList(firstTag, secondTag));
-        secondCertificateDto = new GiftCertificateDto(secondCertificate, new ArrayList<>());
+        certificateDto = new GiftCertificateDto(certificateToCreate);
+        secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper, tagMapper,setterMap);
     }
 
     @Test
     void testShouldCreate() {
         when(certificateValidator.isValid(any())).thenReturn(true);
-        when(tagValidator.isValid(any())).thenReturn(true);
-        when(tagRepository.findByName(anyString())).thenReturn(Optional.empty());
-        when(giftCertificateRepository.create(any())).thenReturn(ID);
+        when(giftCertificateRepository.create(any())).thenReturn(certificateToCreate);
+        when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.ofNullable(certificateToCreate));
         assertEquals(ID, giftCertificateService.create(certificateDto).getId());
     }
 
     @Test
     void testCreateShouldThrowInvalidEntityParameterException() {
         when(certificateValidator.isValid(any())).thenReturn(false);
-        assertThrows(InvalidEntityParameterException.class, () -> giftCertificateService.create(certificateDto));
+        assertThrows(InvalidParameterException.class, () -> giftCertificateService.create(certificateDto));
     }
 
     @Test
@@ -107,12 +118,12 @@ class GiftCertificateServiceImplTest {
     void testShouldUpdate() {
         when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.of(certificateToCreate));
         when(tagRepository.findByName(anyString())).thenReturn(Optional.of(secondTag));
-        when(((GiftCertificateValidator) certificateValidator).isNameValid(anyString())).thenReturn(true);
-        when(((GiftCertificateValidator) certificateValidator).isDescriptionValid(anyString())).thenReturn(true);
-        when(((GiftCertificateValidator) certificateValidator).isDurationValid(anyInt())).thenReturn(true);
-        when(((GiftCertificateValidator) certificateValidator).isPriceValid(any())).thenReturn(true);
+        when((certificateValidator).isNameValid(anyString())).thenReturn(true);
+        when(( certificateValidator).isDescriptionValid(anyString())).thenReturn(true);
+        when(( certificateValidator).isDurationValid(anyInt())).thenReturn(true);
+        when(( certificateValidator).isPriceValid(any())).thenReturn(true);
         assertEquals(certificateDto.getId(), giftCertificateService.update(ID, certificateDto).getId());
-        verify(giftCertificateRepository).update(anyLong(), any());
+        verify(giftCertificateRepository).update(any());
     }
 
     @Test
@@ -125,8 +136,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldFindByParametersAll() {
         when(sortContextValidator.isValid(any())).thenReturn(true);
-        when(giftCertificateRepository.findByParameters(anyString(), anyString(), any())).thenReturn(Collections.singletonList(secondCertificate));
-        assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters("tag 1", "certificate", sortContext));
+        when(giftCertificateRepository.findByParameters(any(), anyString(), any(), any())).thenReturn(Collections.singletonList(secondCertificate));
+        assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters(Collections.singletonList("tag1"), "certificate", sortContext, 0, 25));
     }
 
 

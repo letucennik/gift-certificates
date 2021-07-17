@@ -1,24 +1,32 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import com.epam.esm.repository.query.SortContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestJdbcConfig.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {TestJdbcConfig.class})
+@Transactional
 class GiftCertificateRepositoryImplTest {
 
     private static final String TAG_NAME = "tag 1";
@@ -30,52 +38,56 @@ class GiftCertificateRepositoryImplTest {
 
     private List<GiftCertificate> sortedAsc;
 
+    private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 25);
+
     @Autowired
     private GiftCertificateRepository giftCertificateRepository;
 
     @BeforeEach
     void init() {
         certificateToCreate = new GiftCertificate(
-                4L, "certificate new", "description new", new BigDecimal("1.10"),
-                LocalDateTime.parse("2020-01-01T01:11:11"),
-                LocalDateTime.parse("2021-01-01T01:22:11"), 1);
+                "certificate new", "description new", new BigDecimal("1.10"),
+                1, LocalDateTime.parse("2020-01-01T01:11:11"),
+                LocalDateTime.parse("2021-01-01T01:22:11"));
         firstCertificate = new GiftCertificate(
-                1L, "certificate 1", "description 1", new BigDecimal("1.10"),
-                LocalDateTime.parse("2020-01-01T01:11:11"),
-                LocalDateTime.parse("2021-01-01T01:22:11"), 1);
-        secondCertificate = new GiftCertificate(
-                2L, "certificate 2", "description 2", new BigDecimal("2.20"),
-                LocalDateTime.parse("2020-02-02T02:22:22"),
-                LocalDateTime.parse("2021-02-02T02:33:22"), 2);
-        thirdCertificate = new GiftCertificate(3L, "certificate 3", "description 3", new BigDecimal("3.30"),
-                LocalDateTime.parse("2020-03-03T03:33:33"),
-                LocalDateTime.parse("2021-03-03T03:44:33"), 3);
-        sortedAsc = Arrays.asList(firstCertificate, thirdCertificate, certificateToCreate);
+                "certificate 1", "description 1", new BigDecimal("1.10"),
+                1, LocalDateTime.parse("2020-01-01T01:11:11"),
+                LocalDateTime.parse("2021-01-01T01:22:11"));
+        firstCertificate.setId(1);
+        secondCertificate = new GiftCertificate("certificate 2", "description 2", new BigDecimal("2.20"),
+                2, LocalDateTime.parse("2020-02-02T02:22:22"),
+                LocalDateTime.parse("2021-02-02T02:33:22"));
+        secondCertificate.setId(2);
+        thirdCertificate = new GiftCertificate("certificate 3", "description 3", new BigDecimal("3.30"),
+                3, LocalDateTime.parse("2020-03-03T03:33:33"),
+                LocalDateTime.parse("2021-03-03T03:44:33"));
+        thirdCertificate.setId(3);
+        sortedAsc = Arrays.asList(firstCertificate, secondCertificate, thirdCertificate);
     }
 
     @Test
     void testShouldFindByParametersValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "certificate", null);
-        assertTrue(giftCertificates.containsAll(sortedAsc));
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "description", null, DEFAULT_PAGEABLE);
+        assertTrue(sortedAsc.containsAll(giftCertificates));
     }
 
     @Test
     void testShouldByParametersSort() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)));
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)),DEFAULT_PAGEABLE);
         assertEquals(sortedAsc, giftCertificates);
     }
 
     @Test
     void testShouldCreate() {
-        Long id = giftCertificateRepository.create(certificateToCreate);
-        assertNotNull(id);
+        GiftCertificate certificate = giftCertificateRepository.create(certificateToCreate);
+        assertNotNull(certificate);
     }
 
     @Test
     void testShouldFindById() {
         Optional<GiftCertificate> giftCertificate = giftCertificateRepository.read(1);
         assertTrue(giftCertificate.isPresent());
-        assertEquals(giftCertificate.get().getId(), firstCertificate.getId());
+        assertEquals(1, giftCertificate.get().getId());
     }
 
     @Test
@@ -86,31 +98,22 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldUpdateById() {
-        Map<String, Object> updateInfo = new HashMap<>();
-        updateInfo.put("name", "certificate new name");
-        giftCertificateRepository.update(firstCertificate.getId(), updateInfo);
-        Optional<GiftCertificate> certificate = giftCertificateRepository.read(firstCertificate.getId());
-        assertTrue(certificate.isPresent());
-        assertEquals(certificate.get().getName(), "certificate new name");
+        firstCertificate.setName("new name");
+        GiftCertificate updated = giftCertificateRepository.update(firstCertificate);
+        assertEquals(updated.getName(), "new name");
     }
 
     @Test
     void testShouldDeleteById() {
-        giftCertificateRepository.delete(secondCertificate.getId());
+        giftCertificateRepository.delete(2);
         assertFalse(giftCertificateRepository.read(secondCertificate.getId()).isPresent());
     }
 
     @Test
     void testShouldTryDeleteByIdNonExistingCertificate() {
-        assertEquals(0, giftCertificateRepository.delete(345));
+        assertThrows(DAOException.class, () -> {
+            giftCertificateRepository.delete(566);
+        });
     }
-
-
-    @Test
-    void testShouldFindByParametersNameValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters("tag 1", "1", null);
-        assertEquals(Collections.singletonList(firstCertificate), giftCertificates);
-    }
-
 
 }
