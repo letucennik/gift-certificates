@@ -1,19 +1,19 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.repository.CertificateTagRepository;
+import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.TagRepository;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.query.SortContext;
+import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.mapper.impl.GiftCertificateMapper;
 import com.epam.esm.service.dto.mapper.impl.TagMapper;
-import com.epam.esm.repository.entity.GiftCertificate;
-import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.InvalidSortParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.repository.CertificateTagRepository;
-import com.epam.esm.repository.GiftCertificateRepository;
-import com.epam.esm.repository.TagRepository;
-import com.epam.esm.repository.query.SortContext;
-import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.util.Field;
 import com.epam.esm.service.util.SetterStrategy;
 import com.epam.esm.service.validator.Validator;
@@ -47,7 +47,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final TagRepository tagRepository;
     private final CertificateTagRepository certificateTagRepository;
 
-    private final Validator<GiftCertificate> giftCertificateValidator;
+    private final GiftCertificateValidator giftCertificateValidator;
     private final Validator<TagDto> tagValidator;
     private final Validator<SortContext> sortContextValidator;
 
@@ -58,7 +58,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Autowired
     public GiftCertificateServiceImpl(GiftCertificateRepository giftCertificateRepository, CertificateTagRepository certificateTagRepository,
                                       TagRepository tagRepository,
-                                      Validator<GiftCertificate> giftCertificateValidator,
+                                      GiftCertificateValidator giftCertificateValidator,
                                       Validator<TagDto> tagValidator, Validator<SortContext> sortContextValidator, GiftCertificateMapper mapper,
                                       TagMapper tagMapper,
                                       Map<Field, SetterStrategy> setterMap) {
@@ -122,34 +122,24 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private Map<String, Object> findUpdateInfo(GiftCertificate certificate) {
         Map<String, Object> updateInfo = new HashMap<>();
-        GiftCertificateValidator giftCertificateValidator =
-                (GiftCertificateValidator) this.giftCertificateValidator;
         String name = certificate.getName();
         if (name != null) {
-            if (!giftCertificateValidator.isNameValid(name)) {
-                throw new InvalidParameterException("certificate.name.invalid");
-            }
+            validateGiftCertificateName(name);
             updateInfo.put(NAME_FIELD, name);
         }
         String description = certificate.getDescription();
         if (description != null) {
-            if (!giftCertificateValidator.isDescriptionValid(description)) {
-                throw new InvalidParameterException("certificate.description.invalid");
-            }
+            validateGiftCertificateDescription(description);
             updateInfo.put(DESCRIPTION_FIELD, description);
         }
         BigDecimal price = certificate.getPrice();
         if (price != null) {
-            if (!giftCertificateValidator.isPriceValid(price)) {
-                throw new InvalidParameterException("certificate.price.invalid");
-            }
+            validateGiftCertificatePrice(price);
             updateInfo.put(PRICE_FIELD, price);
         }
         int duration = certificate.getDuration();
         if (duration != 0) {
-            if (!giftCertificateValidator.isDurationValid(duration)) {
-                throw new InvalidParameterException("certificate.duration.invalid");
-            }
+            validateGiftCertificateDuration(duration);
             updateInfo.put(DURATION_FIELD, duration);
         }
         return updateInfo;
@@ -204,8 +194,33 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private void validateGiftCertificate(GiftCertificate certificate) {
-        if (!giftCertificateValidator.isValid(certificate)) {
-            throw new InvalidParameterException("certificate.invalid");
+        validateGiftCertificateName(certificate.getName());
+        validateGiftCertificateDescription(certificate.getDescription());
+        validateGiftCertificatePrice(certificate.getPrice());
+        validateGiftCertificateDuration(certificate.getDuration());
+    }
+
+    private void validateGiftCertificateName(String name) {
+        if (!giftCertificateValidator.isNameValid(name)) {
+            throw new InvalidParameterException("certificate.name.invalid");
+        }
+    }
+
+    private void validateGiftCertificateDescription(String description) {
+        if (!giftCertificateValidator.isDescriptionValid(description)) {
+            throw new InvalidParameterException("certificate.description.invalid");
+        }
+    }
+
+    private void validateGiftCertificatePrice(BigDecimal price) {
+        if (!giftCertificateValidator.isPriceValid(price)) {
+            throw new InvalidParameterException("certificate.price.invalid");
+        }
+    }
+
+    private void validateGiftCertificateDuration(int duration) {
+        if (!giftCertificateValidator.isDurationValid(duration)) {
+            throw new InvalidParameterException("certificate.duration.invalid");
         }
     }
 

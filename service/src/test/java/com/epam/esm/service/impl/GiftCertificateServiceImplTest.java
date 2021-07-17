@@ -52,7 +52,7 @@ class GiftCertificateServiceImplTest {
     @Mock
     private TagRepository tagRepository;
 
-    private Validator<GiftCertificate> certificateValidator;
+    private GiftCertificateValidator certificateValidator;
     @Mock
     private Validator<TagDto> tagValidator;
     @Mock
