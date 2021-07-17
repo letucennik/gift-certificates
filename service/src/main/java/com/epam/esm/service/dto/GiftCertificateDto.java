@@ -2,10 +2,16 @@ package com.epam.esm.service.dto;
 
 import com.epam.esm.repository.entity.GiftCertificate;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +34,8 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     private LocalDateTime createDate;
     @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime lastUpdateDate;
-    private int duration;
+    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+    private Duration duration;
     private Set<TagDto> tags = new HashSet<>();
 
     public GiftCertificateDto(GiftCertificate certificate) {

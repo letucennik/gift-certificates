@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,14 +54,14 @@ public class GiftCertificate {
     private LocalDateTime lastUpdateDate;
 
     @Column
-    private int duration;
+    private Duration duration;
 
     @OneToMany(mappedBy = "certificate", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<CertificateTag> certificateTags = new HashSet<>();
 
-    public GiftCertificate(String name, String description, BigDecimal price, int duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
+    public GiftCertificate(String name, String description, BigDecimal price, Duration duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -69,7 +70,7 @@ public class GiftCertificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public GiftCertificate(String name, String description, BigDecimal price, int duration, Set<CertificateTag> certificateTags) {
+    public GiftCertificate(String name, String description, BigDecimal price, Duration duration, Set<CertificateTag> certificateTags) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -77,7 +78,7 @@ public class GiftCertificate {
         this.certificateTags = certificateTags;
     }
 
-    public GiftCertificate(long id, String name, String description, BigDecimal price, int duration) {
+    public GiftCertificate(long id, String name, String description, BigDecimal price, Duration duration) {
         this.id = id;
         this.name = name;
         this.description = description;

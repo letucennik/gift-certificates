@@ -4,6 +4,8 @@ import com.epam.esm.repository.entity.GiftCertificate;
 import com.epam.esm.service.util.SetterStrategy;
 import com.epam.esm.service.util.Field;
 
+import java.time.Duration;
+
 public class DurationSetterStrategy implements SetterStrategy {
 
     @Override
@@ -13,7 +15,7 @@ public class DurationSetterStrategy implements SetterStrategy {
 
     @Override
     public void setField(GiftCertificate certificate, Object value) {
-        certificate.setDuration((Integer) value);
+        certificate.setDuration((Duration) value);
     }
 
 }

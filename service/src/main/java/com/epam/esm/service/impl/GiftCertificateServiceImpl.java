@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,8 +138,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             validateGiftCertificatePrice(price);
             updateInfo.put(PRICE_FIELD, price);
         }
-        int duration = certificate.getDuration();
-        if (duration != 0) {
+        Duration duration = certificate.getDuration();
+        if (duration != null) {
             validateGiftCertificateDuration(duration);
             updateInfo.put(DURATION_FIELD, duration);
         }
@@ -218,7 +219,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
-    private void validateGiftCertificateDuration(int duration) {
+    private void validateGiftCertificateDuration(Duration duration) {
         if (!giftCertificateValidator.isDurationValid(duration)) {
             throw new InvalidParameterException("certificate.duration.invalid");
         }

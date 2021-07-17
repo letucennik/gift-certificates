@@ -5,6 +5,7 @@ import com.epam.esm.service.validator.Validator;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 @Component
 public class GiftCertificateValidator implements Validator<GiftCertificate> {
@@ -47,7 +48,7 @@ public class GiftCertificateValidator implements Validator<GiftCertificate> {
                 price.compareTo(PRICE_MAX_VALUE) <= 0;
     }
 
-    public boolean isDurationValid(int duration) {
-        return duration >= DURATION_MIN_VALUE;
+    public boolean isDurationValid(Duration duration) {
+        return !duration.isNegative() && !duration.isZero();
     }
 }
