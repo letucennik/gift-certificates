@@ -6,4 +6,4 @@
 **/log
 **/*.iml
 **/.idea
-C:\JavaWeb\gift-certificates\gift-certificates\repository\src\main\resources\db.properties
+repository/src/main/resources/db.properties
