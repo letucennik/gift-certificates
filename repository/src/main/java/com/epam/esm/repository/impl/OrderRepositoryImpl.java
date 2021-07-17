@@ -61,14 +61,13 @@ public class OrderRepositoryImpl implements OrderRepository {
     private CriteriaQuery<Order> buildCriteriaQuery(long userId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
-        Predicate joinIdPredicate = joinIdPredicate(criteriaBuilder, criteriaQuery, userId);
+        Predicate joinIdPredicate = joinIdPredicate(criteriaBuilder,criteriaQuery, userId);
         criteriaQuery.where(joinIdPredicate);
         return criteriaQuery;
     }
 
-    private Predicate joinIdPredicate(CriteriaBuilder criteriaBuilder, CriteriaQuery<Order> criteriaQuery, long userId) {
+    private Predicate joinIdPredicate(CriteriaBuilder criteriaBuilder,CriteriaQuery<Order>criteriaQuery, long userId) {
         Root<Order> root = criteriaQuery.from(Order.class);
-        Join<User, Order> userJoin = root.join("user");
-        return criteriaBuilder.equal(userJoin.get("id"), userId);
+        return criteriaBuilder.equal(root.get("user").get("id"), userId);
     }
 }
