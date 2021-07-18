@@ -7,3 +7,4 @@
 **/*.iml
 **/.idea
 repository/src/main/resources/db.properties
+web/src/main/resources/application.properties
