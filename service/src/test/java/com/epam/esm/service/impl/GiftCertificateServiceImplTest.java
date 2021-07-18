@@ -1,17 +1,17 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.repository.CertificateTagRepository;
+import com.epam.esm.repository.GiftCertificateRepository;
+import com.epam.esm.repository.TagRepository;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.query.SortContext;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.TagDto;
 import com.epam.esm.service.dto.mapper.impl.GiftCertificateMapper;
 import com.epam.esm.service.dto.mapper.impl.TagMapper;
-import com.epam.esm.repository.entity.GiftCertificate;
-import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.repository.CertificateTagRepository;
-import com.epam.esm.repository.GiftCertificateRepository;
-import com.epam.esm.repository.TagRepository;
-import com.epam.esm.repository.query.SortContext;
 import com.epam.esm.service.util.Field;
 import com.epam.esm.service.util.SetterStrategy;
 import com.epam.esm.service.validator.Validator;
@@ -25,14 +25,15 @@ import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -77,15 +78,15 @@ class GiftCertificateServiceImplTest {
     void init() {
         MockitoAnnotations.initMocks(this);
         certificateToCreate = new GiftCertificate(1, "name",
-                "description", BigDecimal.TEN, Duration.ofDays(5));
-        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, Duration.ofDays(5));
+                "description", BigDecimal.TEN, 5);
+        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, 5);
         firstTag = new Tag(1, "1");
         secondTag = new Tag(2, "2");
         sortContext = new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.DESC));
         certificateDto = new GiftCertificateDto(certificateToCreate);
         secondCertificateDto = new GiftCertificateDto(secondCertificate);
         certificateValidator = Mockito.mock(GiftCertificateValidator.class);
-        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper, tagMapper,setterMap);
+        giftCertificateService = new GiftCertificateServiceImpl(giftCertificateRepository, certificateTagRepository, tagRepository, certificateValidator, tagValidator, sortContextValidator, certificateMapper, tagMapper, setterMap);
     }
 
     @Test
@@ -120,9 +121,9 @@ class GiftCertificateServiceImplTest {
         when(giftCertificateRepository.read(anyLong())).thenReturn(Optional.of(certificateToCreate));
         when(tagRepository.findByName(anyString())).thenReturn(Optional.of(secondTag));
         when((certificateValidator).isNameValid(anyString())).thenReturn(true);
-        when(( certificateValidator).isDescriptionValid(anyString())).thenReturn(true);
-        when(( certificateValidator).isDurationValid(any())).thenReturn(true);
-        when(( certificateValidator).isPriceValid(any())).thenReturn(true);
+        when((certificateValidator).isDescriptionValid(anyString())).thenReturn(true);
+        when((certificateValidator).isDurationValid(any())).thenReturn(true);
+        when((certificateValidator).isPriceValid(any())).thenReturn(true);
         assertEquals(certificateDto.getId(), giftCertificateService.update(ID, certificateDto).getId());
         verify(giftCertificateRepository).update(any());
     }

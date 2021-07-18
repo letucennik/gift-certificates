@@ -15,7 +15,7 @@ public class DurationSetterStrategy implements SetterStrategy {
 
     @Override
     public void setField(GiftCertificate certificate, Object value) {
-        certificate.setDuration((Duration) value);
+        certificate.setDuration((Integer) value);
     }
 
 }

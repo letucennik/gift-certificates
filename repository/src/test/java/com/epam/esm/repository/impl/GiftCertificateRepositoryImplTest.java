@@ -1,9 +1,9 @@
 package com.epam.esm.repository.impl;
 
-import com.epam.esm.repository.entity.GiftCertificate;
-import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.config.TestJdbcConfig;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.query.SortContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +16,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestJdbcConfig.class})
@@ -48,19 +51,19 @@ class GiftCertificateRepositoryImplTest {
     void init() {
         certificateToCreate = new GiftCertificate(
                 "certificate new", "description new", new BigDecimal("1.10"),
-                Duration.ofDays(2), LocalDateTime.parse("2020-01-01T01:11:11"),
+                2, LocalDateTime.parse("2020-01-01T01:11:11"),
                 LocalDateTime.parse("2021-01-01T01:22:11"));
         firstCertificate = new GiftCertificate(
                 "certificate 1", "description 1", new BigDecimal("1.10"),
-                Duration.ofDays(1), LocalDateTime.parse("2020-01-01T01:11:11"),
+                1, LocalDateTime.parse("2020-01-01T01:11:11"),
                 LocalDateTime.parse("2021-01-01T01:22:11"));
         firstCertificate.setId(1);
         secondCertificate = new GiftCertificate("certificate 2", "description 2", new BigDecimal("2.20"),
-                Duration.ofDays(2), LocalDateTime.parse("2020-02-02T02:22:22"),
+                2, LocalDateTime.parse("2020-02-02T02:22:22"),
                 LocalDateTime.parse("2021-02-02T02:33:22"));
         secondCertificate.setId(2);
         thirdCertificate = new GiftCertificate("certificate 3", "description 3", new BigDecimal("3.30"),
-                Duration.ofDays(3), LocalDateTime.parse("2020-03-03T03:33:33"),
+                3, LocalDateTime.parse("2020-03-03T03:33:33"),
                 LocalDateTime.parse("2021-03-03T03:44:33"));
         thirdCertificate.setId(3);
         sortedAsc = Arrays.asList(firstCertificate, secondCertificate, thirdCertificate);
@@ -74,7 +77,7 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldByParametersSort() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)),DEFAULT_PAGEABLE);
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)), DEFAULT_PAGEABLE);
         assertEquals(sortedAsc, giftCertificates);
     }
 

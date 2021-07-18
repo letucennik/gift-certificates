@@ -28,7 +28,6 @@ public class GiftCertificateMapper implements Mapper<GiftCertificate, GiftCertif
     @Override
     public GiftCertificate toModel(GiftCertificateDto dto) {
         GiftCertificate certificate = Objects.isNull(dto) ? null : mapper.map(dto, GiftCertificate.class);
-        certificate.setDuration(Duration.ofDays(dto.getDuration()));
         if (dto.getTags() != null) {
             for (TagDto tagDto : dto.getTags()) {
                 CertificateTag certificateTag = new CertificateTag();
@@ -43,7 +42,6 @@ public class GiftCertificateMapper implements Mapper<GiftCertificate, GiftCertif
     @Override
     public GiftCertificateDto toDto(GiftCertificate model) {
         GiftCertificateDto dto = Objects.isNull(model) ? null : mapper.map(model, GiftCertificateDto.class);
-        dto.setDuration(model.getDuration().toDays());
         if (model.getCertificateTags() != null) {
             for (CertificateTag certificateTag : model.getCertificateTags()) {
                 dto.getTags().add(tagMapper.toDto(certificateTag.getTag()));
