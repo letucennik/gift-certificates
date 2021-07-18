@@ -11,15 +11,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
-
-    private static final List<String> AVAILABLE_LOCALES = Arrays.asList("en", "ru");
-    private static final Locale DEFAULT_LOCALE = new Locale("ru");
 
     public static final int INVALID_ENTITY_PARAMETER_CODE = 40001;
     public static final int ENTITY_ALREADY_EXISTS_CODE = 40901;
@@ -63,9 +58,6 @@ public class RestExceptionHandler {
     }
 
     private String resolveResourceBundleMessage(String key, Locale locale) {
-        if (!AVAILABLE_LOCALES.contains(locale.toString())) {
-            locale = DEFAULT_LOCALE;
-        }
         return bundleMessageSource.getMessage(key, null, locale);
     }
 }
