@@ -1,9 +1,8 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.repository.GiftCertificateRepositoryCustom;
 import com.epam.esm.repository.entity.GiftCertificate;
 import com.epam.esm.repository.entity.Tag;
-import com.epam.esm.repository.exception.DAOException;
-import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.query.QueryBuilder;
 import com.epam.esm.repository.query.SortContext;
 import org.springframework.data.domain.Pageable;
@@ -11,51 +10,23 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class GiftCertificateRepositoryImpl implements GiftCertificateRepository {
+public class GiftCertificateRepositoryCustomImpl implements GiftCertificateRepositoryCustom {
 
     public static final String NAME = "name";
     public static final String TAG = "tag";
     @PersistenceContext
     private EntityManager entityManager;
-
-
-    @Override
-    public GiftCertificate create(GiftCertificate giftCertificate) {
-        try {
-            entityManager.persist(giftCertificate);
-        } catch (PersistenceException e) {
-            throw new DAOException(e);
-        }
-        return giftCertificate;
-    }
-
-    @Override
-    public Optional<GiftCertificate> read(long id) {
-        return Optional.ofNullable(entityManager.find(GiftCertificate.class, id));
-    }
-
-    @Override
-    public GiftCertificate update(GiftCertificate certificate) {
-        return entityManager.merge(certificate);
-    }
-
-    @Override
-    public void delete(long id) {
-        GiftCertificate certificate = entityManager.find(GiftCertificate.class, id);
-        try {
-            entityManager.remove(certificate);
-        } catch (IllegalArgumentException e) {
-            throw new DAOException(e);
-        }
-    }
 
     @Override
     public List<GiftCertificate> findByParameters(List<String> tagNames, String partValue, SortContext context, Pageable pageable) {

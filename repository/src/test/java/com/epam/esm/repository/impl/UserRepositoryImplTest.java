@@ -1,5 +1,6 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ class UserRepositoryImplTest {
     private List<User> allUsers;
 
     @Autowired
-    private UserRepositoryImpl userRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     void init() {
@@ -41,24 +42,24 @@ class UserRepositoryImplTest {
 
     @Test
     void testShouldCreate() {
-        assertNotNull(userRepository.create(userToCreate));
+        assertNotNull(userRepository.save(userToCreate));
     }
 
     @Test
     void testShouldFind() {
-        Optional<User> user = userRepository.read(1L);
+        Optional<User> user = userRepository.findById(1L);
         assertTrue(user.isPresent());
         assertEquals(firstUser, user.get());
     }
 
     @Test
     void testShouldGetAll() {
-        assertEquals(allUsers, userRepository.getAll(PageRequest.of(0, 25)));
+        assertEquals(allUsers, userRepository.findAll(PageRequest.of(0, 25)).getContent());
     }
 
     @Test
     void testShouldGetFirstWithPagination() {
-        assertEquals(Collections.singletonList(firstUser), userRepository.getAll(PageRequest.of(0, 1)));
+        assertEquals(Collections.singletonList(firstUser), userRepository.findAll(PageRequest.of(0, 1)).getContent());
     }
 
     @Test

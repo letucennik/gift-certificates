@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
         List<GiftCertificateDto> changedOrderCertificates = new ArrayList<>();
         while (iterator.hasNext()) {
             GiftCertificateDto giftCertificateDto = iterator.next();
-            Optional<GiftCertificate> foundCertificate = certificateRepository.read(giftCertificateDto.getId());
+            Optional<GiftCertificate> foundCertificate = certificateRepository.findById(giftCertificateDto.getId());
             changedOrderCertificates.add(giftCertificateMapper.toDto(foundCertificate.orElseThrow(() -> new NoSuchEntityException("certificate.not.found"))));
         }
         orderDto = OrderDto.builder()
@@ -77,15 +77,15 @@ public class OrderServiceImpl implements OrderService {
                 .certificates(changedOrderCertificates)
                 .cost(calculateOrderCost(changedOrderCertificates))
                 .build();
-        Order order = orderRepository.create(orderMapper.toModel(orderDto));
+        Order order = orderRepository.save(orderMapper.toModel(orderDto));
         return orderMapper.toDto(order);
     }
 
     @Override
     @Transactional
     public OrderDto findByUserId(long userId, long orderId) {
-        userRepository.read(userId).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
-        Order foundOrder = orderRepository.findByUserId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
+        userRepository.findById(userId).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
+        Order foundOrder = orderRepository.findByUserIdAndId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
         return orderMapper.toDto(foundOrder);
     }
 
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<OrderDto> getUserOrders(long userId, int page, int size) {
-        if (!userRepository.read(userId).isPresent()) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
         Pageable pageRequest;
@@ -102,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParameterException("pagination.invalid");
         }
-        return orderRepository.getUserOrders(userId, pageRequest)
+        return orderRepository.findAllByUserId(userId, pageRequest)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
@@ -123,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
         if (!userValidator.isIdValid(userDto.getId())) {
             throw new InvalidParameterException("user.invalid");
         }
-        if (!userRepository.read(userDto.getId()).isPresent()) {
+        if (!userRepository.findById(userDto.getId()).isPresent()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
     }

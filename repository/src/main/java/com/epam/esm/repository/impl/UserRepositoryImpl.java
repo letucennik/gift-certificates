@@ -16,43 +16,43 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Override
-    public User create(User user) {
-        try {
-            entityManager.persist(user);
-        } catch (PersistenceException e) {
-            throw new DAOException(e);
-        }
-        return user;
-    }
-
-    @Override
-    public Optional<User> read(long id) {
-        return Optional.ofNullable(entityManager.find(User.class, id));
-    }
-
-    @Override
-    public Optional<User> findByName(String name) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        Root<User> root = criteriaQuery.from(User.class);
-        criteriaQuery.where(criteriaBuilder.equal(root.get("name"), name));
-        return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
-    }
-
-    @Override
-    public List<User> getAll(Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-        criteriaQuery.from(User.class);
-        return entityManager.createQuery(criteriaQuery)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
-    }
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    @Override
+//    public User create(User user) {
+//        try {
+//            entityManager.persist(user);
+//        } catch (PersistenceException e) {
+//            throw new DAOException(e);
+//        }
+//        return user;
+//    }
+//
+//    @Override
+//    public Optional<User> read(long id) {
+//        return Optional.ofNullable(entityManager.find(User.class, id));
+//    }
+//
+//    @Override
+//    public Optional<User> findByName(String name) {
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+//        Root<User> root = criteriaQuery.from(User.class);
+//        criteriaQuery.where(criteriaBuilder.equal(root.get("name"), name));
+//        return entityManager.createQuery(criteriaQuery).getResultList().stream().findAny();
+//    }
+//
+//    @Override
+//    public List<User> getAll(Pageable pageable) {
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+//        criteriaQuery.from(User.class);
+//        return entityManager.createQuery(criteriaQuery)
+//                .setFirstResult((int) pageable.getOffset())
+//                .setMaxResults(pageable.getPageSize())
+//                .getResultList();
+//    }
 }

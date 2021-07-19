@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,17 +84,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDto.setLastUpdateDate(LocalDateTime.now());
         for (TagDto tagDto : tags) {
             Optional<Tag> tagOptional = tagRepository.findByName(tagDto.getName());
-            long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.create(tagMapper.toModel(tagDto)).getId());
+            long tagId = tagOptional.map(Tag::getId).orElseGet(() -> tagRepository.save(tagMapper.toModel(tagDto)).getId());
             tagDto.setId(tagId);
         }
-        GiftCertificate certificate = giftCertificateRepository.create(certificateMapper.toModel(giftCertificateDto));
+        GiftCertificate certificate = giftCertificateRepository.save(certificateMapper.toModel(giftCertificateDto));
         tags.forEach(x -> certificateTagRepository.create(certificate.getId(), x.getId()));
         return certificateMapper.toDto(certificate);
     }
 
     @Override
     public GiftCertificateDto read(long id) {
-        return giftCertificateRepository.read(id)
+        return giftCertificateRepository.findById(id)
                 .map(certificateMapper::toDto)
                 .orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
     }
@@ -104,10 +103,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto dto) {
         GiftCertificate giftCertificate = certificateMapper.toModel(dto);
-        GiftCertificate sourceCertificate = giftCertificateRepository.read(id).orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
+        GiftCertificate sourceCertificate = giftCertificateRepository.findById(id).orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
         setUpdatedFields(sourceCertificate, findUpdateInfo(giftCertificate));
         sourceCertificate.setLastUpdateDate(LocalDateTime.now());
-        giftCertificateRepository.update(sourceCertificate);
+        giftCertificateRepository.save(sourceCertificate);
         Set<TagDto> tags = dto.getTags();
         if (tags != null) {
             updateTags(id, tags);
@@ -158,7 +157,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     private Tag createTag(Tag tag) {
-        tagRepository.create(tag);
+        tagRepository.save(tag);
         return tagRepository.findByName(tag.getName()).orElseThrow(NoSuchEntityException::new);
     }
 
@@ -187,11 +186,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     @Transactional
     public void delete(long id) {
-        Optional<GiftCertificate> certificateOptional = giftCertificateRepository.read(id);
-        if (!certificateOptional.isPresent()) {
-            throw new NoSuchEntityException(CERTIFICATE_NOT_FOUND);
-        }
-        giftCertificateRepository.delete(id);
+        GiftCertificate certificate = giftCertificateRepository.findById(id).orElseThrow(() -> new NoSuchEntityException(CERTIFICATE_NOT_FOUND));
+        giftCertificateRepository.delete(certificate);
     }
 
     private void validateGiftCertificate(GiftCertificate certificate) {

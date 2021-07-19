@@ -1,5 +1,6 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.config.TestJdbcConfig;
@@ -25,7 +26,7 @@ class TagRepositoryImplTest {
     private Tag secondTag;
 
     @Autowired
-    private TagRepositoryImpl tagRepository;
+    private TagRepository tagRepository;
 
     @BeforeEach
     void init() {
@@ -36,33 +37,33 @@ class TagRepositoryImplTest {
 
     @Test
     void testShouldCreate() {
-        Tag tag = tagRepository.create(tagToCreate);
+        Tag tag = tagRepository.save(tagToCreate);
         assertNotNull(tag);
     }
 
     @Test
     void testShouldFindById() {
-        Optional<Tag> tag = tagRepository.read(1);
+        Optional<Tag> tag = tagRepository.findById(1L);
         assertTrue(tag.isPresent());
         assertEquals(tag.get(), firstTag);
     }
 
     @Test
     void testShouldFindByIdAndReturnEmpty() {
-        Optional<Tag> tag = tagRepository.read(45);
+        Optional<Tag> tag = tagRepository.findById(45L);
         assertFalse(tag.isPresent());
     }
 
     @Test
     void testShouldDelete() {
-        tagRepository.delete(secondTag.getId());
-        assertFalse(tagRepository.read(secondTag.getId()).isPresent());
+        tagRepository.delete(secondTag);
+        assertFalse(tagRepository.findById(secondTag.getId()).isPresent());
     }
 
     @Test
-    void testShouldTryDeleteByIdNonExistingTag() {
-        assertThrows(DAOException.class, () -> {
-            tagRepository.delete(566);
-        });
+    void testShouldFindByName(){
+        Optional<Tag> tag = tagRepository.findByName("tag 1");
+        assertTrue(tag.isPresent());
+        assertEquals(tag.get(), firstTag);
     }
 }

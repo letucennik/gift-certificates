@@ -1,13 +1,13 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.repository.UserRepository;
+import com.epam.esm.repository.entity.User;
+import com.epam.esm.service.UserService;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.dto.mapper.Mapper;
-import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.repository.UserRepository;
-import com.epam.esm.service.UserService;
 import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -45,13 +45,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("user.duplicate");
         }
-        User savedUser = userRepository.create(userMapper.toModel(user));
+        User savedUser = userRepository.save(userMapper.toModel(user));
         return userMapper.toDto(savedUser);
     }
 
     @Override
     public UserDto read(long id) {
-        Optional<User> tag = userRepository.read(id);
+        Optional<User> tag = userRepository.findById(id);
         return userMapper.toDto(tag.orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND)));
     }
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParameterException("pagination.invalid");
         }
-        return userRepository.getAll(pageRequest)
+        return userRepository.findAll(pageRequest)
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
