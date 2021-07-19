@@ -1,29 +1,57 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.repository.entity.CertificateTag;
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.repository.CertificateTagRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
 public class CertificateTagRepositoryImpl implements CertificateTagRepository {
 
-    private static final String CREATE_CERTIFICATE_TAG_REFERENCE = "INSERT INTO m2m_certificates_tags (gift_certificate_id, tag_id) VALUES (?, ?)";
-    private static final String FIND_TAGS_ID_BY_CERTIFICATE_ID = "SELECT tag_id FROM m2m_certificates_tags WHERE gift_certificate_id=?";
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void create(long giftCertificateId, long tagId) {
-        jdbcTemplate.update(CREATE_CERTIFICATE_TAG_REFERENCE, giftCertificateId, tagId);
+    public CertificateTag create(long certificateId, long tagId) {
+        CertificateTag certificateTag = new CertificateTag();
+        GiftCertificate certificate = entityManager.find(GiftCertificate.class, certificateId);
+        if (certificate == null) {
+            throw new DAOException("Trying to create CertificateTag with non-existing certificate");
+        }
+        certificateTag.setCertificate(certificate);
+        Tag tag = entityManager.find(Tag.class, tagId);
+        if (tag == null) {
+            throw new DAOException("Trying to create CertificateTag with non-existing tag");
+        }
+        certificateTag.setTag(tag);
+        certificate.getCertificateTags().add(certificateTag);
+        entityManager.persist(certificateTag);
+        return certificateTag;
     }
 
     @Override
-    public List<Long> findTagsIdByCertificateId(long certificateId) {
-        return jdbcTemplate.query(FIND_TAGS_ID_BY_CERTIFICATE_ID, (resultSet, i) -> resultSet.getLong("tag_id"), certificateId);
+    public List<Tag> findTagsIdByCertificateId(long certificateId) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CertificateTag> query = builder.createQuery(CertificateTag.class);
+        Root<CertificateTag> root = query.from(CertificateTag.class);
+        query.select(root).where(builder.equal(root.get("certificate").get("id"), certificateId));
+        List<Tag> result = new ArrayList<>();
+        List<CertificateTag> certificateTags = entityManager.createQuery(query).getResultList();
+        certificateTags.forEach(x -> result.add(x.getTag()));
+        return result;
     }
 
 

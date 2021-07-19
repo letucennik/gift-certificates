@@ -1,36 +1,48 @@
 package com.epam.esm.repository.config;
 
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+
+import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm.repository")
-@ComponentScan("com.epam.esm.entity.mapper")
 public class TestJdbcConfig {
 
     private static final String SQL_SETUP = "classpath:db_setup.sql";
     private static final String SQL_INIT = "classpath:db_init.sql";
 
     @Bean
-    public EmbeddedDatabase embeddedDatabase() {
+    public DataSource embeddedDatabase() {
         EmbeddedDatabaseBuilder databaseBuilder = new EmbeddedDatabaseBuilder();
         return databaseBuilder
-                .generateUniqueName(true)
                 .setType(EmbeddedDatabaseType.H2)
                 .setScriptEncoding("UTF-8")
-                .ignoreFailedDrops(true)
                 .addScript(SQL_SETUP)
                 .addScript(SQL_INIT)
                 .build();
     }
 
-    @Bean
-    public JdbcTemplate jdbcTemplate(EmbeddedDatabase embeddedDatabase) {
-        return new JdbcTemplate(embeddedDatabase);
+    @Bean(name = "testTransactionManager")
+    public JpaTransactionManager jpaTransactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
+        return transactionManager;
     }
+
+    @Bean(name = "testEntityManagerFactoryBean")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setDataSource(embeddedDatabase());
+        entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        entityManagerFactoryBean.setPackagesToScan("com.epam.esm.repository.entity");
+        return entityManagerFactoryBean;
+    }
+
 }

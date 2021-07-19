@@ -4,7 +4,7 @@ create table gift_certificate
     name             varchar(305),
     description      VARCHAR(2000),
     price            DECIMAL(10, 2),
-    duration         INT,
+    duration         BIGINT,
     create_date      TIMESTAMP DEFAULT NOW(),
     last_update_date TIMESTAMP DEFAULT NOW()
 );
@@ -28,4 +28,25 @@ create table m2m_certificates_tags
             REFERENCES `tag` (`id`)
             ON DELETE CASCADE
             ON UPDATE CASCADE
+);
+CREATE TABLE user
+(
+    id       INT PRIMARY KEY AUTO_INCREMENT,
+    name    VARCHAR(305) UNIQUE
+);
+CREATE TABLE orders
+(
+    id     BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    cost    DECIMAL(11, 2),
+    date    TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user (id)
+);
+CREATE TABLE order_certificates
+(
+    order_id       INT,
+    certificate_id INT,
+    PRIMARY KEY (order_id, certificate_id),
+    FOREIGN KEY (order_id) REFERENCES orders (id),
+    FOREIGN KEY (certificate_id) REFERENCES gift_certificate (id)
 )

@@ -1,12 +1,15 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidEntityParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.repository.TagRepository;
+import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.exception.DAOException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.validator.Validator;
+import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.dto.mapper.Mapper;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
+import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,32 +22,36 @@ public class TagServiceImpl implements TagService {
     public static final String TAG_NOT_FOUND = "tag.not.found";
 
     private final TagRepository tagRepository;
-    private final Validator<Tag> tagValidator;
+    private final Validator<TagDto> tagValidator;
+    private final Mapper<Tag, TagDto> tagMapper;
 
     @Autowired
-    public TagServiceImpl(TagRepository tagRepository, Validator<Tag> tagValidator) {
+    public TagServiceImpl(TagRepository tagRepository,
+                          Validator<TagDto> tagValidator,
+                          Mapper<Tag, TagDto> tagMapper) {
         this.tagRepository = tagRepository;
         this.tagValidator = tagValidator;
+        this.tagMapper = tagMapper;
     }
 
     @Override
     @Transactional
-    public Tag create(Tag tag) {
+    public TagDto create(TagDto tag) {
         if (!tagValidator.isValid(tag)) {
-            throw new InvalidEntityParameterException("tag.invalid");
+            throw new InvalidParameterException("tag.invalid");
         }
         String name = tag.getName();
         if (tagRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("tag.duplicate");
         }
-        long id = tagRepository.create(tag);
-        return tagRepository.read(id).get();
+        Tag savedTag = tagRepository.create(tagMapper.toModel(tag));
+        return tagMapper.toDto(savedTag);
     }
 
     @Override
-    public Tag read(long id) {
+    public TagDto read(long id) {
         Optional<Tag> tag = tagRepository.read(id);
-        return tag.orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND));
+        return tagMapper.toDto(tag.orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND)));
     }
 
     @Override
@@ -55,5 +62,16 @@ public class TagServiceImpl implements TagService {
             throw new NoSuchEntityException(TAG_NOT_FOUND);
         }
         tagRepository.delete(id);
+    }
+
+    @Override
+    public TagDto getMostWidelyUsedTag() {
+        Tag mostWidelyUsedTag;
+        try {
+            mostWidelyUsedTag = tagRepository.getMostWidelyUsedTag();
+        } catch (DAOException e) {
+            throw new NoSuchEntityException(TAG_NOT_FOUND);
+        }
+        return tagMapper.toDto(mostWidelyUsedTag);
     }
 }

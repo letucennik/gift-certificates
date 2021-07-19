@@ -1,59 +1,44 @@
 package com.epam.esm.repository.query;
 
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class QueryBuilder {
 
-    private static final Pattern UPPER_CASE_SYMBOL_PATTERN = Pattern.compile("[A-Z]");
+    private static final String ANY_REGEX = "%";
 
-    private QueryBuilder() {
+    private final CriteriaBuilder builder;
+
+    public QueryBuilder(CriteriaBuilder criteriaBuilder) {
+        this.builder = criteriaBuilder;
     }
 
-    public static String buildUpdateColumnsQuery(Set<String> columns) {
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean isFirstElement = true;
-        for (String column : columns) {
-            if (!isFirstElement) {
-                queryBuilder.append(", ");
+
+    public <T> List<Order> buildOrderList(Root<T> root, SortContext sortParameters) {
+        List<Order> orderList = new ArrayList<>();
+        for (int i = 0; i < sortParameters.getSortColumns().size(); i++) {
+            String column = sortParameters.getSortColumns().get(i);
+            String orderType;
+            if (sortParameters.getOrderTypes().size() > i) {
+                orderType = sortParameters.getOrderTypes().get(i).toString();
             } else {
-                isFirstElement = false;
+                orderType = "ASC";
             }
-            queryBuilder.append(column);
-            queryBuilder.append("=?");
+            Order order;
+            if (orderType.equalsIgnoreCase("ASC")) {
+                order = builder.asc(root.get(column));
+            } else {
+                order = builder.desc(root.get(column));
+            }
+            orderList.add(order);
         }
-        return queryBuilder.toString();
+        return orderList;
     }
 
-    public static String buildSortingQuery(SortContext sortParameters) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("ORDER BY ");
-        List<String> sortColumns = convertToDBFields(sortParameters.getSortColumns());
-        List<SortContext.OrderType> orderTypes = sortParameters.getOrderTypes();
-        for (int i = 0; i < sortColumns.size(); i++) {
-            if (i != 0) {
-                queryBuilder.append(", ");
-            }
-            queryBuilder.append(sortColumns.get(i)).append(" ");
-            queryBuilder.append(i < orderTypes.size() ? orderTypes.get(i) : "ASC");
-        }
-        return queryBuilder.toString();
+    public String convertToRegex(String value) {
+        return ANY_REGEX + value + ANY_REGEX;
     }
 
 
-    private static List<String> convertToDBFields(List<String> javaFields) {
-        List<String> DBFields = new ArrayList<>();
-        javaFields.forEach(fieldName -> {
-            Matcher matcher = UPPER_CASE_SYMBOL_PATTERN.matcher(fieldName);
-            while (matcher.find()) {
-                String matchedSymbol = matcher.group();
-                fieldName = fieldName.replaceAll(matchedSymbol, "_" + matchedSymbol.toLowerCase());
-            }
-            DBFields.add(fieldName);
-        });
-        return DBFields;
-    }
 }

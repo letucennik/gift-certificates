@@ -1,9 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.DuplicateEntityException;
-import com.epam.esm.exception.InvalidEntityParameterException;
-import com.epam.esm.exception.NoSuchEntityException;
+import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.exception.DuplicateEntityException;
+import com.epam.esm.service.exception.InvalidParameterException;
+import com.epam.esm.service.exception.NoSuchEntityException;
 
 public interface TagService {
 
@@ -12,10 +12,10 @@ public interface TagService {
      *
      * @param tag Tag to create
      * @return created tag
-     * @throws InvalidEntityParameterException when tag parameters are invalid
+     * @throws InvalidParameterException when tag parameters are invalid
      * @throws DuplicateEntityException        when tag with such name already exists
      */
-    Tag create(Tag tag);
+    TagDto create(TagDto tag);
 
     /**
      * Gets tag by id.
@@ -24,7 +24,7 @@ public interface TagService {
      * @return found Tag
      * @throws NoSuchEntityException when such tag doesn't exists
      */
-    Tag read(long id);
+    TagDto read(long id);
 
     /**
      * Deletes tag by id.
@@ -33,4 +33,11 @@ public interface TagService {
      * @throws NoSuchEntityException when such tag doesn't exists
      */
     void delete(long id);
+
+    /**
+     * Finds the most widely used tag of a user with the highest cost of all orders
+     *
+     * @return found TagDto
+     */
+    TagDto getMostWidelyUsedTag();
 }
