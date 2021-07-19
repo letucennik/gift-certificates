@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,19 +52,19 @@ class GiftCertificateRepositoryImplTest {
     void init() {
         certificateToCreate = new GiftCertificate(
                 "certificate new", "description new", new BigDecimal("1.10"),
-                2, LocalDateTime.parse("2020-01-01T01:11:11"),
+                Duration.ofDays(2), LocalDateTime.parse("2020-01-01T01:11:11"),
                 LocalDateTime.parse("2021-01-01T01:22:11"));
         firstCertificate = new GiftCertificate(
                 "certificate 1", "description 1", new BigDecimal("1.10"),
-                1, LocalDateTime.parse("2020-01-01T01:11:11"),
+                Duration.ofMillis(1), LocalDateTime.parse("2020-01-01T01:11:11"),
                 LocalDateTime.parse("2021-01-01T01:22:11"));
         firstCertificate.setId(1);
         secondCertificate = new GiftCertificate("certificate 2", "description 2", new BigDecimal("2.20"),
-                2, LocalDateTime.parse("2020-02-02T02:22:22"),
+                Duration.ofMillis(2), LocalDateTime.parse("2020-02-02T02:22:22"),
                 LocalDateTime.parse("2021-02-02T02:33:22"));
         secondCertificate.setId(2);
         thirdCertificate = new GiftCertificate("certificate 3", "description 3", new BigDecimal("3.30"),
-                3, LocalDateTime.parse("2020-03-03T03:33:33"),
+                Duration.ofMillis(3), LocalDateTime.parse("2020-03-03T03:33:33"),
                 LocalDateTime.parse("2021-03-03T03:44:33"));
         thirdCertificate.setId(3);
         sortedAsc = Arrays.asList(firstCertificate, secondCertificate, thirdCertificate);

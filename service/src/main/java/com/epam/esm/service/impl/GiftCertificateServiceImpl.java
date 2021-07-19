@@ -138,7 +138,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             validateGiftCertificatePrice(price);
             updateInfo.put(PRICE_FIELD, price);
         }
-        int duration = certificate.getDuration();
+        long duration = certificate.getDuration().toDays();
         if (duration != 0) {
             validateGiftCertificateDuration(duration);
             updateInfo.put(DURATION_FIELD, duration);
@@ -198,7 +198,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         validateGiftCertificateName(certificate.getName());
         validateGiftCertificateDescription(certificate.getDescription());
         validateGiftCertificatePrice(certificate.getPrice());
-        validateGiftCertificateDuration(certificate.getDuration());
+        validateGiftCertificateDuration(certificate.getDuration().toDays());
     }
 
     private void validateGiftCertificateName(String name) {
@@ -219,7 +219,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         }
     }
 
-    private void validateGiftCertificateDuration(int duration) {
+    private void validateGiftCertificateDuration(long duration) {
         if (!giftCertificateValidator.isDurationValid(duration)) {
             throw new InvalidParameterException("certificate.duration.invalid");
         }

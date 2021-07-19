@@ -11,7 +11,6 @@ import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +33,7 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     private LocalDateTime createDate;
     @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime lastUpdateDate;
-    private int duration;
+    private long durationDto;
     private Set<TagDto> tags = new HashSet<>();
 
     public GiftCertificateDto(GiftCertificate certificate) {
@@ -44,7 +43,7 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
         this.price = certificate.getPrice();
         this.createDate = certificate.getCreateDate();
         this.lastUpdateDate = certificate.getLastUpdateDate();
-        this.duration = certificate.getDuration();
+        this.durationDto = certificate.getDuration().toDays();
     }
 
 }

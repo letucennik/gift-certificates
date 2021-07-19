@@ -4,7 +4,7 @@ create table gift_certificate
     name             varchar(305),
     description      VARCHAR(2000),
     price            DECIMAL(10, 2),
-    duration         INT,
+    duration         BIGINT,
     create_date      TIMESTAMP DEFAULT NOW(),
     last_update_date TIMESTAMP DEFAULT NOW()
 );

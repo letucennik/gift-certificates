@@ -25,6 +25,7 @@ import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -78,8 +79,8 @@ class GiftCertificateServiceImplTest {
     void init() {
         MockitoAnnotations.initMocks(this);
         certificateToCreate = new GiftCertificate(1, "name",
-                "description", BigDecimal.TEN, 5);
-        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, 5);
+                "description", BigDecimal.TEN, Duration.ofDays(5));
+        secondCertificate = new GiftCertificate(2, "second", "lala", BigDecimal.TEN, Duration.ofDays(5));
         firstTag = new Tag(1, "1");
         secondTag = new Tag(2, "2");
         sortContext = new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.DESC));

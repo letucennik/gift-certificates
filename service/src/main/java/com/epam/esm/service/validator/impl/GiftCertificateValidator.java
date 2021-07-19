@@ -21,7 +21,7 @@ public class GiftCertificateValidator implements Validator<GiftCertificate> {
     public boolean isValid(GiftCertificate giftCertificate) {
         return isNameValid(giftCertificate.getName()) &&
                 isDescriptionValid(giftCertificate.getDescription()) &&
-                isDurationValid(giftCertificate.getDuration()) && isPriceValid(giftCertificate.getPrice());
+                isDurationValid(giftCertificate.getDuration().toDays()) && isPriceValid(giftCertificate.getPrice());
     }
 
     public boolean isNameValid(String name) {
@@ -47,7 +47,7 @@ public class GiftCertificateValidator implements Validator<GiftCertificate> {
                 price.compareTo(PRICE_MAX_VALUE) <= 0;
     }
 
-    public boolean isDurationValid(int duration) {
+    public boolean isDurationValid(long duration) {
         return duration >= DURATION_MIN_VALUE;
     }
 }
