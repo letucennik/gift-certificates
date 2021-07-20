@@ -2,13 +2,14 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.repository.entity.User;
+import com.epam.esm.repository.entity.UserRole;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.dto.mapper.Mapper;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
-import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.impl.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,12 +27,12 @@ public class UserServiceImpl implements UserService {
     public static final String USER_NOT_FOUND = "user.not.found";
 
     private final UserRepository userRepository;
-    private final Validator<UserDto> userValidator;
+    private final UserValidator userValidator;
     private final Mapper<User, UserDto> userMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, Validator<UserDto> userValidator, Mapper<User, UserDto> userMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, UserValidator userValidator, Mapper<User, UserDto> userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.userMapper = userMapper;
@@ -41,13 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto register(UserDto user) {
-        if (!userValidator.isValid(user)) {
-            throw new InvalidParameterException("user.invalid");
-        }
-        String name = user.getName();
-        if (userRepository.findByName(name).isPresent()) {
-            throw new DuplicateEntityException("user.duplicate");
-        }
+        validateUser(user);
+        userRepository.findByName(user.getName()).orElseThrow(() -> new DuplicateEntityException("user.duplicate"));
+        userRepository.findByEmail(user.getEmail()).orElseThrow(() -> new DuplicateEntityException("user.duplicate.email"));
+        user.setUserRole(UserRole.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(userMapper.toModel(user));
         return userMapper.toDto(savedUser);
     }
@@ -71,4 +70,18 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    private void validateUser(UserDto userDto) {
+        if (!userValidator.isNameValid(userDto.getName())) {
+            throw new InvalidParameterException("user.name.invalid");
+        }
+        if (!userValidator.isEmailValid(userDto.getEmail())) {
+            throw new InvalidParameterException("user.email.invalid");
+        }
+        if(!userValidator.isPasswordValid(userDto.getPassword())){
+            throw new InvalidParameterException("user.password.invalid");
+        }
+    }
+
+
 }

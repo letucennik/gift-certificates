@@ -1,5 +1,6 @@
 package com.epam.esm.service.dto;
 
+import com.epam.esm.repository.entity.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,4 +17,5 @@ public class UserDto extends RepresentationModel<UserDto> {
     private String email;
     @JsonIgnore
     private String password;
+    private UserRole userRole;
 }
