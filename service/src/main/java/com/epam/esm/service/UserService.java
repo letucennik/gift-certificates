@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.exception.DuplicateEntityException;
 import com.epam.esm.service.exception.InvalidParameterException;
@@ -38,4 +39,13 @@ public interface UserService {
      * @throws InvalidParameterException when page or size params are invalid
      */
     List<UserDto> getAll(int page, int size);
+
+    /**
+     * Gets User by name.
+     *
+     * @param name User name to search
+     * @return foundUser
+     * @throws NoSuchEntityException when User is not found
+     */
+    User findByName(String name);
 }

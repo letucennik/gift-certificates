@@ -1,5 +1,6 @@
 package com.epam.esm.service.security;
 
+import com.epam.esm.repository.entity.User;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
+        User user = userService.findByName(s);
+        return UserDetailsFactory.create(user);
     }
 }

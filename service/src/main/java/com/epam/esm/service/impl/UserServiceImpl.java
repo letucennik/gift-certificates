@@ -71,6 +71,11 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public User findByName(String name) {
+        return userRepository.findByName(name).orElseThrow(()->new NoSuchEntityException(USER_NOT_FOUND));
+    }
+
     private void validateUser(UserDto userDto) {
         if (!userValidator.isNameValid(userDto.getName())) {
             throw new InvalidParameterException("user.name.invalid");
