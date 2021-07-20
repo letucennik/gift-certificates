@@ -37,6 +37,6 @@ public class OrderLinkAdder extends AbstractLinkAdder<OrderDto> {
                 .slash(entity.getId())
                 .withRel(SELF_LINK_NAME));
         userDtoLinkAdder.addLinks(userDto);
-        entity.getCertificates().forEach(certificateDtoLinkAdder::addLinks);
+        entity.getCertificatesDto().forEach(certificateDtoLinkAdder::addLinks);
     }
 }

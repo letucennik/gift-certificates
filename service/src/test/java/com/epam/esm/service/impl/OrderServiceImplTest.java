@@ -35,7 +35,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyByte;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,7 +79,7 @@ class OrderServiceImplTest {
         user = new User(1L, "user");
         giftCertificateDtoList = Arrays.asList(firstGiftCertificateDto);
         orderDtoToCreate = OrderDto.builder()
-                .certificates(giftCertificateDtoList)
+                .certificatesDto(giftCertificateDtoList)
                 .build();
         order = orderMapper.toModel(orderDtoToCreate);
     }

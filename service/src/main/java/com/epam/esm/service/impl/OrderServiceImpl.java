@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto create(OrderDto orderDto) {
         validateUser(orderDto.getUser());
-        List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
+        List<GiftCertificateDto> orderCertificates = orderDto.getCertificatesDto();
         if (orderCertificates == null || orderCertificates.isEmpty()) {
             throw new InvalidParameterException("orders.empty");
         }
@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
         orderDto = OrderDto.builder()
                 .user(orderDto.getUser())
                 .date(LocalDateTime.now())
-                .certificates(changedOrderCertificates)
+                .certificatesDto(changedOrderCertificates)
                 .cost(calculateOrderCost(changedOrderCertificates))
                 .build();
         Order order = orderRepository.save(orderMapper.toModel(orderDto));
