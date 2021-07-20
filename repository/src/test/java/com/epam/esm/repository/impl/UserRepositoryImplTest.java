@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserRepositoryImplTest {
 
     private User userToCreate;
-    private final User firstUser = new User(1L, "user 1");
-    private final User secondUser = new User(2L, "user 2");
-    private final User thirdUser = new User(3L, "user 3");
+    private final User firstUser = new User(1L, "user 1","mail1","password1");
+    private final User secondUser = new User(2L, "user 2","mail2","password2");
+    private final User thirdUser = new User(3L, "user 3","mail3","password3");
 
     private List<User> allUsers;
 
@@ -36,7 +36,7 @@ class UserRepositoryImplTest {
 
     @BeforeEach
     void init() {
-        userToCreate = new User("user 0");
+        userToCreate = new User("user 0","mail0","password0");
         allUsers = Arrays.asList(firstUser, secondUser, thirdUser);
     }
 

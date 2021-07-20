@@ -12,6 +12,7 @@ import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,17 +28,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final Validator<UserDto> userValidator;
     private final Mapper<User, UserDto> userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, Validator<UserDto> userValidator, Mapper<User, UserDto> userMapper) {
+    public UserServiceImpl(UserRepository userRepository, Validator<UserDto> userValidator, Mapper<User, UserDto> userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
-    public UserDto create(UserDto user) {
+    public UserDto register(UserDto user) {
         if (!userValidator.isValid(user)) {
             throw new InvalidParameterException("user.invalid");
         }

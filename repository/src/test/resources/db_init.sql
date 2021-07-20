@@ -9,10 +9,10 @@ VALUES ('tag 1'),
        ('tag 3'),
        ('tag 4');
 
-INSERT INTO user (name)
-VALUES ('user 1'),
-       ('user 2'),
-       ('user 3');
+INSERT INTO user (name,email,password)
+VALUES ('user 1','mail1','password1'),
+       ('user 2','mail2','password2'),
+       ('user 3','mail3','password3');
 
 INSERT INTO `m2m_certificates_tags` (`gift_certificate_id`, `tag_id`)
 VALUES (1, 1);

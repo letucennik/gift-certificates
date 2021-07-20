@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody UserDto userDto) {
-        UserDto dto = userService.create(userDto);
+        UserDto dto = userService.register(userDto);
         userDtoLinkAdder.addLinks(dto);
         return dto;
     }

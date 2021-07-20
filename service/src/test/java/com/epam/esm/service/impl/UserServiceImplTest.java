@@ -16,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +48,7 @@ class UserServiceImplTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        userToCreate = new User(ID, "user 0");
+        userToCreate = new User(ID, "user 0","mail0","password0");
         userToCreateDto = mapper.toDto(userToCreate);
         allUsers = Collections.singletonList(userToCreate);
         allUsersDto = Collections.singletonList(userToCreateDto);
@@ -61,7 +59,7 @@ class UserServiceImplTest {
         when(userValidator.isValid(any())).thenReturn(true);
         when(userRepository.findByName(anyString())).thenReturn(Optional.empty());
         when(userRepository.save(any())).thenReturn(userToCreate);
-        Long id = userService.create(userToCreateDto).getId();
+        Long id = userService.register(userToCreateDto).getId();
         assertNotNull(id);
         verify(userRepository).save(userToCreate);
     }
@@ -69,14 +67,14 @@ class UserServiceImplTest {
     @Test
     void testCreateShouldThrowInvalidEntityParameterException() {
         when(userValidator.isValid(any())).thenReturn(false);
-        assertThrows(InvalidParameterException.class, () -> userService.create(userToCreateDto));
+        assertThrows(InvalidParameterException.class, () -> userService.register(userToCreateDto));
     }
 
     @Test
     void testCreateShouldThrowDuplicateEntityException() {
         when(userValidator.isValid(any())).thenReturn(true);
         when(userRepository.findByName(anyString())).thenReturn(Optional.of(userToCreate));
-        assertThrows(DuplicateEntityException.class, () -> userService.create(userToCreateDto));
+        assertThrows(DuplicateEntityException.class, () -> userService.register(userToCreateDto));
     }
 
     @Test

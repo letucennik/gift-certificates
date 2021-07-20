@@ -47,6 +47,5 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "certificate_id")
     )
-    @Fetch(FetchMode.SUBSELECT)
     private List<GiftCertificate> certificates = new ArrayList<>();
 }

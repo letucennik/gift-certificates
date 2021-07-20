@@ -17,7 +17,8 @@ public interface UserService {
      * @throws InvalidParameterException when user parameters are invalid
      * @throws DuplicateEntityException  when user with such name already exists
      */
-    UserDto create(UserDto user);
+    UserDto register(UserDto user);
+
 
     /**
      * Gets User by id.
