@@ -16,7 +16,7 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
      * @param userId user id
      * @return Optional of found order
      */
-    Optional<Order> findByUserIdAndId(long userId, long id);
+    Optional<Order> findDistinctByUserIdAndId(long userId, long id);
 
     /**
      * Gets all Orders by User id
@@ -25,6 +25,6 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
      * @param pageable object with pagination info(page number, page size)
      * @return found orders
      */
-    List<Order> findAllByUserId(long userId, Pageable pageable);
+    List<Order> findDistinctByUserId(long userId, Pageable pageable);
 
 }

@@ -76,8 +76,8 @@ class OrderServiceImplTest {
                 .lastUpdateDate(LocalDateTime.now())
                 .price(BigDecimal.valueOf(10))
                 .build();
-        user = new User(1L, "user");
-        giftCertificateDtoList = Arrays.asList(firstGiftCertificateDto);
+        user = new User(1L, "user","mail","password");
+        giftCertificateDtoList = Collections.singletonList(firstGiftCertificateDto);
         orderDtoToCreate = OrderDto.builder()
                 .certificatesDto(giftCertificateDtoList)
                 .build();
@@ -111,7 +111,7 @@ class OrderServiceImplTest {
     @Test
     void testShouldFindAllByUserId() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(orderRepository.findAllByUserId(anyLong(), any())).thenReturn(Collections.singletonList(order));
+        when(orderRepository.findDistinctByUserId(anyLong(), any())).thenReturn(Collections.singletonList(order));
         assertEquals(orderService.getUserOrders(user.getId(), DEFAULT_PAGE, DEFAULT_PAGE_SIZE), Collections.singletonList(orderDtoToCreate));
     }
 
@@ -124,7 +124,7 @@ class OrderServiceImplTest {
     @Test
     void testShouldFindOrderByUserId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderRepository.findByUserIdAndId(anyLong(),anyLong())).thenReturn(Optional.of(order));
+        when(orderRepository.findDistinctByUserIdAndId(anyLong(),anyLong())).thenReturn(Optional.of(order));
         assertEquals(orderDtoToCreate, orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
     }
 

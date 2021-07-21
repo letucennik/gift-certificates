@@ -9,6 +9,7 @@ import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.impl.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,7 +39,7 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private Validator<UserDto> userValidator;
+    private UserValidator userValidator;
     @Spy
     private final Mapper<User, UserDto> mapper = new UserMapper(new ModelMapper());
 
@@ -56,8 +57,12 @@ class UserServiceImplTest {
 
     @Test
     void testCreateShouldCreate() {
-        when(userValidator.isValid(any())).thenReturn(true);
-        when(userRepository.findByName(anyString())).thenReturn(Optional.empty());
+        when(userValidator.isIdValid(anyLong())).thenReturn(true);
+        when(userValidator.isNameValid(anyString())).thenReturn(true);
+        when(userValidator.isEmailValid(anyString())).thenReturn(true);
+        when(userValidator.isPasswordValid(anyString())).thenReturn(true);
+        when(userRepository.findByName(anyString())).thenReturn(Optional.of(userToCreate));
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(userToCreate));
         when(userRepository.save(any())).thenReturn(userToCreate);
         Long id = userService.register(userToCreateDto).getId();
         assertNotNull(id);
@@ -89,11 +94,5 @@ class UserServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> userService.read(ID));
     }
-
-//    @Test
-//    void shouldFindAll() {
-//        when(userRepository.findAll(PageRequest.of(0,25))).thenReturn(allUsers);
-//        assertEquals(allUsersDto, userService.getAll(0, 25));
-//    }
 
 }

@@ -173,7 +173,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             validateSortContext(sortContext);
         }
         List<GiftCertificateDto> certificates = new ArrayList<>();
-        giftCertificateRepository.findByParameters(tagNames, partValue, sortContext, pageRequest)
+        giftCertificateRepository.findAll(GiftCertificateRepository.findByParameters(tagNames, partValue, sortContext, pageRequest))
                 .forEach(giftCertificate -> certificates.add(certificateMapper.toDto(giftCertificate)));
         return certificates;
     }

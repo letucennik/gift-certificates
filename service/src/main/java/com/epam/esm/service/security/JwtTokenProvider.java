@@ -1,5 +1,6 @@
 package com.epam.esm.service.security;
 
+import com.epam.esm.service.UserService;
 import com.epam.esm.service.constant.ServiceConstant;
 import com.epam.esm.service.dto.UserDto;
 import io.jsonwebtoken.Claims;
@@ -30,11 +31,12 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
+    private final UserDetailsFactory userDetailsFactory;
 
-    @Autowired
-    public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public JwtTokenProvider(UserService userService, UserDetailsFactory userDetailsFactory) {
+        this.userService = userService;
+        this.userDetailsFactory = userDetailsFactory;
     }
 
     @PostConstruct
@@ -56,7 +58,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = UserDetailsFactory.create(userService.findByName(getUsername(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
@@ -79,5 +81,9 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public long getValidityInMilliseconds() {
+        return validityInMilliseconds;
     }
 }

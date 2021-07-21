@@ -72,8 +72,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByName(String name) {
-        return userRepository.findByName(name).orElseThrow(()->new NoSuchEntityException(USER_NOT_FOUND));
+    public UserDto findByName(String name) {
+        User user = userRepository.findByName(name).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
+        return userMapper.toDto(user);
     }
 
     private void validateUser(UserDto userDto) {
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
         if (!userValidator.isEmailValid(userDto.getEmail())) {
             throw new InvalidParameterException("user.email.invalid");
         }
-        if(!userValidator.isPasswordValid(userDto.getPassword())){
+        if (!userValidator.isPasswordValid(userDto.getPassword())) {
             throw new InvalidParameterException("user.password.invalid");
         }
     }

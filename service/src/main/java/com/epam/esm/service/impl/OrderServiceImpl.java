@@ -16,6 +16,7 @@ import com.epam.esm.service.validator.impl.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto findByUserId(long userId, long orderId) {
         userRepository.findById(userId).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
-        Order foundOrder = orderRepository.findByUserIdAndId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
+        Order foundOrder = orderRepository.findDistinctByUserIdAndId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
         return orderMapper.toDto(foundOrder);
     }
 
@@ -102,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParameterException("pagination.invalid");
         }
-        return orderRepository.findAllByUserId(userId, pageRequest)
+        return orderRepository.findDistinctByUserId(userId, pageRequest)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());

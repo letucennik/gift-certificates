@@ -53,11 +53,11 @@ class OrderRepositoryImplTest {
 
     @Test
     void testShouldGetUserOrders() {
-        Assertions.assertEquals(2, orderRepository.findAllByUserId(2, PageRequest.of(0, 25)).size());
+        Assertions.assertEquals(2, orderRepository.findDistinctByUserId(2, PageRequest.of(0, 25)).size());
     }
 
     @Test
     void testShouldGetUserOrdersWithPagination() {
-        Assertions.assertEquals(1, orderRepository.findAllByUserId(2, PageRequest.of(0, 1)).size());
+        Assertions.assertEquals(1, orderRepository.findDistinctByUserId(2, PageRequest.of(0, 1)).size());
     }
 }

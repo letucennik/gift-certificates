@@ -47,5 +47,5 @@ public interface UserService {
      * @return foundUser
      * @throws NoSuchEntityException when User is not found
      */
-    User findByName(String name);
+    UserDto findByName(String name);
 }
