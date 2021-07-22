@@ -19,13 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     public static final String USER_NOT_FOUND = "user.not.found";
-
+    private Logger logger = Logger.getLogger(this.getClass().getName());
     private final UserRepository userRepository;
     private final UserValidator userValidator;
     private final Mapper<User, UserDto> userMapper;
@@ -43,8 +44,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto register(UserDto user) {
         validateUser(user);
-        userRepository.findByName(user.getName()).orElseThrow(() -> new DuplicateEntityException("user.duplicate"));
-        userRepository.findByEmail(user.getEmail()).orElseThrow(() -> new DuplicateEntityException("user.duplicate.email"));
+        if (userRepository.findByName(user.getName()).isPresent()) {
+            throw new DuplicateEntityException("user.duplicate");
+        }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new DuplicateEntityException("user.duplicate.email");
+        }
         user.setUserRole(UserRole.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(userMapper.toModel(user));
