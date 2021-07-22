@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto read(long id) {
-        Optional<User> tag = userRepository.findById(id);
-        return userMapper.toDto(tag.orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND)));
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
+        return userMapper.toDto(user);
     }
 
     @Override

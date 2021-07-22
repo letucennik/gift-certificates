@@ -27,7 +27,7 @@ public class GiftCertificateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto create(@RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto dto = giftCertificateService.create(giftCertificateDto);
         certificateDtoLinkAdder.addLinks(dto);
