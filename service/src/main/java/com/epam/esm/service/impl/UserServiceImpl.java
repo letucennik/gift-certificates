@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     public static final String USER_NOT_FOUND = "user.not.found";
-    private Logger logger = Logger.getLogger(this.getClass().getName());
     private final UserRepository userRepository;
     private final UserValidator userValidator;
     private final Mapper<User, UserDto> userMapper;
@@ -75,7 +74,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByName(String name) {
-        logger.info(name);
         User user = userRepository.findByName(name).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
         return userMapper.toDto(user);
     }
