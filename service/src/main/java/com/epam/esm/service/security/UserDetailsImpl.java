@@ -10,15 +10,19 @@ public class UserDetailsImpl implements UserDetails {
 
     private long id;
     private String name;
-    private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(String name, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(long id,String name, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.id=id;
         this.name = name;
-        this.email = email;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    @JsonIgnore
+    public long getId() {
+        return id;
     }
 
     @Override

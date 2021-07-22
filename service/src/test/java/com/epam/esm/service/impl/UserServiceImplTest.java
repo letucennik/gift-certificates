@@ -49,7 +49,7 @@ class UserServiceImplTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        userToCreate = new User(ID, "user 0","mail0","password0");
+        userToCreate = new User(ID, "user 0","password0");
         userToCreateDto = mapper.toDto(userToCreate);
         allUsers = Collections.singletonList(userToCreate);
         allUsersDto = Collections.singletonList(userToCreateDto);
@@ -62,7 +62,6 @@ class UserServiceImplTest {
         when(userValidator.isEmailValid(anyString())).thenReturn(true);
         when(userValidator.isPasswordValid(anyString())).thenReturn(true);
         when(userRepository.findByName(anyString())).thenReturn(Optional.of(userToCreate));
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(userToCreate));
         when(userRepository.save(any())).thenReturn(userToCreate);
         Long id = userService.register(userToCreateDto).getId();
         assertNotNull(id);

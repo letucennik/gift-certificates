@@ -76,7 +76,7 @@ class OrderServiceImplTest {
                 .lastUpdateDate(LocalDateTime.now())
                 .price(BigDecimal.valueOf(10))
                 .build();
-        user = new User(1L, "user","mail","password");
+        user = new User(1L, "user","password");
         giftCertificateDtoList = Collections.singletonList(firstGiftCertificateDto);
         orderDtoToCreate = OrderDto.builder()
                 .certificatesDto(giftCertificateDtoList)

@@ -7,16 +7,13 @@ import com.epam.esm.service.dto.UserDto;
 import com.epam.esm.service.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +28,7 @@ public class UserController {
     private final UserService userService;
     private final UserDetailsServiceImpl userDetailsService;
     private final LinkAdder<UserDto> userDtoLinkAdder;
-    private Logger logger=Logger.getLogger(this.getClass().getName());
+    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Autowired
     public UserController(UserService userService, LinkAdder<UserDto> userDtoLinkAdder, UserDetailsServiceImpl userDetailsService) {
@@ -44,11 +41,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("permitAll()")
     public TokenDto signUp(@RequestBody UserDto userDto) {
-        logger.info(userDto.toString());
         return userDetailsService.signUp(userDto);
     }
 
     @PostMapping("/log_in")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("permitAll()")
     public TokenDto login(@RequestBody UserDto userDto) {
         return userDetailsService.logIn(userDto);
     }

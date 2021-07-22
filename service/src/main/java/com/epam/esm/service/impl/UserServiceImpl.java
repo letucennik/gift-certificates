@@ -47,9 +47,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByName(user.getName()).isPresent()) {
             throw new DuplicateEntityException("user.duplicate");
         }
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new DuplicateEntityException("user.duplicate.email");
-        }
         user.setUserRole(UserRole.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(userMapper.toModel(user));
@@ -78,6 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByName(String name) {
+        logger.info(name);
         User user = userRepository.findByName(name).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
         return userMapper.toDto(user);
     }
@@ -85,9 +83,6 @@ public class UserServiceImpl implements UserService {
     private void validateUser(UserDto userDto) {
         if (!userValidator.isNameValid(userDto.getName())) {
             throw new InvalidParameterException("user.name.invalid");
-        }
-        if (!userValidator.isEmailValid(userDto.getEmail())) {
-            throw new InvalidParameterException("user.email.invalid");
         }
         if (!userValidator.isPasswordValid(userDto.getPassword())) {
             throw new InvalidParameterException("user.password.invalid");

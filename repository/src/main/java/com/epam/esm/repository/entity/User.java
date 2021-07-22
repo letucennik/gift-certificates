@@ -33,9 +33,6 @@ public class User {
     private String name;
 
     @Column
-    private String email;
-
-    @Column
     private String password;
 
     @Enumerated(EnumType.ORDINAL)
@@ -44,16 +41,14 @@ public class User {
             joinColumns = {@JoinColumn(name = "id")})
     private UserRole userRole;
 
-    public User(long id, String name, String email, String password) {
+    public User(long id, String name,  String password) {
         this.id = id;
         this.name = name;
-        this.email = email;
         this.password = password;
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String password) {
         this.name = name;
-        this.email = email;
         this.password = password;
     }
 }

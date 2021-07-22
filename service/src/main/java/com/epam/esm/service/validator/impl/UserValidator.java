@@ -16,7 +16,7 @@ public class UserValidator implements Validator<UserDto> {
 
     @Override
     public boolean isValid(UserDto item) {
-        return isNotNull(item) && isIdValid(item.getId()) && isNameValid(item.getName()) && isNameValid(item.getEmail());
+        return isNotNull(item) && isIdValid(item.getId()) && isNameValid(item.getName());
     }
 
     public boolean isNameValid(String name) {

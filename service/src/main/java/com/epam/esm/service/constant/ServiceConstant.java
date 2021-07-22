@@ -6,7 +6,7 @@ public final class ServiceConstant {
     public static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
     public static final String ROLE = "role";
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER = "Bearer_";
+    public static final String BEARER = "Bearer";
 
     private ServiceConstant(){
 
