@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
             throw new InvalidParameterException("pagination.invalid");
         }
         return userRepository.findAll(pageRequest)
+                .getContent()
                 .stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
