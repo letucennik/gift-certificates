@@ -33,7 +33,7 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     private LocalDateTime createDate;
     @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime lastUpdateDate;
-    private long durationDto;
+    private long duration;
     private Set<TagDto> tags = new HashSet<>();
 
     public GiftCertificateDto(GiftCertificate certificate) {
@@ -43,7 +43,7 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
         this.price = certificate.getPrice();
         this.createDate = certificate.getCreateDate();
         this.lastUpdateDate = certificate.getLastUpdateDate();
-        this.durationDto = certificate.getDuration().toDays();
+        this.duration = certificate.getDuration().toDays();
     }
 
 }

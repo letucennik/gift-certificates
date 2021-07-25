@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Component
@@ -28,7 +29,7 @@ public class GiftCertificateMapper implements Mapper<GiftCertificate, GiftCertif
     @Override
     public GiftCertificate toModel(GiftCertificateDto dto) {
         GiftCertificate certificate = Objects.isNull(dto) ? null : mapper.map(dto, GiftCertificate.class);
-        certificate.setDuration(Duration.ofDays(dto.getDurationDto()));
+        certificate.setDuration(Duration.ofDays(dto.getDuration()));
         if (dto.getTags() != null) {
             for (TagDto tagDto : dto.getTags()) {
                 CertificateTag certificateTag = new CertificateTag();
@@ -42,9 +43,17 @@ public class GiftCertificateMapper implements Mapper<GiftCertificate, GiftCertif
 
     @Override
     public GiftCertificateDto toDto(GiftCertificate model) {
-        GiftCertificateDto dto = Objects.isNull(model) ? null : mapper.map(model, GiftCertificateDto.class);
+        GiftCertificateDto dto = GiftCertificateDto.builder()
+                .createDate(model.getCreateDate())
+                .description(model.getDescription())
+                .lastUpdateDate(model.getLastUpdateDate())
+                .price(model.getPrice())
+                .name(model.getName())
+                .id(model.getId())
+                .build();
+        dto.setTags(new HashSet<>());
         if (model.getDuration() != null) {
-            dto.setDurationDto(model.getDuration().toDays());
+            dto.setDuration(model.getDuration().toDays());
         }
         if (model.getCertificateTags() != null) {
             for (CertificateTag certificateTag : model.getCertificateTags()) {
