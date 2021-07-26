@@ -72,15 +72,13 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldFindByParametersValue() {
-        SearchSpecification searchSpecification = new SearchSpecification(null, "description", null);
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(searchSpecification.findByParameters(), DEFAULT_PAGEABLE).getContent();
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(new SearchSpecification(null, "description", null), DEFAULT_PAGEABLE).getContent();
         assertTrue(sortedAsc.containsAll(giftCertificates));
     }
 
     @Test
     void testShouldByParametersSort() {
-        SearchSpecification searchSpecification = new SearchSpecification(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)));
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(searchSpecification.findByParameters(), DEFAULT_PAGEABLE).getContent();
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(new SearchSpecification(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC))), DEFAULT_PAGEABLE).getContent();
         assertEquals(sortedAsc, giftCertificates);
     }
 

@@ -140,8 +140,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldFindByParametersAll() {
         when(sortContextValidator.isValid(any())).thenReturn(true);
-        SearchSpecification searchSpecification=new SearchSpecification();
-        when(giftCertificateRepository.findAll(searchSpecification.findByParameters())).thenReturn(Collections.singletonList(secondCertificate));
+        when(giftCertificateRepository.findAll(new SearchSpecification())).thenReturn(Collections.singletonList(secondCertificate));
         assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters(Collections.singletonList("tag1"), "certificate", sortContext, 0, 25));
     }
 
