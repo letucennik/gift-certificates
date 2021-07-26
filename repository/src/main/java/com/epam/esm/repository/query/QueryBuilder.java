@@ -1,8 +1,14 @@
 package com.epam.esm.repository.query;
 
+import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.entity.Tag;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class QueryBuilder {
 
@@ -13,7 +19,6 @@ public final class QueryBuilder {
     public QueryBuilder(CriteriaBuilder criteriaBuilder) {
         this.builder = criteriaBuilder;
     }
-
 
     public <T> List<Order> buildOrderList(Root<T> root, SortContext sortParameters) {
         List<Order> orderList = new ArrayList<>();

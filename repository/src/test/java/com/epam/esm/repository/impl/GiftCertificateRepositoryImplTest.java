@@ -3,6 +3,7 @@ package com.epam.esm.repository.impl;
 import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.config.TestJdbcConfig;
 import com.epam.esm.repository.entity.GiftCertificate;
+import com.epam.esm.repository.query.SearchSpecification;
 import com.epam.esm.repository.query.SortContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,13 +72,15 @@ class GiftCertificateRepositoryImplTest {
 
     @Test
     void testShouldFindByParametersValue() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(GiftCertificateRepository.findByParameters(null, "description", null, DEFAULT_PAGEABLE));
+        SearchSpecification searchSpecification = new SearchSpecification(null, "description", null);
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(searchSpecification.findByParameters(), DEFAULT_PAGEABLE).getContent();
         assertTrue(sortedAsc.containsAll(giftCertificates));
     }
 
     @Test
     void testShouldByParametersSort() {
-        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(GiftCertificateRepository.findByParameters(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)), DEFAULT_PAGEABLE));
+        SearchSpecification searchSpecification = new SearchSpecification(null, "desc", new SortContext(Collections.singletonList("name"), Collections.singletonList(SortContext.OrderType.ASC)));
+        List<GiftCertificate> giftCertificates = giftCertificateRepository.findAll(searchSpecification.findByParameters(), DEFAULT_PAGEABLE).getContent();
         assertEquals(sortedAsc, giftCertificates);
     }
 

@@ -5,6 +5,7 @@ import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.entity.GiftCertificate;
 import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.query.SearchSpecification;
 import com.epam.esm.repository.query.SortContext;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.dto.GiftCertificateDto;
@@ -173,7 +174,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             validateSortContext(sortContext);
         }
         List<GiftCertificateDto> certificates = new ArrayList<>();
-        giftCertificateRepository.findAll(GiftCertificateRepository.findByParameters(tagNames, partValue, sortContext, pageRequest))
+        SearchSpecification searchSpecification = new SearchSpecification(tagNames, partValue, sortContext);
+        giftCertificateRepository.findAll(searchSpecification.findByParameters(), pageRequest).getContent()
                 .forEach(giftCertificate -> certificates.add(certificateMapper.toDto(giftCertificate)));
         return certificates;
     }

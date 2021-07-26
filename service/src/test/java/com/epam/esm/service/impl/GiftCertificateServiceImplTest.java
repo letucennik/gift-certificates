@@ -5,6 +5,7 @@ import com.epam.esm.repository.GiftCertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.repository.entity.GiftCertificate;
 import com.epam.esm.repository.entity.Tag;
+import com.epam.esm.repository.query.SearchSpecification;
 import com.epam.esm.repository.query.SortContext;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.TagDto;
@@ -139,7 +140,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldFindByParametersAll() {
         when(sortContextValidator.isValid(any())).thenReturn(true);
-        when(giftCertificateRepository.findAll(GiftCertificateRepository.findByParameters(any(), anyString(), any(), any()))).thenReturn(Collections.singletonList(secondCertificate));
+        SearchSpecification searchSpecification=new SearchSpecification();
+        when(giftCertificateRepository.findAll(searchSpecification.findByParameters())).thenReturn(Collections.singletonList(secondCertificate));
         assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters(Collections.singletonList("tag1"), "certificate", sortContext, 0, 25));
     }
 
