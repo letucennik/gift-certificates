@@ -13,8 +13,8 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(long id,String name, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.id=id;
+    public UserDetailsImpl(long id, String name, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
         this.name = name;
         this.password = password;
         this.authorities = authorities;

@@ -11,7 +11,6 @@ import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.service.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +57,7 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void delete(long id) {
-        Tag tag = tagRepository.findById(id).orElseThrow(()->new NoSuchEntityException(TAG_NOT_FOUND));
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND));
         tagRepository.delete(tag);
     }
 

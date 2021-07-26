@@ -65,9 +65,9 @@ class GiftCertificateServiceImplTest {
     private Map<Field, SetterStrategy> setterMap;
 
     @Spy
-    private GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(), new TagMapper(new ModelMapper()));
+    private final GiftCertificateMapper certificateMapper = new GiftCertificateMapper(new ModelMapper(), new TagMapper(new ModelMapper()));
     @Spy
-    private TagMapper tagMapper = new TagMapper(new ModelMapper());
+    private final TagMapper tagMapper = new TagMapper(new ModelMapper());
 
     private Tag firstTag;
     private Tag secondTag;

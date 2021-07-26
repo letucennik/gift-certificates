@@ -8,7 +8,7 @@ public final class ServiceConstant {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER = "Bearer";
 
-    private ServiceConstant(){
+    private ServiceConstant() {
 
     }
 }

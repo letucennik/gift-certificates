@@ -1,6 +1,5 @@
 package com.epam.esm.service.security;
 
-import com.epam.esm.repository.entity.User;
 import com.epam.esm.repository.entity.UserRole;
 import com.epam.esm.service.dto.UserDto;
 import org.springframework.security.core.GrantedAuthority;
