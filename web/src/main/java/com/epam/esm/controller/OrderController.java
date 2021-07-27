@@ -33,7 +33,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER') and #userId == authentication.principal.id")
     public OrderDto createOrder(@PathVariable long userId,
                                 @RequestBody OrderDto dto) {
         dto.setUser(userService.read(userId));

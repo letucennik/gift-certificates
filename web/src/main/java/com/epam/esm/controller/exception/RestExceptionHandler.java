@@ -5,6 +5,7 @@ import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.InvalidSortParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -21,7 +22,7 @@ public class RestExceptionHandler {
     public static final int ENTITY_ALREADY_EXISTS_CODE = 40901;
     public static final int ENTITY_NOT_FOUND_CODE = 40401;
     public static final int INVALID_REQUEST_PARAMETER_CODE = 40003;
-    public static final int FORBIDDEN_REQUEST_CODE=50106;
+    public static final int FORBIDDEN_REQUEST_CODE = 50106;
 
     private final ResourceBundleMessageSource bundleMessageSource;
 
@@ -58,7 +59,13 @@ public class RestExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionResponse handleAuthenticationException(AuthenticationException e, Locale locale) {
-        return buildResponse(e.getMessage(), FORBIDDEN_REQUEST_CODE);
+        ExceptionResponse response;
+        try {
+            response = buildResponse(resolveResourceBundleMessage(e.getMessage(), locale), FORBIDDEN_REQUEST_CODE);
+        } catch (NoSuchMessageException ex) {
+            response = buildResponse(e.getMessage(), FORBIDDEN_REQUEST_CODE);
+        }
+        return response;
     }
 
     private ExceptionResponse buildResponse(String message, int code) {
