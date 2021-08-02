@@ -29,14 +29,14 @@ public class TestJdbcConfig {
                 .build();
     }
 
-    @Bean(name = "testTransactionManager")
+    @Bean(name = "transactionManager")
     public JpaTransactionManager jpaTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
         return transactionManager;
     }
 
-    @Bean(name = "testEntityManagerFactoryBean")
+    @Bean(name = "entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(embeddedDatabase());

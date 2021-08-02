@@ -4,7 +4,7 @@ create table gift_certificate
     name             varchar(305),
     description      VARCHAR(2000),
     price            DECIMAL(10, 2),
-    duration         BIGINT,
+    duration         INT,
     create_date      TIMESTAMP DEFAULT NOW(),
     last_update_date TIMESTAMP DEFAULT NOW()
 );
@@ -29,14 +29,24 @@ create table m2m_certificates_tags
             ON DELETE CASCADE
             ON UPDATE CASCADE
 );
+CREATE TABLE role
+(
+    id   INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(60)
+);
 CREATE TABLE user
 (
-    id       INT PRIMARY KEY AUTO_INCREMENT,
-    name    VARCHAR(305) UNIQUE
+    id        INT PRIMARY KEY AUTO_INCREMENT,
+    name      VARCHAR(305) UNIQUE,
+    email     VARCHAR(100),
+    password  VARCHAR(100),
+    user_role INT,
+    FOREIGN KEY (user_role) REFERENCES role (id)
+
 );
 CREATE TABLE orders
 (
-    id     BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id      BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
     cost    DECIMAL(11, 2),
     date    TIMESTAMP,

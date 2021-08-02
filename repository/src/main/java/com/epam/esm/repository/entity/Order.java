@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,6 +47,5 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "certificate_id")
     )
-    @Fetch(FetchMode.SUBSELECT)
-    private List<GiftCertificate> certificates;
+    private List<GiftCertificate> certificates = new ArrayList<>();
 }

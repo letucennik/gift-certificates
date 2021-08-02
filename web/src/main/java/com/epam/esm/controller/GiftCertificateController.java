@@ -6,6 +6,7 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.controller.util.LinkAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class GiftCertificateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto create(@RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto dto = giftCertificateService.create(giftCertificateDto);
         certificateDtoLinkAdder.addLinks(dto);
@@ -33,6 +35,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("permitAll()")
     public GiftCertificateDto read(@PathVariable long id) {
         GiftCertificateDto dto = giftCertificateService.read(id);
         certificateDtoLinkAdder.addLinks(dto);
@@ -40,6 +43,7 @@ public class GiftCertificateController {
     }
 
     @PatchMapping("{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public GiftCertificateDto update(@PathVariable long id,
                                      @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto dto = giftCertificateService.update(id, giftCertificateDto);
@@ -49,11 +53,13 @@ public class GiftCertificateController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteById(@PathVariable long id) {
         giftCertificateService.delete(id);
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public List<GiftCertificateDto> findByParameters(
             @RequestParam(name = "tag_name", required = false) List<String> tagNames,
             @RequestParam(name = "part_info", required = false) String partInfo,

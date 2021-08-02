@@ -11,7 +11,7 @@ public interface CertificateTagRepository {
      * Creates new certificate-tag reference.
      *
      * @param certificateId certificate id
-     * @param tagId        tag id
+     * @param tagId         tag id
      */
     CertificateTag create(long certificateId, long tagId);
 

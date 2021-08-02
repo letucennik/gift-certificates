@@ -35,7 +35,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyByte;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,10 +76,10 @@ class OrderServiceImplTest {
                 .lastUpdateDate(LocalDateTime.now())
                 .price(BigDecimal.valueOf(10))
                 .build();
-        user = new User(1L, "user");
-        giftCertificateDtoList = Arrays.asList(firstGiftCertificateDto);
+        user = new User(1L, "user","password");
+        giftCertificateDtoList = Collections.singletonList(firstGiftCertificateDto);
         orderDtoToCreate = OrderDto.builder()
-                .certificates(giftCertificateDtoList)
+                .certificatesDto(giftCertificateDtoList)
                 .build();
         order = orderMapper.toModel(orderDtoToCreate);
     }
@@ -89,13 +88,13 @@ class OrderServiceImplTest {
     void testShouldCreate() {
         orderDtoToCreate.setUser(userMapper.toDto(user));
         order.setUser(user);
-        when(orderRepository.create(any())).thenReturn(order);
-        when(userRepository.read(1L)).thenReturn(Optional.ofNullable(user));
+        when(orderRepository.save(any())).thenReturn(order);
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
         GiftCertificate certificate = giftCertificateMapper.toModel(firstGiftCertificateDto);
-        when(certificateRepository.read(anyLong())).thenReturn(Optional.of(certificate));
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.of(certificate));
         OrderDto createdOrder = orderService.create(orderDtoToCreate);
         assertEquals(orderDtoToCreate, createdOrder);
-        verify(orderRepository).create(any());
+        verify(orderRepository).save(any());
     }
 
     @Test
@@ -105,40 +104,40 @@ class OrderServiceImplTest {
 
     @Test
     void testCreateShouldThrowNoSuchEntityExceptionCertificateNotFound() {
-        when(certificateRepository.read(anyLong())).thenReturn(Optional.empty());
+        when(certificateRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> orderService.create(orderDtoToCreate));
     }
 
     @Test
     void testShouldFindAllByUserId() {
-        when(userRepository.read(1L)).thenReturn(Optional.of(user));
-        when(orderRepository.getUserOrders(anyLong(), any())).thenReturn(Collections.singletonList(order));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(orderRepository.findDistinctByUserId(anyLong(), any())).thenReturn(Collections.singletonList(order));
         assertEquals(orderService.getUserOrders(user.getId(), DEFAULT_PAGE, DEFAULT_PAGE_SIZE), Collections.singletonList(orderDtoToCreate));
     }
 
     @Test
     void testFindAllByUserIdShouldThrowInvalidParameterException() {
-        when(userRepository.read(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         assertThrows(InvalidParameterException.class, () -> orderService.getUserOrders(user.getId(), -3, 4));
     }
 
     @Test
     void testShouldFindOrderByUserId() {
-        when(userRepository.read(anyLong())).thenReturn(Optional.of(user));
-        when(orderRepository.findByUserId(anyLong(),anyLong())).thenReturn(Optional.of(order));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        when(orderRepository.findDistinctByUserIdAndId(anyLong(),anyLong())).thenReturn(Optional.of(order));
         assertEquals(orderDtoToCreate, orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
     }
 
     @Test
     void testFindOrderByUserIdShouldThrowNoSuchEntityExceptionUserNotFound() {
-        when(orderRepository.read(orderDtoToCreate.getId())).thenReturn(Optional.of(order));
-        when(userRepository.read(user.getId())).thenReturn(Optional.empty());
+        when(orderRepository.findById(orderDtoToCreate.getId())).thenReturn(Optional.of(order));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
     }
 
     @Test
     void testFindOrderByUserIdShouldThrowNoSuchEntityExceptionOrderNotFound() {
-        when(orderRepository.read(orderDtoToCreate.getId())).thenReturn(Optional.empty());
+        when(orderRepository.findById(orderDtoToCreate.getId())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
     }
 }

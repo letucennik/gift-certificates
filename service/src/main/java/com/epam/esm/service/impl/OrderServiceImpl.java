@@ -16,6 +16,7 @@ import com.epam.esm.service.validator.impl.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
 
     public static final String USER_NOT_FOUND = "user.not.found";
     public static final String ORDER_NOT_FOUND = "order.not.found";
+
     private final OrderRepository orderRepository;
     private final GiftCertificateRepository certificateRepository;
     private final UserRepository userRepository;
@@ -60,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto create(OrderDto orderDto) {
         validateUser(orderDto.getUser());
-        List<GiftCertificateDto> orderCertificates = orderDto.getCertificates();
+        List<GiftCertificateDto> orderCertificates = orderDto.getCertificatesDto();
         if (orderCertificates == null || orderCertificates.isEmpty()) {
             throw new InvalidParameterException("orders.empty");
         }
@@ -68,24 +70,24 @@ public class OrderServiceImpl implements OrderService {
         List<GiftCertificateDto> changedOrderCertificates = new ArrayList<>();
         while (iterator.hasNext()) {
             GiftCertificateDto giftCertificateDto = iterator.next();
-            Optional<GiftCertificate> foundCertificate = certificateRepository.read(giftCertificateDto.getId());
+            Optional<GiftCertificate> foundCertificate = certificateRepository.findById(giftCertificateDto.getId());
             changedOrderCertificates.add(giftCertificateMapper.toDto(foundCertificate.orElseThrow(() -> new NoSuchEntityException("certificate.not.found"))));
         }
         orderDto = OrderDto.builder()
                 .user(orderDto.getUser())
                 .date(LocalDateTime.now())
-                .certificates(changedOrderCertificates)
+                .certificatesDto(changedOrderCertificates)
                 .cost(calculateOrderCost(changedOrderCertificates))
                 .build();
-        Order order = orderRepository.create(orderMapper.toModel(orderDto));
+        Order order = orderRepository.save(orderMapper.toModel(orderDto));
         return orderMapper.toDto(order);
     }
 
     @Override
     @Transactional
     public OrderDto findByUserId(long userId, long orderId) {
-        userRepository.read(userId).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
-        Order foundOrder = orderRepository.findByUserId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
+        userRepository.findById(userId).orElseThrow(() -> new NoSuchEntityException(USER_NOT_FOUND));
+        Order foundOrder = orderRepository.findDistinctByUserIdAndId(userId, orderId).orElseThrow(() -> new NoSuchEntityException(ORDER_NOT_FOUND));
         return orderMapper.toDto(foundOrder);
     }
 
@@ -93,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<OrderDto> getUserOrders(long userId, int page, int size) {
-        if (!userRepository.read(userId).isPresent()) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
         Pageable pageRequest;
@@ -102,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (IllegalArgumentException e) {
             throw new InvalidParameterException("pagination.invalid");
         }
-        return orderRepository.getUserOrders(userId, pageRequest)
+        return orderRepository.findDistinctByUserId(userId, pageRequest)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
@@ -123,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
         if (!userValidator.isIdValid(userDto.getId())) {
             throw new InvalidParameterException("user.invalid");
         }
-        if (!userRepository.read(userDto.getId()).isPresent()) {
+        if (!userRepository.findById(userDto.getId()).isPresent()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
     }

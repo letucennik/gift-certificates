@@ -44,24 +44,21 @@ public class TagServiceImpl implements TagService {
         if (tagRepository.findByName(name).isPresent()) {
             throw new DuplicateEntityException("tag.duplicate");
         }
-        Tag savedTag = tagRepository.create(tagMapper.toModel(tag));
+        Tag savedTag = tagRepository.save(tagMapper.toModel(tag));
         return tagMapper.toDto(savedTag);
     }
 
     @Override
     public TagDto read(long id) {
-        Optional<Tag> tag = tagRepository.read(id);
+        Optional<Tag> tag = tagRepository.findById(id);
         return tagMapper.toDto(tag.orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND)));
     }
 
     @Override
     @Transactional
     public void delete(long id) {
-        Optional<Tag> tag = tagRepository.read(id);
-        if (!tag.isPresent()) {
-            throw new NoSuchEntityException(TAG_NOT_FOUND);
-        }
-        tagRepository.delete(id);
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new NoSuchEntityException(TAG_NOT_FOUND));
+        tagRepository.delete(tag);
     }
 
     @Override

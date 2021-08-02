@@ -9,6 +9,7 @@ import com.epam.esm.service.exception.InvalidParameterException;
 import com.epam.esm.service.exception.NoSuchEntityException;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.validator.Validator;
+import com.epam.esm.service.validator.impl.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,7 +39,7 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private Validator<UserDto> userValidator;
+    private UserValidator userValidator;
     @Spy
     private final Mapper<User, UserDto> mapper = new UserMapper(new ModelMapper());
 
@@ -48,7 +49,7 @@ class UserServiceImplTest {
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
-        userToCreate = new User(ID, "user 0");
+        userToCreate = new User(ID, "user 0","password0");
         userToCreateDto = mapper.toDto(userToCreate);
         allUsers = Collections.singletonList(userToCreate);
         allUsersDto = Collections.singletonList(userToCreateDto);
@@ -56,44 +57,41 @@ class UserServiceImplTest {
 
     @Test
     void testCreateShouldCreate() {
-        when(userValidator.isValid(any())).thenReturn(true);
-        when(userRepository.findByName(anyString())).thenReturn(Optional.empty());
-        when(userRepository.create(any())).thenReturn(userToCreate);
-        Long id = userService.create(userToCreateDto).getId();
+        when(userValidator.isIdValid(anyLong())).thenReturn(true);
+        when(userValidator.isNameValid(anyString())).thenReturn(true);
+        when(userValidator.isEmailValid(anyString())).thenReturn(true);
+        when(userValidator.isPasswordValid(anyString())).thenReturn(true);
+        when(userRepository.findByName(anyString())).thenReturn(Optional.of(userToCreate));
+        when(userRepository.save(any())).thenReturn(userToCreate);
+        Long id = userService.register(userToCreateDto).getId();
         assertNotNull(id);
-        verify(userRepository).create(userToCreate);
+        verify(userRepository).save(userToCreate);
     }
 
     @Test
     void testCreateShouldThrowInvalidEntityParameterException() {
         when(userValidator.isValid(any())).thenReturn(false);
-        assertThrows(InvalidParameterException.class, () -> userService.create(userToCreateDto));
+        assertThrows(InvalidParameterException.class, () -> userService.register(userToCreateDto));
     }
 
     @Test
     void testCreateShouldThrowDuplicateEntityException() {
         when(userValidator.isValid(any())).thenReturn(true);
         when(userRepository.findByName(anyString())).thenReturn(Optional.of(userToCreate));
-        assertThrows(DuplicateEntityException.class, () -> userService.create(userToCreateDto));
+        assertThrows(DuplicateEntityException.class, () -> userService.register(userToCreateDto));
     }
 
     @Test
     void testShouldFindById() {
-        when(userRepository.read(anyLong())).thenReturn(Optional.of(userToCreate));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userToCreate));
         assertEquals(userToCreateDto, userService.read(ID));
-        verify(userRepository).read(ID);
+        verify(userRepository).findById(ID);
     }
 
     @Test
     void testReadShouldThrowNoSuchEntityException() {
-        when(userRepository.read(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> userService.read(ID));
-    }
-
-    @Test
-    void shouldFindAll() {
-        when(userRepository.getAll(any())).thenReturn(allUsers);
-        assertEquals(allUsersDto, userService.getAll(0, 25));
     }
 
 }

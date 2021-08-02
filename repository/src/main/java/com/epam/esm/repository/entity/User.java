@@ -8,9 +8,13 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
 @Entity
@@ -28,7 +32,23 @@ public class User {
     @Column
     private String name;
 
-    public User(String name) {
+    @Column
+    private String password;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(columnDefinition = "int", name = "user_role")
+    @JoinTable(name = "role",
+            joinColumns = {@JoinColumn(name = "id")})
+    private UserRole userRole;
+
+    public User(long id, String name,  String password) {
+        this.id = id;
         this.name = name;
+        this.password = password;
+    }
+
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
     }
 }

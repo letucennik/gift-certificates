@@ -27,5 +27,5 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime date;
     private BigDecimal cost;
-    private List<GiftCertificateDto> certificates = new ArrayList<>();
+    private List<GiftCertificateDto> certificatesDto = new ArrayList<>();
 }

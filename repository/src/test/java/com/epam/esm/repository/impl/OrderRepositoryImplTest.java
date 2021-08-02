@@ -1,8 +1,10 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.repository.OrderRepository;
+import com.epam.esm.repository.UserRepository;
+import com.epam.esm.repository.config.TestJdbcConfig;
 import com.epam.esm.repository.entity.Order;
 import com.epam.esm.repository.entity.User;
-import com.epam.esm.repository.config.TestJdbcConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,13 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class OrderRepositoryImplTest {
 
     private Order orderToCreate;
+    private Order firstOrder;
     private User user;
 
     @Autowired
-    private OrderRepositoryImpl orderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    private UserRepositoryImpl userRepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     void init() {
@@ -44,17 +47,17 @@ class OrderRepositoryImplTest {
 
     @Test
     void testShouldCreate() {
-        Order newOrder = orderRepository.create(orderToCreate);
+        Order newOrder = orderRepository.save(orderToCreate);
         assertNotNull(newOrder);
     }
 
     @Test
     void testShouldGetUserOrders() {
-        Assertions.assertEquals(2, orderRepository.getUserOrders(2, PageRequest.of(0, 25)).size());
+        Assertions.assertEquals(2, orderRepository.findDistinctByUserId(2, PageRequest.of(0, 25)).size());
     }
 
     @Test
     void testShouldGetUserOrdersWithPagination() {
-        Assertions.assertEquals(1, orderRepository.getUserOrders(2, PageRequest.of(0, 1)).size());
+        Assertions.assertEquals(1, orderRepository.findDistinctByUserId(2, PageRequest.of(0, 1)).size());
     }
 }

@@ -1,9 +1,9 @@
 package com.epam.esm.repository.impl;
 
+import com.epam.esm.repository.config.TestJdbcConfig;
 import com.epam.esm.repository.entity.CertificateTag;
 import com.epam.esm.repository.entity.Tag;
 import com.epam.esm.repository.exception.DAOException;
-import com.epam.esm.repository.config.TestJdbcConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestJdbcConfig.class})

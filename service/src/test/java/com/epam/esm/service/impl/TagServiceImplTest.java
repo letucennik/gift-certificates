@@ -51,10 +51,10 @@ class TagServiceImplTest {
     void testShouldCreate() {
         when(tagValidator.isValid(any())).thenReturn(true);
         when(tagRepository.findByName(anyString())).thenReturn(Optional.empty());
-        when(tagRepository.create(any())).thenReturn(tag);
+        when(tagRepository.save(any())).thenReturn(tag);
         Long id = tagService.create(tagDto).getId();
         assertNotNull(id);
-        verify(tagRepository).create(tag);
+        verify(tagRepository).save(tag);
     }
 
     @Test
@@ -72,27 +72,27 @@ class TagServiceImplTest {
 
     @Test
     void testShouldFindById() {
-        when(tagRepository.read(anyLong())).thenReturn(Optional.of(tag));
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag));
         assertEquals(tagDto, tagService.read(ID));
-        verify(tagRepository).read(ID);
+        verify(tagRepository).findById(ID);
     }
 
     @Test
     void testReadShouldThrowNoSuchEntityException() {
-        when(tagRepository.read(anyLong())).thenReturn(Optional.empty());
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> tagService.read(ID));
     }
 
     @Test
     void testShouldDelete() {
-        when(tagRepository.read(anyLong())).thenReturn(Optional.of(tag));
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag));
         tagService.delete(ID);
-        verify(tagRepository).delete(ID);
+        verify(tagRepository).delete(tag);
     }
 
     @Test
     void testDeleteShouldThrowNoSuchEntityException() {
-        when(tagRepository.read(anyLong())).thenReturn(Optional.empty());
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(NoSuchEntityException.class, () -> tagService.delete(ID));
     }
 }
