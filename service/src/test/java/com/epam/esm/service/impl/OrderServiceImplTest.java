@@ -27,7 +27,6 @@ import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +75,7 @@ class OrderServiceImplTest {
                 .lastUpdateDate(LocalDateTime.now())
                 .price(BigDecimal.valueOf(10))
                 .build();
-        user = new User(1L, "user","password");
+        user = new User(1L, "user", "password");
         giftCertificateDtoList = Collections.singletonList(firstGiftCertificateDto);
         orderDtoToCreate = OrderDto.builder()
                 .certificatesDto(giftCertificateDtoList)
@@ -93,7 +92,7 @@ class OrderServiceImplTest {
         GiftCertificate certificate = giftCertificateMapper.toModel(firstGiftCertificateDto);
         when(certificateRepository.findById(anyLong())).thenReturn(Optional.of(certificate));
         OrderDto createdOrder = orderService.create(orderDtoToCreate);
-        assertEquals(orderDtoToCreate, createdOrder);
+        assertEquals(orderDtoToCreate.getId(), createdOrder.getId());
         verify(orderRepository).save(any());
     }
 
@@ -112,7 +111,7 @@ class OrderServiceImplTest {
     void testShouldFindAllByUserId() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(orderRepository.findDistinctByUserId(anyLong(), any())).thenReturn(Collections.singletonList(order));
-        assertEquals(orderService.getUserOrders(user.getId(), DEFAULT_PAGE, DEFAULT_PAGE_SIZE), Collections.singletonList(orderDtoToCreate));
+        assertEquals(orderService.getUserOrders(user.getId(), DEFAULT_PAGE, DEFAULT_PAGE_SIZE).get(0).getId(), orderDtoToCreate.getId());
     }
 
     @Test
@@ -124,8 +123,8 @@ class OrderServiceImplTest {
     @Test
     void testShouldFindOrderByUserId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(orderRepository.findDistinctByUserIdAndId(anyLong(),anyLong())).thenReturn(Optional.of(order));
-        assertEquals(orderDtoToCreate, orderService.findByUserId(user.getId(), orderDtoToCreate.getId()));
+        when(orderRepository.findDistinctByUserIdAndId(anyLong(), anyLong())).thenReturn(Optional.of(order));
+        assertEquals(orderDtoToCreate.getId(), orderService.findByUserId(user.getId(), orderDtoToCreate.getId()).getId());
     }
 
     @Test

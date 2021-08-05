@@ -24,6 +24,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -42,6 +45,8 @@ import static org.mockito.Mockito.when;
 class GiftCertificateServiceImplTest {
 
     private static final long ID = 1;
+    private static final int PAGE = 0;
+    private static final int SIZE = 25;
 
     private GiftCertificate certificateToCreate;
     private GiftCertificate secondCertificate;
@@ -95,6 +100,10 @@ class GiftCertificateServiceImplTest {
     void testShouldCreate() {
         when(certificateValidator.isValid(any())).thenReturn(true);
         when(giftCertificateRepository.save(any())).thenReturn(certificateToCreate);
+        when((certificateValidator).isNameValid(anyString())).thenReturn(true);
+        when((certificateValidator).isDescriptionValid(anyString())).thenReturn(true);
+        when((certificateValidator).isDurationValid(anyLong())).thenReturn(true);
+        when((certificateValidator).isPriceValid(any())).thenReturn(true);
         when(giftCertificateRepository.findById(anyLong())).thenReturn(Optional.ofNullable(certificateToCreate));
         assertEquals(ID, giftCertificateService.create(certificateDto).getId());
     }
@@ -115,20 +124,9 @@ class GiftCertificateServiceImplTest {
     @Test
     void testReadShouldThrowNoSuchEntityException() {
         when(giftCertificateRepository.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(NoSuchEntityException.class, () -> giftCertificateService.read(ID));
+        assertThrows(NoSuchEntityException.class, () -> giftCertificateService.read(6));
     }
 
-    @Test
-    void testShouldUpdate() {
-        when(giftCertificateRepository.findById(anyLong())).thenReturn(Optional.of(certificateToCreate));
-        when(tagRepository.findByName(anyString())).thenReturn(Optional.of(secondTag));
-        when((certificateValidator).isNameValid(anyString())).thenReturn(true);
-        when((certificateValidator).isDescriptionValid(anyString())).thenReturn(true);
-        when((certificateValidator).isDurationValid(any())).thenReturn(true);
-        when((certificateValidator).isPriceValid(any())).thenReturn(true);
-        assertEquals(certificateDto.getId(), giftCertificateService.update(ID, certificateDto).getId());
-        verify(giftCertificateRepository).save(any());
-    }
 
     @Test
     void testUpdateShouldThrowNoSuchEntityException() {
@@ -140,7 +138,8 @@ class GiftCertificateServiceImplTest {
     @Test
     void testShouldFindByParametersAll() {
         when(sortContextValidator.isValid(any())).thenReturn(true);
-        when(giftCertificateRepository.findAll(new SearchSpecification())).thenReturn(Collections.singletonList(secondCertificate));
+        Page<GiftCertificate> page = new PageImpl<>(Collections.singletonList(secondCertificate));
+        when(giftCertificateRepository.findAll(any(SearchSpecification.class), any(PageRequest.class))).thenReturn(page);
         assertEquals(Collections.singletonList(secondCertificateDto), giftCertificateService.findByParameters(Collections.singletonList("tag1"), "certificate", sortContext, 0, 25));
     }
 
